@@ -1,0 +1,56 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+buildscript {
+	repositories {
+		jcenter()
+	}
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    }
+}
+
+apply from: 'scripts/publishing.gradle'
+apply from: 'scripts/test-jar-publisher.gradle'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+group = 'com.google.cloud.tools'
+version = '0.1.0-alpha'
+if ('snapshot' in project.gradle.startParameter.taskNames) {
+  version = "${version}-SNAPSHOT"
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile localGroovy()
+  compile gradleApi()
+  compile 'com.google.cloud.tools:app-tools-lib-for-java:0.1.0-SNAPSHOT'
+}
+
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'Gcp App Gradle Plugin',
+           'Implementation-Version': version,
+           'Built-By': System.getProperty('user.name'),
+           'Built-Date': new Date(),
+           'Built-JDK': System.getProperty('java.version'),
+           'Built-Gradle': gradle.gradleVersion
+  }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.11'
+}
+
+task snapshot << {
+}
+
+test {
+  systemProperty "test.maven.repo", publishing.repositories.test.url
+}.dependsOn allprojects.collect { "${it.getPath()}:publishTestPublicationToTestRepository" }

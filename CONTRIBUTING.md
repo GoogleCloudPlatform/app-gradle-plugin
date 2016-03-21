@@ -1,6 +1,6 @@
 # Contributing to gcloud java wrapper
 
-The gcloud-app gradle plugin is an open source project, we appreciate your help!
+The gcp gradle plugin is an open source project, we appreciate your help!
 
 ## Contributing code
 

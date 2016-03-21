@@ -1,0 +1,58 @@
+apply plugin: 'com.bmuschko.nexus'
+
+modifyPom {
+    project {
+        name 'Google Cloud Platform: App Gradle Plugin'
+        description 'Gradle plugin that provides tasks for uploading, running and managing Google App Engine projects.'
+        url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
+        inceptionYear '2016'
+
+        scm {
+            url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
+            connection 'scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
+            developerConnection 'scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+    }
+}
+
+extraArchive {
+    sources = true
+    tests = false
+    javadoc = false
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign } &&
+	        taskGraph.allTasks.any { it.name.equals(project.nexus.getUploadTaskName()) }) {
+        Console console = System.console()
+        console.printf "\n\nPGP credentials required to sign artifacts.\n\n"
+
+        def id = readPropCmdLine(console, "signing.keyId", "", "PGP Key Id")
+        def file = readPropCmdLine(console, "signing.secretKeyRingFile", "${System.getProperty("user.home")}/.gnupg/secring.gpg", "PGP Secret Key Ring File (absolute path)")
+        def password = console.readPassword("PGP Private Key Password: ")
+
+        project.ext."signing.keyId" = id
+		project.ext."signing.secretKeyRingFile" = file
+        project.ext."signing.password" = password
+        console.printf "\n\nOSS Sonatype Credential required to upload.\n\n"
+
+        def nexusUsername = readPropCmdLine(console, "nexus.username", "", "Sonatype Username")
+        def nexusPassword = console.readPassword("Sonatype Password: ")
+
+        project.ext.nexusUsername = nexusUsername
+        project.ext.nexusPassword = new String(nexusPassword)
+    }
+}
+
+def readPropCmdLine(console, property, defaultValue, msg) {
+  def value = System.getProperty(property) ?: defaultValue
+  value = console.readLine("$msg [${value}]:") ?: value
+}

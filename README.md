@@ -1,5 +1,5 @@
 ![Google Cloud Platform Logo](https://cloud.google.com/_static/images/gcp-logo.png)
-# gcloud app gradle plugin
+# App Gradle Plugin
 
 **Alpha. For development only. Documentation incomplete. You will encounter bugs.**
 

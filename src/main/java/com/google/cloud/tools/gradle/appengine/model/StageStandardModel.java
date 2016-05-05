@@ -65,36 +65,37 @@ public interface StageStandardModel extends StageStandardConfiguration {
   @Override
   @Input
   @Optional
-  boolean isEnableQuickstart();
-  void setEnableQuickstart(boolean enableQuickstart);
+  Boolean getEnableQuickstart();
+  void setEnableQuickstart(Boolean enableQuickstart);
 
   @Override
   @Input
   @Optional
-  boolean isDisableUpdateCheck();
-  void setDisableUpdateCheck(boolean disableUpdateCheck);
+  Boolean getDisableUpdateCheck();
+  void setDisableUpdateCheck(Boolean disableUpdateCheck);
 
   @Override
   @Input
   @Optional
-  String getVersion();
-  void setVersion(String version);
+  Boolean getEnableJarSplitting();
+  void setEnableJarSplitting(Boolean enableJarSplitting);
 
   @Override
   @Input
   @Optional
-  boolean isEnableJarSplitting();
-  void setEnableJarSplitting(boolean enableJarSplitting);
+  Boolean getDeleteJsps();
+  void setDeleteJsps(Boolean deleteJsps);
 
   @Override
   @Input
   @Optional
-  boolean isDeleteJsps();
-  void setDeleteJsps(boolean deleteJsps);
+  Boolean getEnableJarClasses();
+  void setEnableJarClasses(Boolean enableJarClasses);
 
   @Override
   @Input
   @Optional
-  boolean isEnableJarClasses();
-  void setEnableJarClasses(boolean enableJarClasses);
+  Boolean getDisableJarJsps();
+  void setDisableJarJsps(Boolean disableJarJsps);
+
 }

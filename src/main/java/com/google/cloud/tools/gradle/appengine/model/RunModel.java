@@ -68,8 +68,8 @@ public interface RunModel extends RunConfiguration, StopConfiguration {
   void setMaxModuleInstances(Integer maxModuleInstances);
 
   @Override
-  boolean isUseMtimeFileWatcher();
-  void setUseMtimeFileWatcher(boolean useMtimeFileWatcher);
+  Boolean getUseMtimeFileWatcher();
+  void setUseMtimeFileWatcher(Boolean useMtimeFileWatcher);
 
   @Override
   String getThreadsafeOverride();
@@ -96,24 +96,24 @@ public interface RunModel extends RunConfiguration, StopConfiguration {
   void setRuntime(String runtime);
 
   @Override
-  boolean isAllowSkippedFiles();
-  void setAllowSkippedFiles(boolean allowSkippedFiles);
+  Boolean getAllowSkippedFiles();
+  void setAllowSkippedFiles(Boolean allowSkippedFiles);
 
   @Override
   Integer getApiPort();
   void setApiPort(Integer apiPort);
 
   @Override
-  boolean isAutomaticRestart();
-  void setAutomaticRestart(boolean automaticRestart);
+  Boolean getAutomaticRestart();
+  void setAutomaticRestart(Boolean automaticRestart);
 
   @Override
   String getDevAppserverLogLevel();
   void setDevAppserverLogLevel(String devAppserverLogLevel);
 
   @Override
-  boolean isSkipSdkUpdateCheck();
-  void setSkipSdkUpdateCheck(boolean skipSdkUpdateCheck);
+  Boolean getSkipSdkUpdateCheck();
+  void setSkipSdkUpdateCheck(Boolean skipSdkUpdateCheck);
 
   @Override
   String getDefaultGcsBucketName();

@@ -19,6 +19,8 @@ package com.google.cloud.tools.gradle.appengine;
 
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardModel;
+import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
+import com.google.cloud.tools.gradle.appengine.task.DevAppServerStopTask;
 import com.google.cloud.tools.gradle.appengine.task.ExplodeWarTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.StageStandardTask;
@@ -55,6 +57,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private static final String EXPLODE_APP_TASK_NAME = "appExplode";
   private static final String STAGE_TASK_NAME = "appStage";
   private static final String RUN_TASK_NAME = "appRun";
+  private static final String START_TASK_NAME = "appStart";
+  private static final String STOP_TASK_NAME = "appStop";
   private static final String DEPLOY_TASK_NAME = "appDeploy";
 
   private static final String EXPLODED_APP_DIR_NAME = "exploded-app";
@@ -70,9 +74,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   }
 
   private void createExplodedWarTask(final Project project) {
-    WarPluginConvention warConfig = project.getConvention().getPlugin(WarPluginConvention.class);
     final War warTask = (War) project.getTasks().getByName(WarPlugin.WAR_TASK_NAME);
-    final Task assembleTask = project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME);
     project.getTasks()
         .create(EXPLODE_APP_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
           @Override
@@ -124,7 +126,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Finalize
-    public void createRunTask(final ModelMap<Task> tasks, final AppEngineStandardModel app) {
+    public void createRunTasks(final ModelMap<Task> tasks, final AppEngineStandardModel app) {
 
       tasks.create(RUN_TASK_NAME, DevAppServerRunTask.class, new Action<DevAppServerRunTask>() {
         @Override
@@ -133,6 +135,25 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           runTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           runTask.dependsOn(STAGE_TASK_NAME);
+        }
+      });
+
+      tasks.create(START_TASK_NAME, DevAppServerStartTask.class, new Action<DevAppServerStartTask>() {
+        @Override
+        public void execute(DevAppServerStartTask startTask) {
+          startTask.setRunConfig(app.getRun());
+          startTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          startTask.dependsOn(STAGE_TASK_NAME);
+        }
+      });
+
+      tasks.create(STOP_TASK_NAME, DevAppServerStopTask.class, new Action<DevAppServerStopTask>() {
+        @Override
+        public void execute(DevAppServerStopTask stopTask) {
+          stopTask.setRunConfig(app.getRun());
+          stopTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          stopTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
         }
       });
     }

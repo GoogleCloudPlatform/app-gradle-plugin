@@ -52,22 +52,22 @@ public interface DeployModel extends DeployConfiguration {
   void setBucket(String bucket);
 
   @Override
-  boolean isForce();
-  void setForce(boolean force);
+  Boolean getForce();
+  void setForce(Boolean force);
 
   @Override
   String getProject();
   void setProject(String project);
 
   @Override
-  boolean isPromote();
-  void setPromote(boolean promote);
+  Boolean getPromote();
+  void setPromote(Boolean promote);
 
   @Override
   String getServer();
   void setServer(String server);
 
   @Override
-  boolean isStopPreviousVersion();
-  void setStopPreviousVersion(boolean stopPreviousVersion);
+  Boolean getStopPreviousVersion();
+  void setStopPreviousVersion(Boolean stopPreviousVersion);
 }

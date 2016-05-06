@@ -49,7 +49,6 @@ public class AppPlugin implements Plugin<Project> {
     if (project.getPlugins().hasPlugin(WarPlugin.class)) {
       WarPluginConvention warConfig = project.getConvention().getPlugin(WarPluginConvention.class);
       Path appengineWebXml = warConfig.getWebAppDir().toPath().resolve("WEB-INF/appengine-web.xml");
-      System.out.println(appengineWebXml.toAbsolutePath());
       if (Files.exists(appengineWebXml)) {
         return true;
       }

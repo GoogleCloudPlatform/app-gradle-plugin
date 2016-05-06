@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineFlexibleModel;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;
@@ -41,6 +42,7 @@ import org.gradle.model.RuleSource;
 import org.gradle.model.Validate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -97,6 +99,18 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       // TODO : look up using the convention for sourcesets here?
       app.getStage().setDockerfile(new File(project.getProjectDir(), "src/main/docker/Dockerfile"));
       app.getStage().setAppYaml(new File(project.getProjectDir(), "src/main/appengine/app.yaml"));
+
+      if (app.getTools().getCloudSdkHome() == null) {
+        try {
+          java.nio.file.Path sdk = PathResolver.INSTANCE.getCloudSdkPath();
+          if (sdk != null) {
+            app.getTools().setCloudSdkHome(sdk.toFile());
+          }
+        }
+        catch (FileNotFoundException e) {
+          // ignore
+        }
+      }
     }
 
     @Mutate

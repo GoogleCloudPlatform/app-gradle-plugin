@@ -49,8 +49,8 @@ import java.util.List;
  */
 public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
-  private static final String STAGE_TASK_NAME = "appStage";
-  private static final String DEPLOY_TASK_NAME = "appDeploy";
+  private static final String STAGE_TASK_NAME = "gcpAppStage";
+  private static final String DEPLOY_TASK_NAME = "gcpAppDeploy";
   private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 

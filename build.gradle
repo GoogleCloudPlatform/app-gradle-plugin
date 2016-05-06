@@ -17,14 +17,13 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 group = 'com.google.cloud.tools'
-version = '0.1.0-alpha'
-if ('snapshot' in project.gradle.startParameter.taskNames) {
-  version = "${version}-SNAPSHOT"
-}
+version = '0.1.0-SNAPSHOT'
 
 repositories {
   mavenCentral()
-  mavenLocal()
+  maven {
+    url 'https://oss.sonatype.org/content/repositories/snapshots'
+  }
 }
 
 dependencies {
@@ -45,12 +44,5 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.11'
+  gradleVersion = '2.12'
 }
-
-task snapshot << {
-}
-
-test {
-  systemProperty "test.maven.repo", publishing.repositories.test.url
-}.dependsOn allprojects.collect { "${it.getPath()}:publishTestPublicationToTestRepository" }

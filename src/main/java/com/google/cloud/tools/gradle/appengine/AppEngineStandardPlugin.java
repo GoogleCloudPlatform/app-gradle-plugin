@@ -30,9 +30,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.WarPlugin;
-import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 import org.gradle.model.Defaults;
 import org.gradle.model.Finalize;
@@ -54,12 +52,12 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
   private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine flexible environment";
 
-  private static final String EXPLODE_APP_TASK_NAME = "appExplode";
-  private static final String STAGE_TASK_NAME = "appStage";
-  private static final String RUN_TASK_NAME = "appRun";
-  private static final String START_TASK_NAME = "appStart";
-  private static final String STOP_TASK_NAME = "appStop";
-  private static final String DEPLOY_TASK_NAME = "appDeploy";
+  private static final String EXPLODE_WAR_TASK_NAME = "explodeWar";
+  private static final String STAGE_TASK_NAME = "gcpAppStage";
+  private static final String RUN_TASK_NAME = "gcpAppRun";
+  private static final String START_TASK_NAME = "gcpAppStart";
+  private static final String STOP_TASK_NAME = "gcpAppStop";
+  private static final String DEPLOY_TASK_NAME = "gcpAppDeploy";
 
   private static final String EXPLODED_APP_DIR_NAME = "exploded-app";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
@@ -76,7 +74,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private void createExplodedWarTask(final Project project) {
     final War warTask = (War) project.getTasks().getByName(WarPlugin.WAR_TASK_NAME);
     project.getTasks()
-        .create(EXPLODE_APP_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
+        .create(EXPLODE_WAR_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
           @Override
           public void execute(final ExplodeWarTask explodeWarTask) {
             explodeWarTask
@@ -121,7 +119,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           stageTask.setStagingConfig(app.getStage());
           stageTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
           stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          stageTask.dependsOn(EXPLODE_APP_TASK_NAME);
+          stageTask.dependsOn(EXPLODE_WAR_TASK_NAME);
         }
       });
     }

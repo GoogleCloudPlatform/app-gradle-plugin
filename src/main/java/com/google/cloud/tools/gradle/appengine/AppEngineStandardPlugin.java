@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardModel;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
@@ -42,6 +43,7 @@ import org.gradle.model.RuleSource;
 import org.gradle.model.Validate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -108,6 +110,18 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
       app.getRun().setAppYamls(deployables);
       app.getDeploy().setDeployables(deployables);
+
+      if (app.getTools().getCloudSdkHome() == null) {
+        try {
+          java.nio.file.Path sdk = PathResolver.INSTANCE.getCloudSdkPath();
+          if (sdk != null) {
+            app.getTools().setCloudSdkHome(sdk.toFile());
+          }
+        }
+        catch (FileNotFoundException e) {
+          // ignore
+        }
+      }
     }
 
     @Mutate

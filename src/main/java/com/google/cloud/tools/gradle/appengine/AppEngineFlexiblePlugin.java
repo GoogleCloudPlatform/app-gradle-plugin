@@ -90,7 +90,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
         ProjectIdentifier project) {
       app.getStage().setArtifact(hackArchivePath);
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
-      List<File> deployables = Collections.singletonList(app.getStage().getStagingDirectory());
+      List<File> deployables = Collections
+          .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
       app.getDeploy().setDeployables(deployables);
 
       // TODO : look up using the convention for sourcesets here?

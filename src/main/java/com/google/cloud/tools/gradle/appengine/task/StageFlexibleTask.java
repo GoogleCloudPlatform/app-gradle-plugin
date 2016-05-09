@@ -31,7 +31,7 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class StageFlexibleTask extends DefaultTask {
 
-    StageFlexibleModel stagingConfig;
+    private StageFlexibleModel stagingConfig;
 
     @Nested
     public StageFlexibleModel getStagingConfig() {

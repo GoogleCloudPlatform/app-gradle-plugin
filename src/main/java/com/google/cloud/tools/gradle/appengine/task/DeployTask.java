@@ -36,8 +36,8 @@ import java.io.File;
  */
 public class DeployTask extends DefaultTask {
 
-  DeployModel deployConfig;
-  File cloudSdkHome;
+  private DeployModel deployConfig;
+  private File cloudSdkHome;
 
   public void setDeployConfig(DeployModel deployConfig) {
     this.deployConfig = deployConfig;

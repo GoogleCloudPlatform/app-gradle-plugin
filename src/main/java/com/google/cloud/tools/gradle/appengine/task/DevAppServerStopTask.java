@@ -32,9 +32,9 @@ import java.io.File;
  */
 public class DevAppServerStopTask extends DefaultTask {
 
-  RunModel runConfig;
+  private RunModel runConfig;
 
-  File cloudSdkHome;
+  private File cloudSdkHome;
 
   public void setRunConfig(RunModel runConfig) {
     this.runConfig = runConfig;

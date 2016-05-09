@@ -33,8 +33,8 @@ import java.io.File;
  */
 public class StageStandardTask extends DefaultTask {
 
-    StageStandardModel stagingConfig;
-    File cloudSdkHome;
+    private StageStandardModel stagingConfig;
+    private File cloudSdkHome;
 
     @Nested
     public StageStandardModel getStagingConfig() {

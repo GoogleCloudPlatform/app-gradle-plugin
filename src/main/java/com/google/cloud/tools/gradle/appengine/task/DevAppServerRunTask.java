@@ -35,8 +35,8 @@ import java.io.File;
  */
 public class DevAppServerRunTask extends DefaultTask {
 
-  RunModel runConfig;
-  File cloudSdkHome;
+  private RunModel runConfig;
+  private File cloudSdkHome;
 
   public void setRunConfig(RunModel runConfig) {
     this.runConfig = runConfig;

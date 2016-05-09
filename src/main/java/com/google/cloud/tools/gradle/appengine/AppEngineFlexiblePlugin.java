@@ -56,7 +56,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
-  public static File hackArchivePath = null;
+  private static File hackArchivePath = null;
 
   @Override
   public void apply(Project project) {

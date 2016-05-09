@@ -38,8 +38,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class DevAppServerStartTask extends DefaultTask {
 
-  RunModel runConfig;
-  File cloudSdkHome;
+  private RunModel runConfig;
+  private File cloudSdkHome;
 
   public void setRunConfig(RunModel runConfig) {
     this.runConfig = runConfig;

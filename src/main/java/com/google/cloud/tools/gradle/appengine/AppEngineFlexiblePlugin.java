@@ -17,13 +17,11 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineFlexibleModel;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;
 
 import org.gradle.api.Action;
-import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -39,10 +37,8 @@ import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
-import org.gradle.model.Validate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +52,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
-  private static File hackArchivePath = null;
+  private static File archivePathFromProjectScope = null;
 
   @Override
   public void apply(Project project) {
@@ -68,11 +64,11 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       public void execute(Project project) {
         if (project.getPlugins().hasPlugin(WarPlugin.class)) {
           War war = (War) project.getProperties().get("war");
-          hackArchivePath = war.getArchivePath();
+          archivePathFromProjectScope = war.getArchivePath();
         }
         else {
           Jar jar = (Jar) project.getProperties().get("jar");
-          hackArchivePath = jar.getArchivePath();
+          archivePathFromProjectScope = jar.getArchivePath();
         }
       }
     });
@@ -90,7 +86,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     @Defaults
     public void setDefaults(AppEngineFlexibleModel app, @Path("buildDir") File buildDir,
         ProjectIdentifier project) {
-      app.getStage().setArtifact(hackArchivePath);
+      app.getStage().setArtifact(archivePathFromProjectScope);
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
       List<File> deployables = Collections
           .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));

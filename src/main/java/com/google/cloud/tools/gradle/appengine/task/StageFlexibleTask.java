@@ -35,8 +35,8 @@ public class StageFlexibleTask extends DefaultTask {
 
   @Nested
   public StageFlexibleModel getStagingConfig() {
-                                               return stagingConfig;
-                                                                    }
+    return stagingConfig;
+  }
 
   public void setStagingConfig(StageFlexibleModel stagingConfig) {
     this.stagingConfig = stagingConfig;

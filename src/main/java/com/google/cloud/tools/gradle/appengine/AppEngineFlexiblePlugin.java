@@ -99,18 +99,6 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       // TODO : look up using the convention for sourcesets here?
       app.getStage().setDockerfile(new File(project.getProjectDir(), "src/main/docker/Dockerfile"));
       app.getStage().setAppYaml(new File(project.getProjectDir(), "src/main/appengine/app.yaml"));
-
-      if (app.getTools().getCloudSdkHome() == null) {
-        try {
-          java.nio.file.Path sdk = PathResolver.INSTANCE.getCloudSdkPath();
-          if (sdk != null) {
-            app.getTools().setCloudSdkHome(sdk.toFile());
-          }
-        }
-        catch (FileNotFoundException e) {
-          // ignore
-        }
-      }
     }
 
     @Mutate
@@ -137,13 +125,6 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
           deployTask.dependsOn(STAGE_TASK_NAME);
         }
       });
-    }
-
-    @Validate
-    public void validate(AppEngineFlexibleModel app) {
-      if (app.getTools().getCloudSdkHome() == null) {
-        throw new GradleException("gcpApp.tools.cloudSdkHome home not set");
-      }
     }
   }
 }

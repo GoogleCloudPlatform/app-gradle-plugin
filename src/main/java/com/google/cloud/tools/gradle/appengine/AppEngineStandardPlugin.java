@@ -110,18 +110,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
       app.getRun().setAppYamls(deployables);
       app.getDeploy().setDeployables(deployables);
-
-      if (app.getTools().getCloudSdkHome() == null) {
-        try {
-          java.nio.file.Path sdk = PathResolver.INSTANCE.getCloudSdkPath();
-          if (sdk != null) {
-            app.getTools().setCloudSdkHome(sdk.toFile());
-          }
-        }
-        catch (FileNotFoundException e) {
-          // ignore
-        }
-      }
     }
 
     @Mutate
@@ -179,16 +167,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         public void execute(DeployTask deployTask) {
           deployTask.setDeployConfig(app.getDeploy());
           deployTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          deployTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           deployTask.dependsOn(STAGE_TASK_NAME);
         }
       });
-    }
-
-    @Validate
-    public void validate(AppEngineStandardModel app) {
-      if (app.getTools().getCloudSdkHome() == null) {
-        throw new GradleException("gcpApp.tools.cloudSdkHome home not set");
-      }
     }
   }
 }

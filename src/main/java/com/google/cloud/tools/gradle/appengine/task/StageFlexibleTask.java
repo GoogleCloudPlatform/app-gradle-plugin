@@ -31,23 +31,23 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class StageFlexibleTask extends DefaultTask {
 
-    private StageFlexibleModel stagingConfig;
+  private StageFlexibleModel stagingConfig;
 
-    @Nested
-    public StageFlexibleModel getStagingConfig() {
-        return stagingConfig;
-    }
+  @Nested
+  public StageFlexibleModel getStagingConfig() {
+                                               return stagingConfig;
+                                                                    }
 
-    public void setStagingConfig(StageFlexibleModel stagingConfig) {
-        this.stagingConfig = stagingConfig;
-    }
+  public void setStagingConfig(StageFlexibleModel stagingConfig) {
+    this.stagingConfig = stagingConfig;
+  }
 
-    @TaskAction
-    public void stageAction() throws AppEngineException {
-        getProject().delete(stagingConfig.getStagingDirectory());
-        getProject().mkdir(stagingConfig.getStagingDirectory().getAbsolutePath());
+  @TaskAction
+  public void stageAction() throws AppEngineException {
+    getProject().delete(stagingConfig.getStagingDirectory());
+    getProject().mkdir(stagingConfig.getStagingDirectory().getAbsolutePath());
 
-        AppEngineFlexibleStaging staging = new CloudSdkAppEngineFlexibleStaging();
-        staging.stageFlexible(stagingConfig);
-    }
+    AppEngineFlexibleStaging staging = new CloudSdkAppEngineFlexibleStaging();
+    staging.stageFlexible(stagingConfig);
+  }
 }

@@ -33,33 +33,28 @@ import java.io.File;
  */
 public class StageStandardTask extends DefaultTask {
 
-    private StageStandardModel stagingConfig;
-    private File cloudSdkHome;
+  private StageStandardModel stagingConfig;
+  private File cloudSdkHome;
 
-    @Nested
-    public StageStandardModel getStagingConfig() {
-        return stagingConfig;
-    }
+  @Nested
+  public StageStandardModel getStagingConfig() {
+                                               return stagingConfig;
+                                                                    }
 
-    @InputDirectory
-    public File getCloudSdkHome() {
-        return cloudSdkHome;
-    }
+  public void setStagingConfig(StageStandardModel stagingConfig) {
+    this.stagingConfig = stagingConfig;
+  }
 
-    public void setStagingConfig(StageStandardModel stagingConfig) {
-        this.stagingConfig = stagingConfig;
-    }
+  public void setCloudSdkHome(File cloudSdkHome) {
+                                                 this.cloudSdkHome = cloudSdkHome;
+                                                                                  }
 
-    public void setCloudSdkHome(File cloudSdkHome) {
-        this.cloudSdkHome = cloudSdkHome;
-    }
+  @TaskAction
+  public void stageAction() throws AppEngineException {
+    getProject().delete(stagingConfig.getStagingDirectory());
 
-    @TaskAction
-    public void stageAction() throws AppEngineException {
-        getProject().delete(stagingConfig.getStagingDirectory());
-
-        CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(
-            new CloudSdk(cloudSdkHome));
-        staging.stageStandard(stagingConfig);
-    }
+    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(sdk);
+    staging.stageStandard(stagingConfig);
+  }
 }

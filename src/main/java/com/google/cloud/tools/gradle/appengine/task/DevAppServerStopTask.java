@@ -46,7 +46,8 @@ public class DevAppServerStopTask extends DefaultTask {
 
   @TaskAction
   public void stopAction() throws AppEngineException {
-    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(new CloudSdk(cloudSdkHome));
+    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.stop(runConfig);
   }
 

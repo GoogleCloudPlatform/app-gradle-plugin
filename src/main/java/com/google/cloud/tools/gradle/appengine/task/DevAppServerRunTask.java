@@ -48,7 +48,8 @@ public class DevAppServerRunTask extends DefaultTask {
 
   @TaskAction
   public void runAction() throws AppEngineException {
-    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(new CloudSdk(cloudSdkHome));
+    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
   }
 

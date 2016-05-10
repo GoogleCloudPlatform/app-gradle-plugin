@@ -49,7 +49,8 @@ public class DeployTask extends DefaultTask {
 
   @TaskAction
   public void deployAction() throws AppEngineException {
-    AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(new CloudSdk(cloudSdkHome));
+    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deploy(deployConfig);
   }
 

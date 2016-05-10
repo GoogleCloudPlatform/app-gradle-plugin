@@ -81,8 +81,9 @@ public class DevAppServerStartTask extends DefaultTask {
 
     processRunner.setStdOutLineListener(lineListener);
 
-    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(
-        new CloudSdk(cloudSdkHome, processRunner));
+    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).processRunner(processRunner)
+        .build();
+    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
 
     try {

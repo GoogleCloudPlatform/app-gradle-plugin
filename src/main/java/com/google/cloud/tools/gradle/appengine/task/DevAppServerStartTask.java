@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.process.DefaultProcessRunner;
+import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.process.ProcessOutputLineListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
@@ -51,45 +52,33 @@ public class DevAppServerStartTask extends DefaultTask {
 
   @TaskAction
   public void startAction() throws AppEngineException, IOException {
-    final CountDownLatch semaphore = new CountDownLatch(1);
+    File logFile = File
+        .createTempFile("server", "log", new File(getProject().getBuildDir(), "tmp"));
+    getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
 
-    DefaultProcessRunner processRunner = new DefaultProcessRunner(
-        new ProcessBuilder().redirectErrorStream(true));
-    processRunner.setAsync(true);
-
-    ProcessOutputLineListener lineListener = new ProcessOutputLineListener() {
-      final PrintStream logFilePrinter;
-
-      {
-        File logFile = File
-            .createTempFile("server", "log", new File(getProject().getBuildDir(), "tmp"));
-        logFilePrinter = new PrintStream(logFile);
-        getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
-      }
-
-      @Override
-      public void outputLine(String line) {
-        logFilePrinter.println(line);
-        if (semaphore.getCount() == 0L) {
-          return;
-        }
-        if (line.contains("Dev App Server is now running")) {
-          semaphore.countDown();
-        }
-      }
-    };
-
-    processRunner.setStdOutLineListener(lineListener);
-
-    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).processRunner(processRunner)
+    ProcessOutputLineListener lineListener = new FileOutputLineListener(logFile);
+    CloudSdk sdk = new CloudSdk.Builder()
+        .sdkPath(cloudSdkHome)
+        .async(true)
+        .runDevAppServerWait(10)
+        .addStdErrLineListener(lineListener)
+        .addStdOutLineListener(lineListener)
+        .exitListener(new NonZeroExceptionExitListener())
         .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
+  }
 
-    try {
-      semaphore.await(10, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      // do we care that the wait was interrupted?
+  private static class FileOutputLineListener implements  ProcessOutputLineListener {
+    final PrintStream logFilePrinter;
+
+    public FileOutputLineListener(File logFile) throws IOException {
+      logFilePrinter = new PrintStream(logFile);
+    }
+
+    @Override
+    public void outputLine(String line) {
+      logFilePrinter.println(line);
     }
   }
 

@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineStandardStaging;
+import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.gradle.appengine.model.StageStandardModel;
 import org.gradle.api.DefaultTask;
@@ -52,8 +53,10 @@ public class StageStandardTask extends DefaultTask {
   @TaskAction
   public void stageAction() throws AppEngineException {
     getProject().delete(stagingConfig.getStagingDirectory());
-
-    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdk sdk = new CloudSdk.Builder()
+        .sdkPath(cloudSdkHome)
+        .exitListener(new NonZeroExceptionExitListener())
+        .build();
     CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(sdk);
     staging.stageStandard(stagingConfig);
   }

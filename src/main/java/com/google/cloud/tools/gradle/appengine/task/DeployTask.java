@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDeployment;
+import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.gradle.appengine.model.DeployModel;
 
@@ -49,7 +50,10 @@ public class DeployTask extends DefaultTask {
 
   @TaskAction
   public void deployAction() throws AppEngineException {
-    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdk sdk = new CloudSdk.Builder()
+        .sdkPath(cloudSdkHome)
+        .exitListener(new NonZeroExceptionExitListener())
+        .build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deploy(deployConfig);
   }

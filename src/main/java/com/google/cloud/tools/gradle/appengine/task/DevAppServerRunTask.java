@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
+import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
 
@@ -48,7 +49,10 @@ public class DevAppServerRunTask extends DefaultTask {
 
   @TaskAction
   public void runAction() throws AppEngineException {
-    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdk sdk = new CloudSdk.Builder()
+        .sdkPath(cloudSdkHome)
+        .exitListener(new NonZeroExceptionExitListener())
+        .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
   }

@@ -51,6 +51,7 @@ public class DevAppServerRunTask extends DefaultTask {
   public void runAction() throws AppEngineException {
     CloudSdk sdk = new CloudSdk.Builder()
         .sdkPath(cloudSdkHome)
+        .appCommandMetricsEnvironment("app-gradle-plugin")
         .exitListener(new NonZeroExceptionExitListener())
         .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);

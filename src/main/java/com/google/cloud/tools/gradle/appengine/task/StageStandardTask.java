@@ -39,22 +39,23 @@ public class StageStandardTask extends DefaultTask {
 
   @Nested
   public StageStandardModel getStagingConfig() {
-                                               return stagingConfig;
-                                                                    }
+      return stagingConfig;
+  }
 
   public void setStagingConfig(StageStandardModel stagingConfig) {
     this.stagingConfig = stagingConfig;
   }
 
   public void setCloudSdkHome(File cloudSdkHome) {
-                                                 this.cloudSdkHome = cloudSdkHome;
-                                                                                  }
+      this.cloudSdkHome = cloudSdkHome;
+  }
 
   @TaskAction
   public void stageAction() throws AppEngineException {
     getProject().delete(stagingConfig.getStagingDirectory());
     CloudSdk sdk = new CloudSdk.Builder()
         .sdkPath(cloudSdkHome)
+        .appCommandMetricsEnvironment("app-gradle-plugin")
         .exitListener(new NonZeroExceptionExitListener())
         .build();
     CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(sdk);

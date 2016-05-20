@@ -46,7 +46,10 @@ public class DevAppServerStopTask extends DefaultTask {
 
   @TaskAction
   public void stopAction() throws AppEngineException {
-    CloudSdk sdk = new CloudSdk.Builder().sdkPath(cloudSdkHome).build();
+    CloudSdk sdk = new CloudSdk.Builder()
+        .sdkPath(cloudSdkHome)
+        .appCommandMetricsEnvironment("app-gradle-plugin")
+        .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.stop(runConfig);
   }

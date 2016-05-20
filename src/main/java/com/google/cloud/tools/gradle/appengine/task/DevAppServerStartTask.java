@@ -59,6 +59,7 @@ public class DevAppServerStartTask extends DefaultTask {
     ProcessOutputLineListener lineListener = new FileOutputLineListener(logFile);
     CloudSdk sdk = new CloudSdk.Builder()
         .sdkPath(cloudSdkHome)
+        .appCommandMetricsEnvironment("app-gradle-plugin")
         .async(true)
         .runDevAppServerWait(10)
         .addStdErrLineListener(lineListener)

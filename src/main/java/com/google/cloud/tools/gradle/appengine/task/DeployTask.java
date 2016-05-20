@@ -52,6 +52,7 @@ public class DeployTask extends DefaultTask {
   public void deployAction() throws AppEngineException {
     CloudSdk sdk = new CloudSdk.Builder()
         .sdkPath(cloudSdkHome)
+        .appCommandMetricsEnvironment("app-gradle-plugin")
         .exitListener(new NonZeroExceptionExitListener())
         .build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);

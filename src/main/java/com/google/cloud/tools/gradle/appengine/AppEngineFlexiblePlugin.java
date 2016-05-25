@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineFlexibleModel;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;
@@ -93,7 +94,14 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       app.getDeploy().setDeployables(deployables);
 
       // TODO : look up using the convention for sourcesets here?
-      app.getStage().setDockerfile(new File(project.getProjectDir(), "src/main/docker/Dockerfile"));
+      File dockerLegacyPath = new File(project.getProjectDir(), "src/main/appengine/Dockerfile");
+      File dockerPath = new File(project.getProjectDir(), "src/main/docker/Dockerfile");
+      if (dockerPath.exists()) {
+        app.getStage().setDockerfile(dockerPath);
+      }
+      else if (dockerLegacyPath.exists()) {
+        app.getStage().setDockerfile(dockerLegacyPath);
+      }
       app.getStage().setAppYaml(new File(project.getProjectDir(), "src/main/appengine/app.yaml"));
     }
 

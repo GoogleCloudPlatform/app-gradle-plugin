@@ -17,17 +17,16 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.PathResolver;
-import com.google.cloud.tools.gradle.appengine.task.DeployTask;
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardModel;
+import com.google.cloud.tools.gradle.appengine.task.DeployTask;
+import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStopTask;
 import com.google.cloud.tools.gradle.appengine.task.ExplodeWarTask;
-import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.StageStandardTask;
 
 import org.gradle.api.Action;
-import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -40,10 +39,8 @@ import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
-import org.gradle.model.Validate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,7 +49,7 @@ import java.util.List;
  */
 public class AppEngineStandardPlugin implements Plugin<Project> {
 
-  private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine flexible environment";
+  private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine standard environment";
 
   private static final String EXPLODE_WAR_TASK_NAME = "explodeWar";
   private static final String STAGE_TASK_NAME = "gcpAppStage";
@@ -113,13 +110,19 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Mutate
+    public void createCloudSdkBuilderProvider(final AppEngineStandardModel app) {
+      app.getTools().setCloudSdkBuilderProvider(
+          new CloudSdkBuilderProvider(app.getTools().getCloudSdkHome()));
+    }
+
+    @Mutate
     public void createStageTask(final ModelMap<Task> tasks, final AppEngineStandardModel app) {
 
       tasks.create(STAGE_TASK_NAME, StageStandardTask.class, new Action<StageStandardTask>() {
         @Override
         public void execute(StageStandardTask stageTask) {
           stageTask.setStagingConfig(app.getStage());
-          stageTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          stageTask.setCloudSdkBuilderProvider(app.getTools().getCloudSdkBuilderProvider());
           stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           stageTask.dependsOn(EXPLODE_WAR_TASK_NAME);
         }
@@ -133,7 +136,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         @Override
         public void execute(DevAppServerRunTask runTask) {
           runTask.setRunConfig(app.getRun());
-          runTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          runTask.setCloudSdkBuilderProvider(app.getTools().getCloudSdkBuilderProvider());
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           runTask.dependsOn(STAGE_TASK_NAME);
         }
@@ -143,7 +146,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         @Override
         public void execute(DevAppServerStartTask startTask) {
           startTask.setRunConfig(app.getRun());
-          startTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          startTask.setCloudSdkBuilderProvider(app.getTools().getCloudSdkBuilderProvider());
           startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           startTask.dependsOn(STAGE_TASK_NAME);
         }
@@ -153,7 +156,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         @Override
         public void execute(DevAppServerStopTask stopTask) {
           stopTask.setRunConfig(app.getRun());
-          stopTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
           stopTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
         }
       });
@@ -166,7 +168,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         @Override
         public void execute(DeployTask deployTask) {
           deployTask.setDeployConfig(app.getDeploy());
-          deployTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          deployTask.setCloudSdkBuilderProvider(app.getTools().getCloudSdkBuilderProvider());
           deployTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           deployTask.dependsOn(STAGE_TASK_NAME);
         }

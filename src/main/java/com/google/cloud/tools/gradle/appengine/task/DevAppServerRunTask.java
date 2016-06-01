@@ -19,17 +19,12 @@ package com.google.cloud.tools.gradle.appengine.task;
 
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.File;
 
 /**
  * Run App Engine Standard Environment applications locally
@@ -37,22 +32,19 @@ import java.io.File;
 public class DevAppServerRunTask extends DefaultTask {
 
   private RunModel runConfig;
-  private File cloudSdkHome;
+  private CloudSdkBuilderProvider cloudSdkBuilderProvider;
 
   public void setRunConfig(RunModel runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setCloudSdkHome(File cloudSdkHome) {
-    this.cloudSdkHome = cloudSdkHome;
+  public void setCloudSdkBuilderProvider(CloudSdkBuilderProvider cloudSdkBuilderProvider) {
+    this.cloudSdkBuilderProvider = cloudSdkBuilderProvider;
   }
 
   @TaskAction
   public void runAction() throws AppEngineException {
-    CloudSdk sdk = new CloudSdk.Builder()
-        .sdkPath(cloudSdkHome)
-        .exitListener(new NonZeroExceptionExitListener())
-        .build();
+    CloudSdk sdk = cloudSdkBuilderProvider.newBuilder().build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
   }

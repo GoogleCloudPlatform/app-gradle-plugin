@@ -34,12 +34,12 @@ dependencies {
 
 jar {
   manifest {
-    attributes 'Implementation-Title': 'Gcp App Gradle Plugin',
-           'Implementation-Version': version,
-           'Built-By': System.getProperty('user.name'),
-           'Built-Date': new Date(),
-           'Built-JDK': System.getProperty('java.version'),
-           'Built-Gradle': gradle.gradleVersion
+    attributes 'Implementation-Title': 'app-gradle-plugin',
+        'Implementation-Version': version,
+        'Built-By': System.getProperty('user.name'),
+        'Built-Date': new Date(),
+        'Built-JDK': System.getProperty('java.version'),
+        'Built-Gradle': gradle.gradleVersion
   }
 }
 

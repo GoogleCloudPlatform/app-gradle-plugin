@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineFlexibleModel;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;
@@ -56,7 +57,6 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
-
     // pretty poor form here - sharing data via a static variable, but we need this hack to
     // find archives until jar/war RuleSource plugins are ready
     project.afterEvaluate(new Action<Project>() {
@@ -98,6 +98,12 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     }
 
     @Mutate
+    public void createCloudSdkBuilderProvider(final AppEngineFlexibleModel app) {
+      app.getTools().setCloudSdkBuilderProvider(
+          new CloudSdkBuilderProvider(app.getTools().getCloudSdkHome()));
+    }
+
+    @Mutate
     public void createStageTask(final ModelMap<Task> tasks, final AppEngineFlexibleModel app) {
       tasks.create(STAGE_TASK_NAME, StageFlexibleTask.class, new Action<StageFlexibleTask>() {
         @Override
@@ -116,7 +122,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
         @Override
         public void execute(DeployTask deployTask) {
           deployTask.setDeployConfig(app.getDeploy());
-          deployTask.setCloudSdkHome(app.getTools().getCloudSdkHome());
+          deployTask.setCloudSdkBuilderProvider(app.getTools().getCloudSdkBuilderProvider());
           deployTask.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
           deployTask.dependsOn(STAGE_TASK_NAME);
         }

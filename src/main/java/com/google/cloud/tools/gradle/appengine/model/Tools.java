@@ -18,6 +18,10 @@
 package com.google.cloud.tools.gradle.appengine.model;
 
 import org.gradle.model.Managed;
+import org.gradle.model.Unmanaged;
+import org.gradle.model.internal.core.Hidden;
+
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
 
 import java.io.File;
 
@@ -29,5 +33,10 @@ public interface Tools {
 
   void setCloudSdkHome(File cloudSdkHome);
   File getCloudSdkHome();
+
+  @Hidden
+  @Unmanaged
+  CloudSdkBuilderProvider getCloudSdkBuilderProvider();
+  void setCloudSdkBuilderProvider(CloudSdkBuilderProvider provider);
 
 }

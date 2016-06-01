@@ -19,10 +19,9 @@ package com.google.cloud.tools.gradle.appengine.task;
 
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.process.DefaultProcessRunner;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.process.ProcessOutputLineListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
 
 import org.gradle.api.DefaultTask;
@@ -31,8 +30,6 @@ import org.gradle.api.tasks.TaskAction;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Start the App Engine development server asynchronously
@@ -40,14 +37,14 @@ import java.util.concurrent.TimeUnit;
 public class DevAppServerStartTask extends DefaultTask {
 
   private RunModel runConfig;
-  private File cloudSdkHome;
+  private CloudSdkBuilderProvider cloudSdkBuilderProvider;
 
   public void setRunConfig(RunModel runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setCloudSdkHome(File cloudSdkHome) {
-    this.cloudSdkHome = cloudSdkHome;
+  public void setCloudSdkBuilderProvider(CloudSdkBuilderProvider cloudSdkBuilderProvider) {
+    this.cloudSdkBuilderProvider = cloudSdkBuilderProvider;
   }
 
   @TaskAction
@@ -57,19 +54,18 @@ public class DevAppServerStartTask extends DefaultTask {
     getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
 
     ProcessOutputLineListener lineListener = new FileOutputLineListener(logFile);
-    CloudSdk sdk = new CloudSdk.Builder()
-        .sdkPath(cloudSdkHome)
+
+    CloudSdk sdk = cloudSdkBuilderProvider.newBuilder()
         .async(true)
         .runDevAppServerWait(10)
         .addStdErrLineListener(lineListener)
         .addStdOutLineListener(lineListener)
-        .exitListener(new NonZeroExceptionExitListener())
         .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
   }
 
-  private static class FileOutputLineListener implements  ProcessOutputLineListener {
+  private static class FileOutputLineListener implements ProcessOutputLineListener {
     final PrintStream logFilePrinter;
 
     public FileOutputLineListener(File logFile) throws IOException {

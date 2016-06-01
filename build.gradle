@@ -34,7 +34,7 @@ dependencies {
 
 jar {
   manifest {
-    attributes 'Implementation-Title': 'app-gradle-plugin',
+    attributes 'Implementation-Title': project.name,
         'Implementation-Version': version,
         'Built-By': System.getProperty('user.name'),
         'Built-Date': new Date(),

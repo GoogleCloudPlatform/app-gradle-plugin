@@ -25,10 +25,10 @@ import java.io.File;
 /**
  * Created by appu on 5/31/16.
  */
-public class CloudSdkBuilderProvider {
+public class CloudSdkBuilderFactory {
   private final File cloudSdkHome;
 
-  public CloudSdkBuilderProvider(File cloudSdkHome) {
+  public CloudSdkBuilderFactory(File cloudSdkHome) {
     this.cloudSdkHome = cloudSdkHome;
   }
 

@@ -21,7 +21,7 @@ import org.gradle.model.Managed;
 import org.gradle.model.Unmanaged;
 import org.gradle.model.internal.core.Hidden;
 
-import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderFactory;
 
 import java.io.File;
 
@@ -36,7 +36,7 @@ public interface Tools {
 
   @Hidden
   @Unmanaged
-  CloudSdkBuilderProvider getCloudSdkBuilderProvider();
-  void setCloudSdkBuilderProvider(CloudSdkBuilderProvider provider);
+  CloudSdkBuilderFactory getCloudSdkBuilderFactory();
+  void setCloudSdkBuilderFactory(CloudSdkBuilderFactory factory);
 
 }

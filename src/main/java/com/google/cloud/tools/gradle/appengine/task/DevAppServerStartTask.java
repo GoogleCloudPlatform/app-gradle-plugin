@@ -21,7 +21,7 @@ import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.process.ProcessOutputLineListener;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
-import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
 
 import org.gradle.api.DefaultTask;
@@ -37,14 +37,14 @@ import java.io.PrintStream;
 public class DevAppServerStartTask extends DefaultTask {
 
   private RunModel runConfig;
-  private CloudSdkBuilderProvider cloudSdkBuilderProvider;
+  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
   public void setRunConfig(RunModel runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setCloudSdkBuilderProvider(CloudSdkBuilderProvider cloudSdkBuilderProvider) {
-    this.cloudSdkBuilderProvider = cloudSdkBuilderProvider;
+  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
+    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
   @TaskAction
@@ -55,7 +55,7 @@ public class DevAppServerStartTask extends DefaultTask {
 
     ProcessOutputLineListener lineListener = new FileOutputLineListener(logFile);
 
-    CloudSdk sdk = cloudSdkBuilderProvider.newBuilder()
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
         .async(true)
         .runDevAppServerWait(10)
         .addStdErrLineListener(lineListener)

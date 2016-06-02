@@ -20,7 +20,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 import com.google.cloud.tools.app.api.AppEngineException;
 import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineStandardStaging;
 import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
-import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderProvider;
+import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.StageStandardModel;
 
 import org.gradle.api.DefaultTask;
@@ -33,7 +33,7 @@ import org.gradle.api.tasks.TaskAction;
 public class StageStandardTask extends DefaultTask {
 
   private StageStandardModel stagingConfig;
-  private CloudSdkBuilderProvider cloudSdkBuilderProvider;
+  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
   @Nested
   public StageStandardModel getStagingConfig() {
@@ -44,14 +44,14 @@ public class StageStandardTask extends DefaultTask {
     this.stagingConfig = stagingConfig;
   }
 
-  public void setCloudSdkBuilderProvider(CloudSdkBuilderProvider cloudSdkBuilderProvider) {
-    this.cloudSdkBuilderProvider = cloudSdkBuilderProvider;
+  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
+    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
   @TaskAction
   public void stageAction() throws AppEngineException {
     getProject().delete(stagingConfig.getStagingDirectory());
-    CloudSdk sdk = cloudSdkBuilderProvider.newBuilder().build();
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder().build();
     CloudSdkAppEngineStandardStaging staging = new CloudSdkAppEngineStandardStaging(sdk);
     staging.stageStandard(stagingConfig);
   }

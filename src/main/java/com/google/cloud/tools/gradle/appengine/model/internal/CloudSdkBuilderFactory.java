@@ -23,7 +23,7 @@ import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
 import java.io.File;
 
 /**
- * Created by appu on 5/31/16.
+ * Factory for generating Cloud Sdk Builder with all common configuration
  */
 public class CloudSdkBuilderFactory {
   private final File cloudSdkHome;

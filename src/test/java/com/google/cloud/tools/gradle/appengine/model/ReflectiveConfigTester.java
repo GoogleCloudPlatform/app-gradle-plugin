@@ -48,7 +48,7 @@ public class ReflectiveConfigTester {
     for (Method m : configuration.getDeclaredMethods()) {
       String setterName = method.getName().replaceAll("^(is|get)", "set");
       if (m.getName().equals(setterName) &&
-          // java7 doesn't have m.getParameterCount()
+          // TODO : use m.getParameterCount() after moving to java 8
           m.getParameterTypes().length == 1 &&
           m.getGenericParameterTypes()[0].equals(method.getGenericReturnType()) &&
           m.getReturnType().equals(Void.TYPE)) {

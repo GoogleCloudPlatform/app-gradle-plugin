@@ -23,11 +23,13 @@ import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.internal.project.ProjectIdentifier;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
@@ -66,9 +68,12 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
           War war = (War) project.getProperties().get("war");
           archivePathFromProjectScope = war.getArchivePath();
         }
-        else {
+        else if (project.getPlugins().hasPlugin(JavaPlugin.class)){
           Jar jar = (Jar) project.getProperties().get("jar");
           archivePathFromProjectScope = jar.getArchivePath();
+        }
+        else {
+          throw new GradleException("Could not find JAR or WAR configuration");
         }
       }
     });

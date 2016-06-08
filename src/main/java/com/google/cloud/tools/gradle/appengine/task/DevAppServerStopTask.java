@@ -17,8 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.task;
 
-import com.google.cloud.tools.app.api.AppEngineException;
-import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineDevServer;
+import com.google.cloud.tools.appengine.api.AppEngineException;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
 
 import org.gradle.api.DefaultTask;

@@ -17,10 +17,10 @@
 
 package com.google.cloud.tools.gradle.appengine.task;
 
-import com.google.cloud.tools.app.api.AppEngineException;
-import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineStandardStaging;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
-import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderFactory;
+import com.google.cloud.tools.appengine.api.AppEngineException;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineStandardStaging;
+import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.StageStandardModel;
 
 import org.gradle.api.DefaultTask;

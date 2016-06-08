@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.model;
 
-import com.google.cloud.tools.app.api.deploy.StageFlexibleConfiguration;
+import com.google.cloud.tools.appengine.api.deploy.StageFlexibleConfiguration;
 
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;

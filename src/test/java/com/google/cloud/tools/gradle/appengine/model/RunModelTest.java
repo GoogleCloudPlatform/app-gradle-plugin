@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.model;
 
-import com.google.cloud.tools.app.api.devserver.RunConfiguration;
+import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
 
 import org.junit.Test;
 

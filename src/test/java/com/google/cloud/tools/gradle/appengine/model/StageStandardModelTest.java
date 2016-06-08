@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.model;
 
-import com.google.cloud.tools.app.api.deploy.StageStandardConfiguration;
+import com.google.cloud.tools.appengine.api.deploy.StageStandardConfiguration;
 
 import org.junit.Test;
 

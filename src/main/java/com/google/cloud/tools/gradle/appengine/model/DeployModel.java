@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.model;
 
-import com.google.cloud.tools.app.api.deploy.DeployConfiguration;
+import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 
 import org.gradle.model.Managed;
 

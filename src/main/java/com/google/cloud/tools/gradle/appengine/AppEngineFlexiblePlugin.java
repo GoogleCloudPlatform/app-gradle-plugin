@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.gradle.appengine.model.internal.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineFlexibleModel;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;

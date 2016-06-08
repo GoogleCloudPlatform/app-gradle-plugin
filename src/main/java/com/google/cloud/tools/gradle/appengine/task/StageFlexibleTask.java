@@ -17,9 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.task;
 
-import com.google.cloud.tools.app.api.AppEngineException;
-import com.google.cloud.tools.app.api.deploy.AppEngineFlexibleStaging;
-import com.google.cloud.tools.app.impl.cloudsdk.CloudSdkAppEngineFlexibleStaging;
+import com.google.cloud.tools.appengine.api.AppEngineException;
+import com.google.cloud.tools.appengine.api.deploy.AppEngineFlexibleStaging;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineFlexibleStaging;
 import com.google.cloud.tools.gradle.appengine.model.StageFlexibleModel;
 
 import org.gradle.api.DefaultTask;

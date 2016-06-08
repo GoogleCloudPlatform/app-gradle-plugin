@@ -15,10 +15,10 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.model.internal;
+package com.google.cloud.tools.gradle.appengine.model.hidden;
 
-import com.google.cloud.tools.app.impl.cloudsdk.internal.process.NonZeroExceptionExitListener;
-import com.google.cloud.tools.app.impl.cloudsdk.internal.sdk.CloudSdk;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
+import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 
 import java.io.File;
 

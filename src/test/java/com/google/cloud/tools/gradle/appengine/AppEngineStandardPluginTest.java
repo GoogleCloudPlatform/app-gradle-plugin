@@ -32,8 +32,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-//import com.google.common.io.Files;
-
 public class AppEngineStandardPluginTest {
 
   @Rule
@@ -59,9 +57,11 @@ public class AppEngineStandardPluginTest {
         .withArguments("gcpAppDeploy", "--dry-run")
         .build();
 
-    final List<String> expected = Arrays.asList(":explodeWar", ":gcpAppStage", ":gcpAppDeploy");
+    final List<String> expected = Arrays
+        .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":gcpAppStage", ":gcpAppDeploy");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult, expected));
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -72,8 +72,10 @@ public class AppEngineStandardPluginTest {
         .withArguments("gcpAppRun", "--dry-run")
         .build();
 
-    final List<String> expected = Arrays.asList(":explodeWar", ":gcpAppStage", ":gcpAppRun");
+    final List<String> expected = Arrays
+        .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":gcpAppStage", ":gcpAppRun");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult, expected));
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 }

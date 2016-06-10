@@ -33,8 +33,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-//import com.google.common.io.Files;
-
+/**
+ *
+ */
 public class AppEngineFlexiblePluginTest {
 
   @Rule
@@ -56,10 +57,9 @@ public class AppEngineFlexiblePluginTest {
         .withArguments("gcpAppDeploy", "--dry-run")
         .build();
 
-    final List<String> expected = Arrays.asList(":gcpAppStage", ":gcpAppDeploy");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult, expected));
-
-    final List<String> unexpected = Collections.singletonList(":explodeWar");
-    Assert.assertEquals(Collections.EMPTY_LIST, BuildResultFilter.extractTasks(buildResult, unexpected));
+    final List<String> expected = Arrays
+        .asList(":compileJava", ":processResources", ":classes", ":war", ":assemble",
+            ":gcpAppStage", ":gcpAppDeploy");
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 }

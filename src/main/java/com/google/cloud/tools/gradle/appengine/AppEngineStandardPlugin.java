@@ -30,6 +30,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.War;
 import org.gradle.model.Defaults;
@@ -79,6 +80,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             explodeWarTask
                 .setExplodedAppDirectory(new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME));
             explodeWarTask.dependsOn(warTask);
+            project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(explodeWarTask);
             project.afterEvaluate(new Action<Project>() {
               @Override
               public void execute(Project project) {
@@ -124,7 +126,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           stageTask.setStagingConfig(app.getStage());
           stageTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          stageTask.dependsOn(EXPLODE_WAR_TASK_NAME);
+          stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
     }
@@ -138,7 +140,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           runTask.setRunConfig(app.getRun());
           runTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          runTask.dependsOn(STAGE_TASK_NAME);
+          runTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
 
@@ -148,7 +150,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           startTask.setRunConfig(app.getRun());
           startTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          startTask.dependsOn(STAGE_TASK_NAME);
+          startTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
 

@@ -140,7 +140,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           runTask.setRunConfig(app.getRun());
           runTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          runTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+          runTask.dependsOn(STAGE_TASK_NAME);
         }
       });
 
@@ -150,7 +150,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           startTask.setRunConfig(app.getRun());
           startTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          startTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+          startTask.dependsOn(STAGE_TASK_NAME);
         }
       });
 

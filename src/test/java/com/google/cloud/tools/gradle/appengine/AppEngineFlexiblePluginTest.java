@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Test App Engine Flexible Plugin configuration
  */
 public class AppEngineFlexiblePluginTest {
 

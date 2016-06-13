@@ -32,6 +32,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Test App Engine Standard Plugin configuration
+ */
 public class AppEngineStandardPluginTest {
 
   @Rule

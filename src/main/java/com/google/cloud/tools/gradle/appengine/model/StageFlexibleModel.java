@@ -36,8 +36,8 @@ public interface StageFlexibleModel extends StageFlexibleConfiguration {
   @Override
   @Input
   @Optional
-  File getDockerfile();
-  void setDockerfile(File dockerfile);
+  File getDockerDirectory();
+  void setDockerDirectory(File dockerDirectory);
 
   @Override
   @InputFile

@@ -98,7 +98,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       app.getDeploy().setDeployables(deployables);
 
       // TODO : look up using the convention for sourcesets here?
-      app.getStage().setDockerfile(new File(project.getProjectDir(), "src/main/docker/Dockerfile"));
+      app.getStage().setDockerDirectory(new File(project.getProjectDir(), "src/main/docker"));
       app.getStage().setAppYaml(new File(project.getProjectDir(), "src/main/appengine/app.yaml"));
     }
 

@@ -23,6 +23,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
 import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
+import com.google.cloud.tools.gradle.appengine.task.io.FileOutputLineListener;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -57,25 +58,12 @@ public class DevAppServerStartTask extends DefaultTask {
 
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
         .async(true)
-        .runDevAppServerWait(10)
+        .runDevAppServerWait(20)
         .addStdErrLineListener(lineListener)
         .addStdOutLineListener(lineListener)
         .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
-  }
-
-  private static class FileOutputLineListener implements ProcessOutputLineListener {
-    final PrintStream logFilePrinter;
-
-    public FileOutputLineListener(File logFile) throws IOException {
-      logFilePrinter = new PrintStream(logFile);
-    }
-
-    @Override
-    public void onOutputLine(String line) {
-      logFilePrinter.println(line);
-    }
   }
 
 }

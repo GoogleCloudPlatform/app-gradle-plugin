@@ -21,10 +21,13 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
 import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.DeployModel;
+import com.google.cloud.tools.gradle.appengine.task.io.GradleLoggerOutputListener;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.TaskAction;
 
 /**
@@ -45,7 +48,12 @@ public class DeployTask extends DefaultTask {
 
   @TaskAction
   public void deployAction() throws AppEngineException {
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder().build();
+    ProcessOutputLineListener listener =
+        new GradleLoggerOutputListener(getLogger(), LogLevel.LIFECYCLE);
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
+        .addStdOutLineListener(listener)
+        .addStdErrLineListener(listener)
+        .build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deploy(deployConfig);
   }

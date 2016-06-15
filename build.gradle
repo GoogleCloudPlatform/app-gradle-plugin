@@ -12,7 +12,7 @@ buildscript {
 }
 
 apply from: 'scripts/publishing.gradle'
-apply from: 'scripts/test-jar-publisher.gradle'
+apply from: 'scripts/integTest.gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7

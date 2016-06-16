@@ -23,7 +23,7 @@ import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 
 /**
- * Created by appu on 6/15/16.
+ * Output listener that writes to a gradle logger
  */
 public class GradleLoggerOutputListener implements ProcessOutputLineListener {
 

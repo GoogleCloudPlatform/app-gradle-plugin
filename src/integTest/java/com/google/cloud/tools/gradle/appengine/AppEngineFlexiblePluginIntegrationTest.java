@@ -27,8 +27,6 @@ import org.gradle.testkit.runner.GradleRunner;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -39,62 +37,25 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * End to end tests for standard projects
+ * End to end tests for flexible environment projects
  */
-public class AppEngineStandardPluginIntegTest {
-
-  @BeforeClass
-  public static void assertEnvironment() {
-    Assert.assertThat(System.getProperty("java.version"), CoreMatchers.startsWith("1.7"));
-  }
+public class AppEngineFlexiblePluginIntegrationTest {
 
   @Rule
-  public Timeout globalTimeout = Timeout.seconds(60);
+  public Timeout globalTimeout = Timeout.seconds(600);
 
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   @Before
   public void setUp() throws IOException {
-    FileUtils.copyDirectory(new File("src/integTest/resources/projects/standard-project"),
+    FileUtils.copyDirectory(new File("src/integTest/resources/projects/flexible-project"),
         testProjectDir.getRoot());
-  }
-
-  @Ignore
-  @Test
-  public void testDevAppServer_sync() {
-    // TODO : write test for devapp server running in synchronous mode
-  }
-
-  /**
-   * If this test is failing, make sure you've set JAVA_HOME=some-jdk7, it might have something
-   * to do with the way dev_appserver.py is launching java.
-   */
-  @Test
-  public void testDevAppServer_async() throws InterruptedException, IOException {
-    GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("gcpAppStart")
-        .build();
-
-    AssertConnection.assertResponse("http://localhost:8080", 200,
-        "Hello from the App Engine Standard project.");
-
-    GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("gcpAppStop")
-        .build();
-
-    // give the server a couple seconds to come down
-    Thread.sleep(8000);
-
-    AssertConnection.assertUnreachable("http://localhost:8080");
   }
 
   @Test
   public void testDeploy() throws ProcessRunnerException {
+
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
@@ -103,11 +64,11 @@ public class AppEngineStandardPluginIntegTest {
         .build();
 
     Assert.assertThat(buildResult.getOutput(),
-        CoreMatchers.containsString("Deployed service [standard-project]"));
+        CoreMatchers.containsString("Deployed service [flexible-project]"));
 
     CloudSdk cloudSdk = new CloudSdk.Builder()
         .exitListener(new NonZeroExceptionExitListener())
         .build();
-    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "standard-project"));
+    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "flexible-project"));
   }
 }

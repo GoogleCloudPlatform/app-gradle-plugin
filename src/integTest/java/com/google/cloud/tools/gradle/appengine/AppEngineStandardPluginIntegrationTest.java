@@ -49,7 +49,7 @@ public class AppEngineStandardPluginIntegrationTest {
   }
 
   @Rule
-  public Timeout globalTimeout = Timeout.seconds(60);
+  public Timeout globalTimeout = Timeout.seconds(180);
 
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder();

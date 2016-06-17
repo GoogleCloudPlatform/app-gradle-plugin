@@ -42,7 +42,7 @@ import java.util.Arrays;
 public class AppEngineFlexiblePluginIntegrationTest {
 
   @Rule
-  public Timeout globalTimeout = Timeout.seconds(600);
+  public Timeout globalTimeout = Timeout.seconds(900);
 
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder();

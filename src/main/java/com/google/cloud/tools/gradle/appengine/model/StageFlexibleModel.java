@@ -51,6 +51,6 @@ public interface StageFlexibleModel extends StageFlexibleConfiguration {
 
   @Override
   @InputFile
-  File getAppYaml();
-  void setAppYaml(File appYaml);
+  File getAppEngineDirectory();
+  void setAppEngineDirectory(File appEngineDirectory);
 }

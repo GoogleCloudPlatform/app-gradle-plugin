@@ -60,7 +60,7 @@ public class AppEngineFlexiblePluginIntegrationTest {
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
         .withDebug(true)
-        .withArguments("gcpAppDeploy")
+        .withArguments("appengineDeploy")
         .build();
 
     Assert.assertThat(buildResult.getOutput(),

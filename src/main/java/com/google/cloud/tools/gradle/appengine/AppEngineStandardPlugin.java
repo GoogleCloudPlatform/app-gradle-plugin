@@ -53,11 +53,11 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine standard environment";
 
   private static final String EXPLODE_WAR_TASK_NAME = "explodeWar";
-  private static final String STAGE_TASK_NAME = "gcpAppStage";
-  private static final String RUN_TASK_NAME = "gcpAppRun";
-  private static final String START_TASK_NAME = "gcpAppStart";
-  private static final String STOP_TASK_NAME = "gcpAppStop";
-  private static final String DEPLOY_TASK_NAME = "gcpAppDeploy";
+  private static final String STAGE_TASK_NAME = "appengineStage";
+  private static final String RUN_TASK_NAME = "appengineRun";
+  private static final String START_TASK_NAME = "appengineStart";
+  private static final String STOP_TASK_NAME = "appengineStop";
+  private static final String DEPLOY_TASK_NAME = "appengineDeploy";
 
   private static final String EXPLODED_APP_DIR_NAME = "exploded-app";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
@@ -97,7 +97,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   public static class PluginRules extends RuleSource {
 
     @Model
-    public void gcpApp(AppEngineStandardModel app) {
+    public void appengine(AppEngineStandardModel app) {
     }
 
     @Defaults

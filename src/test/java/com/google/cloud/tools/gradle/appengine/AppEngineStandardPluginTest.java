@@ -58,12 +58,12 @@ public class AppEngineStandardPluginTest {
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppDeploy", "--dry-run")
+        .withArguments("appengineDeploy", "--dry-run")
         .build();
 
     final List<String> expected = Arrays
         .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
-            ":gcpAppStage", ":gcpAppDeploy");
+            ":appengineStage", ":appengineDeploy");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
@@ -73,12 +73,12 @@ public class AppEngineStandardPluginTest {
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppRun", "--dry-run")
+        .withArguments("appengineRun", "--dry-run")
         .build();
 
     final List<String> expected = Arrays
         .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
-            ":gcpAppStage", ":gcpAppRun");
+            ":appengineStage", ":appengineRun");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
@@ -88,12 +88,12 @@ public class AppEngineStandardPluginTest {
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppStart", "--dry-run")
+        .withArguments("appengineStart", "--dry-run")
         .build();
 
     final List<String> expected = Arrays
         .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
-            ":gcpAppStage", ":gcpAppStart");
+            ":appengineStage", ":appengineStart");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
 
@@ -104,10 +104,10 @@ public class AppEngineStandardPluginTest {
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppStop", "--dry-run")
+        .withArguments("appengineStop", "--dry-run")
         .build();
 
-    final List<String> expected = Collections.singletonList(":gcpAppStop");
+    final List<String> expected = Collections.singletonList(":appengineStop");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
 

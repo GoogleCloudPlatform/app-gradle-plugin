@@ -75,7 +75,7 @@ public class AppEngineStandardPluginIntegrationTest {
     GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppStart")
+        .withArguments("appengineStart")
         .build();
 
     AssertConnection.assertResponse("http://localhost:8080", 200,
@@ -84,7 +84,7 @@ public class AppEngineStandardPluginIntegrationTest {
     GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppStop")
+        .withArguments("appengineStop")
         .build();
 
     // give the server a couple seconds to come down
@@ -99,7 +99,7 @@ public class AppEngineStandardPluginIntegrationTest {
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
         .withDebug(true)
-        .withArguments("gcpAppDeploy")
+        .withArguments("appengineDeploy")
         .build();
 
     Assert.assertThat(buildResult.getOutput(),

@@ -54,12 +54,12 @@ public class AppEngineFlexiblePluginTest {
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("gcpAppDeploy", "--dry-run")
+        .withArguments("appengineDeploy", "--dry-run")
         .build();
 
     final List<String> expected = Arrays
         .asList(":compileJava", ":processResources", ":classes", ":war", ":assemble",
-            ":gcpAppStage", ":gcpAppDeploy");
+            ":appengineStage", ":appengineDeploy");
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 }

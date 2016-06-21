@@ -30,7 +30,7 @@ import java.nio.file.Path;
  * This is a getting-started plugin that auto detects the user's configuration
  * and assigns it a standard or flexible environment build
  */
-public class AppPlugin implements Plugin<Project> {
+public class AppEnginePlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {

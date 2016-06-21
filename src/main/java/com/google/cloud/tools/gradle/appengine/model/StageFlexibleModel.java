@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.model;
 import com.google.cloud.tools.appengine.api.deploy.StageFlexibleConfiguration;
 
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
@@ -50,7 +51,7 @@ public interface StageFlexibleModel extends StageFlexibleConfiguration {
   void setStagingDirectory(File stagingDirectory);
 
   @Override
-  @InputFile
+  @InputDirectory
   File getAppEngineDirectory();
   void setAppEngineDirectory(File appEngineDirectory);
 }

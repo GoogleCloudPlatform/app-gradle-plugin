@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,5 +81,35 @@ public class AppEngineStandardPluginTest {
             ":gcpAppStage", ":gcpAppRun");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testStart_taskTree() {
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("gcpAppStart", "--dry-run")
+        .build();
+
+    final List<String> expected = Arrays
+        .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":gcpAppStage", ":gcpAppStart");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+
+  }
+
+  @Test
+  public void testStop_taskTree() {
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("gcpAppStop", "--dry-run")
+        .build();
+
+    final List<String> expected = Collections.singletonList(":gcpAppStop");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+
   }
 }

@@ -30,7 +30,7 @@ repositories {
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile ('com.google.cloud.tools:app-tools-lib-for-java:0.1.0-SNAPSHOT') {
+  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.1-SNAPSHOT') {
     changing = true;
   }
 

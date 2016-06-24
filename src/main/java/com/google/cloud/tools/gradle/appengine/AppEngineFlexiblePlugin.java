@@ -115,6 +115,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
         public void execute(StageFlexibleTask stageTask) {
           stageTask.setStagingConfig(app.getStage());
           stageTask.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
+          stageTask.setDescription("Stage an App Engine flexible environment application for deployment");
           stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
@@ -129,6 +130,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
           deployTask.setDeployConfig(app.getDeploy());
           deployTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           deployTask.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
+          deployTask.setDescription("Deploy an App Engine flexible environment application");
           deployTask.dependsOn(STAGE_TASK_NAME);
         }
       });

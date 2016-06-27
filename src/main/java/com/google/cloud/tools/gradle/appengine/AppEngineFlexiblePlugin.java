@@ -99,7 +99,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
       // TODO : look up using the convention for sourcesets here?
       app.getStage().setDockerDirectory(new File(project.getProjectDir(), "src/main/docker"));
-      app.getStage().setAppEngineDirectory(new File(project.getProjectDir(), "src/main/appengine"));
+      app.getStage().setAppYaml(new File(project.getProjectDir(), "src/main/appengine/app.yaml"));
     }
 
     @Mutate

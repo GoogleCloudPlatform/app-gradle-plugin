@@ -30,7 +30,7 @@ repositories {
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.1-SNAPSHOT') {
+  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.2-SNAPSHOT') {
     changing = true;
   }
 

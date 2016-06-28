@@ -126,6 +126,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           stageTask.setStagingConfig(app.getStage());
           stageTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          stageTask.setDescription("Stage an App Engine standard environment application for deployment");
           stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
@@ -140,6 +141,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           runTask.setRunConfig(app.getRun());
           runTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          runTask.setDescription("Run an App Engine standard environment application locally");
           runTask.dependsOn(STAGE_TASK_NAME);
         }
       });
@@ -150,6 +152,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           startTask.setRunConfig(app.getRun());
           startTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          startTask.setDescription("Run an App Engine standard environment application locally in the background");
           startTask.dependsOn(STAGE_TASK_NAME);
         }
       });
@@ -159,6 +162,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         public void execute(DevAppServerStopTask stopTask) {
           stopTask.setRunConfig(app.getRun());
           stopTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          stopTask.setDescription("Stop a locally running App Engine standard environment application");
         }
       });
     }
@@ -172,6 +176,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           deployTask.setDeployConfig(app.getDeploy());
           deployTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
           deployTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          deployTask.setDescription("Deploy an App Engine standard environment application");
           deployTask.dependsOn(STAGE_TASK_NAME);
         }
       });

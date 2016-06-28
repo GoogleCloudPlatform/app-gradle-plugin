@@ -35,7 +35,7 @@ import java.io.File;
 public interface StageFlexibleModel extends StageFlexibleConfiguration {
 
   @Override
-  @Input
+  @InputDirectory
   @Optional
   File getDockerDirectory();
   void setDockerDirectory(File dockerDirectory);

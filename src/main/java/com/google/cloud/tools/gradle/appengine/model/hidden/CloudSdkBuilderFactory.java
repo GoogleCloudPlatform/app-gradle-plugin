@@ -20,21 +20,22 @@ package com.google.cloud.tools.gradle.appengine.model.hidden;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 
+import org.gradle.model.Managed;
+
 import java.io.File;
 
 /**
  * Factory for generating Cloud Sdk Builder with all common configuration
  */
-public class CloudSdkBuilderFactory {
-  private final File cloudSdkHome;
+@Managed
+public abstract class CloudSdkBuilderFactory {
 
-  public CloudSdkBuilderFactory(File cloudSdkHome) {
-    this.cloudSdkHome = cloudSdkHome;
-  }
+  public abstract void setCloudSdkHome(File cloudSdkHome);
+  public abstract File getCloudSdkHome();
 
   public CloudSdk.Builder newBuilder() {
     return new CloudSdk.Builder()
-        .sdkPath(cloudSdkHome)
+        .sdkPath(getCloudSdkHome())
         .exitListener(new NonZeroExceptionExitListener())
         .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
         .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion());

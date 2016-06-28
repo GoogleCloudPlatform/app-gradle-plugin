@@ -40,6 +40,7 @@ import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
+import org.gradle.model.internal.core.Hidden;
 
 import java.io.File;
 import java.util.Collections;
@@ -88,6 +89,11 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     public void appengine(AppEngineFlexibleModel app) {
     }
 
+    @Model
+    @Hidden
+    public void cloudSdkBuilderFactory(CloudSdkBuilderFactory factory) {
+    }
+
     @Defaults
     public void setDefaults(AppEngineFlexibleModel app, @Path("buildDir") File buildDir,
         ProjectIdentifier project) {
@@ -103,9 +109,9 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     }
 
     @Mutate
-    public void createCloudSdkBuilderFactory(final AppEngineFlexibleModel app) {
-      app.getTools().setCloudSdkBuilderFactory(
-          new CloudSdkBuilderFactory(app.getTools().getCloudSdkHome()));
+    public void createCloudSdkBuilderFactory(final CloudSdkBuilderFactory factory,
+        final AppEngineFlexibleModel app) {
+      factory.setCloudSdkHome(app.getTools().getCloudSdkHome());
     }
 
     @Mutate
@@ -122,13 +128,14 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     }
 
     @Finalize
-    public void createDeployTask(ModelMap<Task> tasks, final AppEngineFlexibleModel app) {
+    public void createDeployTask(ModelMap<Task> tasks, final AppEngineFlexibleModel app,
+        final CloudSdkBuilderFactory factory) {
 
       tasks.create(DEPLOY_TASK_NAME, DeployTask.class, new Action<DeployTask>() {
         @Override
         public void execute(DeployTask deployTask) {
           deployTask.setDeployConfig(app.getDeploy());
-          deployTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
+          deployTask.setCloudSdkBuilderFactory(factory);
           deployTask.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
           deployTask.setDescription("Deploy an App Engine flexible environment application");
           deployTask.dependsOn(STAGE_TASK_NAME);

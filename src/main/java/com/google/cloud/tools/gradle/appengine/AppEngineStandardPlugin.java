@@ -40,6 +40,7 @@ import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
+import org.gradle.model.internal.core.Hidden;
 
 import java.io.File;
 import java.util.Collections;
@@ -100,6 +101,11 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     public void appengine(AppEngineStandardModel app) {
     }
 
+    @Model
+    @Hidden
+    public void cloudSdkBuilderFactory(CloudSdkBuilderFactory factory) {
+    }
+
     @Defaults
     public void setDefaults(AppEngineStandardModel app, @Path("buildDir") File buildDir) {
       app.getStage().setSourceDirectory(new File(buildDir, EXPLODED_APP_DIR_NAME));
@@ -112,19 +118,20 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Mutate
-    public void createCloudSdkBuilderFactory(final AppEngineStandardModel app) {
-      app.getTools().setCloudSdkBuilderFactory(
-          new CloudSdkBuilderFactory(app.getTools().getCloudSdkHome()));
+    public void createCloudSdkBuilderFactory(final CloudSdkBuilderFactory factory,
+        final AppEngineStandardModel app) {
+      factory.setCloudSdkHome(app.getTools().getCloudSdkHome());
     }
 
     @Mutate
-    public void createStageTask(final ModelMap<Task> tasks, final AppEngineStandardModel app) {
+    public void createStageTask(final ModelMap<Task> tasks, final AppEngineStandardModel app,
+      final CloudSdkBuilderFactory factory) {
 
       tasks.create(STAGE_TASK_NAME, StageStandardTask.class, new Action<StageStandardTask>() {
         @Override
         public void execute(StageStandardTask stageTask) {
           stageTask.setStagingConfig(app.getStage());
-          stageTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
+          stageTask.setCloudSdkBuilderFactory(factory);
           stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           stageTask.setDescription("Stage an App Engine standard environment application for deployment");
           stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
@@ -133,13 +140,14 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Finalize
-    public void createRunTasks(final ModelMap<Task> tasks, final AppEngineStandardModel app) {
+    public void createRunTasks(final ModelMap<Task> tasks, final AppEngineStandardModel app,
+      final CloudSdkBuilderFactory factory) {
 
       tasks.create(RUN_TASK_NAME, DevAppServerRunTask.class, new Action<DevAppServerRunTask>() {
         @Override
         public void execute(DevAppServerRunTask runTask) {
           runTask.setRunConfig(app.getRun());
-          runTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
+          runTask.setCloudSdkBuilderFactory(factory);
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           runTask.setDescription("Run an App Engine standard environment application locally");
           runTask.dependsOn(STAGE_TASK_NAME);
@@ -150,7 +158,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         @Override
         public void execute(DevAppServerStartTask startTask) {
           startTask.setRunConfig(app.getRun());
-          startTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
+          startTask.setCloudSdkBuilderFactory(factory);
           startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           startTask.setDescription("Run an App Engine standard environment application locally in the background");
           startTask.dependsOn(STAGE_TASK_NAME);
@@ -168,13 +176,14 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Finalize
-    public void createDeployTask(final ModelMap<Task> tasks, final AppEngineStandardModel app) {
+    public void createDeployTask(final ModelMap<Task> tasks, final AppEngineStandardModel app,
+      final CloudSdkBuilderFactory factory) {
 
       tasks.create(DEPLOY_TASK_NAME, DeployTask.class, new Action<DeployTask>() {
         @Override
         public void execute(DeployTask deployTask) {
           deployTask.setDeployConfig(app.getDeploy());
-          deployTask.setCloudSdkBuilderFactory(app.getTools().getCloudSdkBuilderFactory());
+          deployTask.setCloudSdkBuilderFactory(factory);
           deployTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           deployTask.setDescription("Deploy an App Engine standard environment application");
           deployTask.dependsOn(STAGE_TASK_NAME);

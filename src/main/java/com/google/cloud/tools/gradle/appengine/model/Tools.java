@@ -34,9 +34,4 @@ public interface Tools {
   void setCloudSdkHome(File cloudSdkHome);
   File getCloudSdkHome();
 
-  @Hidden
-  @Unmanaged
-  CloudSdkBuilderFactory getCloudSdkBuilderFactory();
-  void setCloudSdkBuilderFactory(CloudSdkBuilderFactory factory);
-
 }

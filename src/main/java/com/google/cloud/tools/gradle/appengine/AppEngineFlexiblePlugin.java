@@ -104,7 +104,10 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       app.getDeploy().setDeployables(deployables);
 
       // TODO : look up using the convention for sourcesets here?
-      app.getStage().setDockerDirectory(new File(project.getProjectDir(), "src/main/docker"));
+      File dockerDirectory = new File(project.getProjectDir(), "src/main/docker");
+      if (dockerDirectory.exists()) {
+        app.getStage().setDockerDirectory(dockerDirectory);
+      }
       app.getStage().setAppEngineDirectory(new File(project.getProjectDir(), "src/main/appengine"));
     }
 

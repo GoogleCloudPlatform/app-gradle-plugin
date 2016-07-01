@@ -29,6 +29,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.internal.project.ProjectIdentifier;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.Jar;
@@ -56,22 +57,22 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
-  private static File archivePathFromProjectScope = null;
-
   @Override
   public void apply(Project project) {
-    // pretty poor form here - sharing data via a static variable, but we need this hack to
-    // find archives until jar/war RuleSource plugins are ready
+    // Share data from the project space to model space via extensions
+    final ProjectModelExtension projectModelExtension = project.getExtensions()
+        .create("_internalAppengineProjectModelSharingExtension", ProjectModelExtension.class);
+
     project.afterEvaluate(new Action<Project>() {
       @Override
       public void execute(Project project) {
         if (project.getPlugins().hasPlugin(WarPlugin.class)) {
           War war = (War) project.getProperties().get("war");
-          archivePathFromProjectScope = war.getArchivePath();
+          projectModelExtension.archive = war.getArchivePath();
         }
         else if (project.getPlugins().hasPlugin(JavaPlugin.class)){
           Jar jar = (Jar) project.getProperties().get("jar");
-          archivePathFromProjectScope = jar.getArchivePath();
+          projectModelExtension.archive = jar.getArchivePath();
         }
         else {
           throw new GradleException("Could not find JAR or WAR configuration");
@@ -96,8 +97,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
     @Defaults
     public void setDefaults(AppEngineFlexibleModel app, @Path("buildDir") File buildDir,
-        ProjectIdentifier project) {
-      app.getStage().setArtifact(archivePathFromProjectScope);
+        ProjectIdentifier project, ExtensionContainer extensionContainer) {
+      app.getStage().setArtifact(extensionContainer.getByType(ProjectModelExtension.class).archive);
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
       List<File> deployables = Collections
           .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
@@ -145,5 +146,10 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
         }
       });
     }
+  }
+
+  // Extension to share data from Project space to Model space
+  public static class ProjectModelExtension {
+    public File archive;
   }
 }

@@ -24,8 +24,10 @@ import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListen
 import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.RunModel;
 import com.google.cloud.tools.gradle.appengine.task.io.FileOutputLineListener;
+import com.google.cloud.tools.gradle.appengine.task.io.GradleLoggerOutputListener;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -50,17 +52,14 @@ public class DevAppServerStartTask extends DefaultTask {
 
   @TaskAction
   public void startAction() throws AppEngineException, IOException {
-    File logFile = File
-        .createTempFile("server", "log", new File(getProject().getBuildDir(), "tmp"));
-    getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
-
-    ProcessOutputLineListener lineListener = new FileOutputLineListener(logFile);
+    ProcessOutputLineListener listener =
+        new GradleLoggerOutputListener(getLogger(), LogLevel.LIFECYCLE);
 
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
         .async(true)
         .runDevAppServerWait(20)
-        .addStdErrLineListener(lineListener)
-        .addStdOutLineListener(lineListener)
+        .addStdErrLineListener(listener)
+        .addStdOutLineListener(listener)
         .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);

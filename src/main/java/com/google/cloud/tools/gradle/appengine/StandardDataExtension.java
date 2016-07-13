@@ -20,7 +20,7 @@ package com.google.cloud.tools.gradle.appengine;
 import org.gradle.api.JavaVersion;
 
 /**
- * Created by appu on 7/11/16.
+ * Extension to share data from project space to model space for the {@link AppEngineStandardPlugin}
  */
 public class StandardDataExtension {
 

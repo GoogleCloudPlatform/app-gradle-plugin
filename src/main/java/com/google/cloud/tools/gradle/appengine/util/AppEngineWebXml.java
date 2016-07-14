@@ -37,13 +37,13 @@ import javax.xml.xpath.XPathFactory;
  */
 public class AppEngineWebXml {
 
-  private final Document parsed;
+  private final Document document;
 
   private AppEngineWebXml(File appengineWebXml) {
     try {
-      parsed = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(appengineWebXml);
+      document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(appengineWebXml);
     } catch (SAXException | IOException | ParserConfigurationException e) {
-      throw new GradleException("Failed to parse appengine-web.xml");
+      throw new GradleException("Failed to parse appengine-web.xml", e);
     }
   }
 
@@ -55,9 +55,9 @@ public class AppEngineWebXml {
     try {
       XPath xpath = XPathFactory.newInstance().newXPath();
       String expression = "/appengine-web-app/vm/text()='true'";
-      return (Boolean) xpath.evaluate(expression, parsed, XPathConstants.BOOLEAN);
+      return (Boolean) xpath.evaluate(expression, document, XPathConstants.BOOLEAN);
     } catch (XPathExpressionException e) {
-      throw new GradleException("XPath evaluation failed on appengine-web.xml");
+      throw new GradleException("XPath evaluation failed on appengine-web.xml", e);
     }
   }
 

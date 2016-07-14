@@ -29,6 +29,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.internal.project.ProjectIdentifier;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.Jar;
@@ -56,22 +57,27 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
-  private static File archivePathFromProjectScope = null;
-
   @Override
   public void apply(Project project) {
-    // pretty poor form here - sharing data via a static variable, but we need this hack to
-    // find archives until jar/war RuleSource plugins are ready
+
+    // Create an extension to share data from project space to model space
+    final FlexibleDataExtension projectData = project.getExtensions()
+        .create("_internalProjectData", FlexibleDataExtension.class);
+
+    configureProjectArchive(project, projectData);
+  }
+
+  private void configureProjectArchive(Project project, final FlexibleDataExtension projectData) {
     project.afterEvaluate(new Action<Project>() {
       @Override
       public void execute(Project project) {
         if (project.getPlugins().hasPlugin(WarPlugin.class)) {
           War war = (War) project.getProperties().get("war");
-          archivePathFromProjectScope = war.getArchivePath();
+          projectData.setArchive(war.getArchivePath());
         }
         else if (project.getPlugins().hasPlugin(JavaPlugin.class)){
           Jar jar = (Jar) project.getProperties().get("jar");
-          archivePathFromProjectScope = jar.getArchivePath();
+          projectData.setArchive(jar.getArchivePath());
         }
         else {
           throw new GradleException("Could not find JAR or WAR configuration");
@@ -96,8 +102,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
     @Defaults
     public void setDefaults(AppEngineFlexibleModel app, @Path("buildDir") File buildDir,
-        ProjectIdentifier project) {
-      app.getStage().setArtifact(archivePathFromProjectScope);
+        ProjectIdentifier project, ExtensionContainer extensions) {
+      app.getStage().setArtifact(extensions.getByType(FlexibleDataExtension.class).getArchive());
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
       List<File> deployables = Collections
           .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));

@@ -17,21 +17,26 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardModel;
+import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStopTask;
 import com.google.cloud.tools.gradle.appengine.task.ExplodeWarTask;
 import com.google.cloud.tools.gradle.appengine.task.StageStandardTask;
+import com.google.cloud.tools.gradle.appengine.util.AppEngineWebXml;
 
 import org.gradle.api.Action;
+import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.plugins.ExtensionContainer;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPlugin;
+import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 import org.gradle.model.Defaults;
 import org.gradle.model.Finalize;
@@ -67,29 +72,35 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   public void apply(Project project) {
     project.getPluginManager().apply(WarPlugin.class);
 
-    // We can't configure war tasks in model space because the War plugin is not a RuleSource plugin
-    // so do it here for now till Gradle updates all the core plugins.
-    createExplodedWarTask(project);
+    // Create an extension to share data from project space to model space
+    final StandardDataExtension projectData = project.getExtensions()
+        .create("_internalProjectData", StandardDataExtension.class);
+
+    configureJavaRuntimeCompatibility(project, projectData);
   }
 
-  private void createExplodedWarTask(final Project project) {
-    final War warTask = (War) project.getTasks().getByName(WarPlugin.WAR_TASK_NAME);
-    project.getTasks()
-        .create(EXPLODE_WAR_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
-          @Override
-          public void execute(final ExplodeWarTask explodeWarTask) {
-            explodeWarTask
-                .setExplodedAppDirectory(new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME));
-            explodeWarTask.dependsOn(warTask);
-            project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(explodeWarTask);
-            project.afterEvaluate(new Action<Project>() {
-              @Override
-              public void execute(Project project) {
-                explodeWarTask.setWarFile(warTask.getArchivePath());
-              }
-            });
-          }
-        });
+  private void configureJavaRuntimeCompatibility(final Project project,
+      final StandardDataExtension projectData) {
+    project.afterEvaluate(new Action<Project>(){
+      @Override
+      public void execute(Project project){
+        JavaPluginConvention javaConvention = project.getConvention()
+            .getPlugin(JavaPluginConvention.class);
+        JavaVersion javaVersion = javaConvention.getTargetCompatibility();
+        projectData.setJavaVersion(javaVersion);
+      }
+    });
+
+    project.afterEvaluate(new Action<Project>() {
+      @Override
+      public void execute(Project project) {
+        WarPluginConvention warConfig = project.getConvention()
+            .getPlugin(WarPluginConvention.class);
+        File appengineWebXml = new File(warConfig.getWebAppDir(), "WEB-INF/appengine-web.xml");
+        projectData.setAppengineWebXml(appengineWebXml);
+
+      }
+    });
   }
 
   /**
@@ -107,7 +118,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Defaults
-    public void setDefaults(AppEngineStandardModel app, @Path("buildDir") File buildDir) {
+    public void setDefaults(AppEngineStandardModel app, @Path("buildDir") File buildDir,
+        ExtensionContainer extension) {
       app.getStage().setSourceDirectory(new File(buildDir, EXPLODED_APP_DIR_NAME));
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
 
@@ -115,6 +127,13 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
       app.getRun().setAppYamls(deployables);
       app.getDeploy().setDeployables(deployables);
+
+      StandardDataExtension projectData = extension.getByType(StandardDataExtension.class);
+      if (projectData.getJavaVersion().compareTo(JavaVersion.VERSION_1_8) >= 0 &&
+          AppEngineWebXml.parse(projectData.getAppengineWebXml()).isVm()) {
+        app.getStage().setRuntime("java");
+      }
+
     }
 
     @Mutate
@@ -124,6 +143,24 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     }
 
     @Mutate
+    public void createExplodedWarTask(final ModelMap<Task> tasks,
+        @Path("tasks.war") final War warTask, @Path("buildDir") final File buildDir) {
+
+      tasks.create(EXPLODE_WAR_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
+        @Override
+        public void execute(ExplodeWarTask explodeWarTask) {
+          explodeWarTask.setExplodedAppDirectory(new File(buildDir, EXPLODED_APP_DIR_NAME));
+          explodeWarTask.dependsOn(warTask);
+          explodeWarTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+          explodeWarTask.setDescription("Explode a war into a directory");
+          explodeWarTask.setWarFile(warTask.getArchivePath());
+        }
+      });
+      tasks.get(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);
+
+    }
+
+    @Finalize
     public void createStageTask(final ModelMap<Task> tasks, final AppEngineStandardModel app,
       final CloudSdkBuilderFactory factory) {
 

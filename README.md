@@ -42,7 +42,7 @@ buildscript {
 
 You can now run commands like `./gradlew appengineDeploy` in the root folder of your Java application.
 
-# Supported taks
+# Supported tasks
 - appengineStage
 - appengineDeploy
 

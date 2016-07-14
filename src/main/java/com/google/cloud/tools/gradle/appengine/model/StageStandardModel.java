@@ -98,4 +98,9 @@ public interface StageStandardModel extends StageStandardConfiguration {
   Boolean getDisableJarJsps();
   void setDisableJarJsps(Boolean disableJarJsps);
 
+  @Override
+  @Input
+  @Optional
+  String getRuntime();
+  void setRuntime(String runtime);
 }

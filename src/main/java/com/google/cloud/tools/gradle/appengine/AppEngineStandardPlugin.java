@@ -17,8 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardModel;
+import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
@@ -28,7 +28,6 @@ import com.google.cloud.tools.gradle.appengine.task.StageStandardTask;
 import com.google.cloud.tools.gradle.appengine.util.AppEngineWebXml;
 
 import org.gradle.api.Action;
-import org.gradle.api.GradleException;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -47,22 +46,10 @@ import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
 import org.gradle.model.internal.core.Hidden;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 /**
  * Plugin definition for App Engine standard environments

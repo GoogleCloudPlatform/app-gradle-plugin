@@ -44,6 +44,7 @@ public class AppEngineWebXmlTest {
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>false</vm>")).isVm());
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>TRUE</vm>")).isVm());
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>potato</vm>")).isVm());
+    Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm></vm>")).isVm());
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("")).isVm());
   }
 

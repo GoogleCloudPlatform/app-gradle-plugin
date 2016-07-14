@@ -25,8 +25,10 @@ import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStopTask;
 import com.google.cloud.tools.gradle.appengine.task.ExplodeWarTask;
 import com.google.cloud.tools.gradle.appengine.task.StageStandardTask;
+import com.google.cloud.tools.gradle.appengine.util.AppEngineWebXml;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -35,6 +37,7 @@ import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPlugin;
+import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 import org.gradle.model.Defaults;
 import org.gradle.model.Finalize;
@@ -44,10 +47,22 @@ import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
 import org.gradle.model.internal.core.Hidden;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * Plugin definition for App Engine standard environments
@@ -74,10 +89,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     final StandardDataExtension projectData = project.getExtensions()
         .create("_internalProjectData", StandardDataExtension.class);
 
-    configureTargetCompatibility(project, projectData);
+    configureJavaRuntimeCompatibility(project, projectData);
   }
 
-  private void configureTargetCompatibility(final Project project,
+  private void configureJavaRuntimeCompatibility(final Project project,
       final StandardDataExtension projectData) {
     project.afterEvaluate(new Action<Project>(){
       @Override
@@ -86,6 +101,17 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             .getPlugin(JavaPluginConvention.class);
         JavaVersion javaVersion = javaConvention.getTargetCompatibility();
         projectData.setJavaVersion(javaVersion);
+      }
+    });
+
+    project.afterEvaluate(new Action<Project>() {
+      @Override
+      public void execute(Project project) {
+        WarPluginConvention warConfig = project.getConvention()
+            .getPlugin(WarPluginConvention.class);
+        File appengineWebXml = new File(warConfig.getWebAppDir(), "WEB-INF/appengine-web.xml");
+        projectData.setAppengineWebXml(appengineWebXml);
+
       }
     });
   }
@@ -116,9 +142,11 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
       app.getDeploy().setDeployables(deployables);
 
       StandardDataExtension projectData = extension.getByType(StandardDataExtension.class);
-      if (projectData.getJavaVersion().compareTo(JavaVersion.VERSION_1_8) >= 0) {
+      if (projectData.getJavaVersion().compareTo(JavaVersion.VERSION_1_8) >= 0 &&
+          AppEngineWebXml.parse(projectData.getAppengineWebXml()).isVm()) {
         app.getStage().setRuntime("java");
       }
+
     }
 
     @Mutate

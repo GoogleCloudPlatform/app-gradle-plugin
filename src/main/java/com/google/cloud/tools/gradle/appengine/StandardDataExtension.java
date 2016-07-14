@@ -19,12 +19,15 @@ package com.google.cloud.tools.gradle.appengine;
 
 import org.gradle.api.JavaVersion;
 
+import java.io.File;
+
 /**
  * Extension to share data from project space to model space for the {@link AppEngineStandardPlugin}
  */
 public class StandardDataExtension {
 
   private JavaVersion javaVersion;
+  private File appengineWebXml;
 
   public JavaVersion getJavaVersion() {
     return javaVersion;
@@ -32,5 +35,13 @@ public class StandardDataExtension {
 
   public void setJavaVersion(JavaVersion javaVersion) {
     this.javaVersion = javaVersion;
+  }
+
+  public File getAppengineWebXml() {
+    return appengineWebXml;
+  }
+
+  public void setAppengineWebXml(File appengineWebXml) {
+    this.appengineWebXml = appengineWebXml;
   }
 }

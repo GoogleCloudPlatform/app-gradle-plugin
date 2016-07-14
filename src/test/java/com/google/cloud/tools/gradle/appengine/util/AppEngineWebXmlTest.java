@@ -43,7 +43,7 @@ public class AppEngineWebXmlTest {
   public void testIsVm_false() throws IOException {
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>false</vm>")).isVm());
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>TRUE</vm>")).isVm());
-    Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>potato</vm>")).isVm());
+    Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm>junk</vm>")).isVm());
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("<vm></vm>")).isVm());
     Assert.assertFalse(AppEngineWebXml.parse(createAppEngineWebXml("")).isVm());
   }

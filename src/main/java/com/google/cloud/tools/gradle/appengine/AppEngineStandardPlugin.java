@@ -124,7 +124,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
 
       List<File> deployables = Collections
-          .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
+          .singletonList(new File(buildDir, EXPLODED_APP_DIR_NAME));
       app.getRun().setAppYamls(deployables);
       app.getDeploy().setDeployables(deployables);
 
@@ -187,7 +187,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           runTask.setCloudSdkBuilderFactory(factory);
           runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           runTask.setDescription("Run an App Engine standard environment application locally");
-          runTask.dependsOn(STAGE_TASK_NAME);
+          runTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
 
@@ -198,7 +198,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           startTask.setCloudSdkBuilderFactory(factory);
           startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
           startTask.setDescription("Run an App Engine standard environment application locally in the background");
-          startTask.dependsOn(STAGE_TASK_NAME);
+          startTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
         }
       });
 

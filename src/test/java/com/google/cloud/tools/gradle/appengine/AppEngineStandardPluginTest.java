@@ -54,7 +54,7 @@ public class AppEngineStandardPluginTest {
     Path webInf = testProjectDir.getRoot().toPath().resolve("src/main/webapp/WEB-INF");
     Files.createDirectories(webInf);
     File appengineWebXml = Files.createFile(webInf.resolve("appengine-web.xml")).toFile();
-    com.google.common.io.Files.append("<appengine-web-app/>", appengineWebXml, Charsets.UTF_8);
+    Files.write(appengineWebXml.toPath(), "<appengine-web-app/>".getBytes(Charsets.UTF_8));
   }
 
   @Test

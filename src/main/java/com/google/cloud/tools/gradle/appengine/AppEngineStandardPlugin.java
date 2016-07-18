@@ -163,11 +163,12 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
     @Finalize
     public void configureDevAppServerJava8RunFlag(final AppEngineStandardModel app) {
-      List<String> jvmFlags = app.getRun().getJvmFlags();
-      jvmFlags = (jvmFlags == null) ? Lists.<String>newArrayList() : jvmFlags;
-      jvmFlags.add("-Dappengine.user.timezone=UTC");
-      app.getRun().setJvmFlags(jvmFlags);
-      System.out.println(app.getRun().getJvmFlags());
+      if (JavaVersion.current().compareTo(JavaVersion.VERSION_1_8) >= 0) {
+        List<String> jvmFlags = app.getRun().getJvmFlags();
+        jvmFlags = (jvmFlags == null) ? Lists.<String>newArrayList() : jvmFlags;
+        jvmFlags.add("-Dappengine.user.timezone=UTC");
+        app.getRun().setJvmFlags(jvmFlags);
+      }
     }
 
     @Finalize

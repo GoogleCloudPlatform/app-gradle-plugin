@@ -26,6 +26,7 @@ import com.google.cloud.tools.gradle.appengine.task.DevAppServerStopTask;
 import com.google.cloud.tools.gradle.appengine.task.ExplodeWarTask;
 import com.google.cloud.tools.gradle.appengine.task.StageStandardTask;
 import com.google.cloud.tools.gradle.appengine.util.AppEngineWebXml;
+import com.google.common.collect.Lists;
 
 import org.gradle.api.Action;
 import org.gradle.api.JavaVersion;
@@ -158,6 +159,15 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
       });
       tasks.get(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);
 
+    }
+
+    @Finalize
+    public void configureDevAppServerJava8RunFlag(final AppEngineStandardModel app) {
+      List<String> jvmFlags = app.getRun().getJvmFlags();
+      jvmFlags = (jvmFlags == null) ? Lists.<String>newArrayList() : jvmFlags;
+      jvmFlags.add("-Dappengine.user.timezone=UTC");
+      app.getRun().setJvmFlags(jvmFlags);
+      System.out.println(app.getRun().getJvmFlags());
     }
 
     @Finalize

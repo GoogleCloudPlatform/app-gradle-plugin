@@ -17,6 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.common.base.Charsets;
+
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.Assert;
@@ -25,6 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -50,7 +53,8 @@ public class AppEngineStandardPluginTest {
 
     Path webInf = testProjectDir.getRoot().toPath().resolve("src/main/webapp/WEB-INF");
     Files.createDirectories(webInf);
-    Files.createFile(webInf.resolve("appengine-web.xml"));
+    File appengineWebXml = Files.createFile(webInf.resolve("appengine-web.xml")).toFile();
+    Files.write(appengineWebXml.toPath(), "<appengine-web-app/>".getBytes(Charsets.UTF_8));
   }
 
   @Test
@@ -78,7 +82,7 @@ public class AppEngineStandardPluginTest {
 
     final List<String> expected = Arrays
         .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
-            ":appengineStage", ":appengineRun");
+            ":appengineRun");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
@@ -93,7 +97,7 @@ public class AppEngineStandardPluginTest {
 
     final List<String> expected = Arrays
         .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
-            ":appengineStage", ":appengineStart");
+            ":appengineStart");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
 

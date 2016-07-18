@@ -35,7 +35,7 @@ public abstract class CloudSdkBuilderFactory {
 
   public CloudSdk.Builder newBuilder() {
     return new CloudSdk.Builder()
-        .sdkPath(getCloudSdkHome())
+        .sdkPath(getCloudSdkHome() != null ? getCloudSdkHome().toPath() : null)
         .exitListener(new NonZeroExceptionExitListener())
         .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
         .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion());

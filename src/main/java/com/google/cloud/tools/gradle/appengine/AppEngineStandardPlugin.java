@@ -124,9 +124,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
       app.getStage().setSourceDirectory(new File(buildDir, EXPLODED_APP_DIR_NAME));
       app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
 
+      List<File> runnables = Collections.singletonList(new File(buildDir, EXPLODED_APP_DIR_NAME));
+      app.getRun().setAppYamls(runnables);
       List<File> deployables = Collections
-          .singletonList(new File(buildDir, EXPLODED_APP_DIR_NAME));
-      app.getRun().setAppYamls(deployables);
+          .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
       app.getDeploy().setDeployables(deployables);
 
       StandardDataExtension projectData = extension.getByType(StandardDataExtension.class);

@@ -18,7 +18,7 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 group = 'com.google.cloud.tools'
-version = '0.1.1-SNAPSHOT'
+version = '0.1.2-SNAPSHOT'
 
 repositories {
   mavenCentral()
@@ -30,7 +30,7 @@ repositories {
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.4-SNAPSHOT') {
+  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.5-SNAPSHOT') {
     changing = true;
   }
 

@@ -35,7 +35,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:0.1.0'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:0.1.1-beta'
   }
 }
 ```
@@ -46,7 +46,7 @@ You can now run commands like `./gradlew appengineDeploy` in the root folder of 
 - appengineStage
 - appengineDeploy
 
-Dev App Server goals for standard environment apps:
+Dev App Server goals for standard environment apps only:
 - appengineRun
 - appengineStart 
 - appengineStop

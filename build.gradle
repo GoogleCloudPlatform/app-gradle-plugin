@@ -30,7 +30,7 @@ repositories {
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.5-SNAPSHOT') {
+  compile ('com.google.cloud.tools:appengine-plugins-core:0.1.6') {
     changing = true;
   }
 
@@ -57,5 +57,5 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.13'
+  gradleVersion = '3.0'
 }

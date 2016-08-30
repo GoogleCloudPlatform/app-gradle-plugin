@@ -1,4 +1,4 @@
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+![beta](https://img.shields.io/badge/release%20status-beta-yellow.svg)
 [![build status image](https://travis-ci.org/GoogleCloudPlatform/app-maven-plugin.svg?branch=master)](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin)
 # Google App Engine Gradle plugin (BETA)
 

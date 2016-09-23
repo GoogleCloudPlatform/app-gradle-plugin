@@ -17,8 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardModel;
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardExtension;
+import com.google.cloud.tools.gradle.appengine.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
@@ -32,21 +32,11 @@ import org.gradle.api.Action;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.plugins.BasePlugin;
-import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
-import org.gradle.model.Defaults;
-import org.gradle.model.Finalize;
-import org.gradle.model.Model;
-import org.gradle.model.ModelMap;
-import org.gradle.model.Mutate;
-import org.gradle.model.Path;
-import org.gradle.model.RuleSource;
-import org.gradle.model.internal.core.Hidden;
 
 import java.io.File;
 import java.util.Collections;
@@ -70,174 +60,178 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
 
+  private Project project;
+  private AppEngineStandardExtension extension;
+  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+
+  @Override
   public void apply(Project project) {
-    project.getPluginManager().apply(WarPlugin.class);
 
-    // Create an extension to share data from project space to model space
-    final StandardDataExtension projectData = project.getExtensions()
-        .create("_internalProjectData", StandardDataExtension.class);
+    this.project = project;
+    createPluginExtension();
 
-    configureJavaRuntimeCompatibility(project, projectData);
+    createExplodedWarTask();
+    createStageTask();
+    createRunTasks();
+    createDeployTask();
   }
 
-  private void configureJavaRuntimeCompatibility(final Project project,
-      final StandardDataExtension projectData) {
-    project.afterEvaluate(new Action<Project>(){
-      @Override
-      public void execute(Project project){
-        JavaPluginConvention javaConvention = project.getConvention()
-            .getPlugin(JavaPluginConvention.class);
-        JavaVersion javaVersion = javaConvention.getTargetCompatibility();
-        projectData.setJavaVersion(javaVersion);
-      }
-    });
+  private void createPluginExtension() {
+    extension = project.getExtensions().create("appengine", AppEngineStandardExtension.class);
+
+    extension.getStage().setSourceDirectory(new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME));
+    extension.getStage().setStagingDirectory(new File(project.getBuildDir(), STAGED_APP_DIR_NAME));
+    extension.getRun().setAppYamls(
+        Collections.singletonList(new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME)));
+    extension.getDeploy().setDeployables(Collections
+        .singletonList(new File(extension.getStage().getStagingDirectory(), "app.yaml")));
 
     project.afterEvaluate(new Action<Project>() {
       @Override
       public void execute(Project project) {
-        WarPluginConvention warConfig = project.getConvention()
-            .getPlugin(WarPluginConvention.class);
-        File appengineWebXml = new File(warConfig.getWebAppDir(), "WEB-INF/appengine-web.xml");
-        projectData.setAppengineWebXml(appengineWebXml);
+        // special handing for java8
+        if (extension.getStage().getRuntime() == null) {
+          WarPluginConvention war = project.getConvention().getPlugin(WarPluginConvention.class);
+          File appengineWebXml = new File(war.getWebAppDir(), "WEB-INF/appengine-web.xml");
+          JavaVersion javaVersion = project.getConvention().getPlugin(JavaPluginConvention.class)
+              .getTargetCompatibility();
+          if (javaVersion.compareTo(JavaVersion.VERSION_1_8) >= 0 &&
+              AppEngineWebXml.parse(appengineWebXml).isVm()) {
+            extension.getStage().setRuntime("java");
+          }
+        }
 
+        // create the sdk builder factory after we know the location of the sdk
+        cloudSdkBuilderFactory = new CloudSdkBuilderFactory(extension.getTools().getCloudSdkHome());
+
+        // add special flag for devappserver on java8
+        if (JavaVersion.current().compareTo(JavaVersion.VERSION_1_8) >= 0) {
+          List<String> jvmFlags = extension.getRun().getJvmFlags();
+          jvmFlags = (jvmFlags == null) ? Lists.<String>newArrayList() : jvmFlags;
+          jvmFlags.add("-Dappengine.user.timezone=UTC");
+          extension.getRun().setJvmFlags(jvmFlags);
+        }
       }
     });
   }
 
-  /**
-   * RuleSource configuration for the plugin
-   */
-  public static class PluginRules extends RuleSource {
+  private void createExplodedWarTask() {
+    project.getTasks()
+        .create(EXPLODE_WAR_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
+          @Override
+          public void execute(final ExplodeWarTask explodeWar) {
+            explodeWar
+                .setExplodedAppDirectory(new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME));
+            explodeWar.dependsOn(WarPlugin.WAR_TASK_NAME);
+            explodeWar.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+            explodeWar.setDescription("Explode a war into a directory");
 
-    @Model
-    public void appengine(AppEngineStandardModel app) {
-    }
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                explodeWar.setWarFile(
+                    ((War) project.getTasks().getByPath(WarPlugin.WAR_TASK_NAME)).getArchivePath());
+              }
+            });
+          }
+        });
+    project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);
+  }
 
-    @Model
-    @Hidden
-    public void cloudSdkBuilderFactory(CloudSdkBuilderFactory factory) {
-    }
+  private void createStageTask() {
 
-    @Defaults
-    public void setDefaults(AppEngineStandardModel app, @Path("buildDir") File buildDir,
-        ExtensionContainer extension) {
-      app.getStage().setSourceDirectory(new File(buildDir, EXPLODED_APP_DIR_NAME));
-      app.getStage().setStagingDirectory(new File(buildDir, STAGED_APP_DIR_NAME));
+    project.getTasks()
+        .create(STAGE_TASK_NAME, StageStandardTask.class, new Action<StageStandardTask>() {
+          @Override
+          public void execute(final StageStandardTask stageTask) {
+            stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+            stageTask.setDescription(
+                "Stage an App Engine standard environment application for deployment");
+            stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
 
-      List<File> runnables = Collections.singletonList(new File(buildDir, EXPLODED_APP_DIR_NAME));
-      app.getRun().setAppYamls(runnables);
-      List<File> deployables = Collections
-          .singletonList(new File(app.getStage().getStagingDirectory(), "app.yaml"));
-      app.getDeploy().setDeployables(deployables);
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                stageTask.setStagingConfig(extension.getStage());
+                stageTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+              }
+            });
+          }
+        });
+  }
 
-      StandardDataExtension projectData = extension.getByType(StandardDataExtension.class);
-      if (projectData.getJavaVersion().compareTo(JavaVersion.VERSION_1_8) >= 0 &&
-          AppEngineWebXml.parse(projectData.getAppengineWebXml()).isVm()) {
-        app.getStage().setRuntime("java");
+  private void createRunTasks() {
+    project.getTasks()
+        .create(RUN_TASK_NAME, DevAppServerRunTask.class, new Action<DevAppServerRunTask>() {
+          @Override
+          public void execute(final DevAppServerRunTask runTask) {
+            runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+            runTask.setDescription("Run an App Engine standard environment application locally");
+            runTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                runTask.setRunConfig(extension.getRun());
+                runTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+              }
+            });
+          }
+        });
+
+    project.getTasks()
+        .create(START_TASK_NAME, DevAppServerStartTask.class, new Action<DevAppServerStartTask>() {
+          @Override
+          public void execute(final DevAppServerStartTask startTask) {
+            startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+            startTask.setDescription(
+                "Run an App Engine standard environment application locally in the background");
+            startTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                startTask.setRunConfig(extension.getRun());
+                startTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+              }
+            });
+          }
+        });
+
+    project.getTasks()
+        .create(STOP_TASK_NAME, DevAppServerStopTask.class, new Action<DevAppServerStopTask>() {
+          @Override
+          public void execute(final DevAppServerStopTask stopTask) {
+            stopTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+            stopTask.setDescription(
+                "Stop a locally running App Engine standard environment application");
+
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                stopTask.setRunConfig(extension.getRun());
+              }
+            });
+          }
+        });
+  }
+
+  private void createDeployTask() {
+    project.getTasks().create(DEPLOY_TASK_NAME, DeployTask.class, new Action<DeployTask>() {
+      @Override
+      public void execute(final DeployTask deployTask) {
+        deployTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+        deployTask.setDescription("Deploy an App Engine standard environment application");
+        deployTask.dependsOn(STAGE_TASK_NAME);
+
+        project.afterEvaluate(new Action<Project>() {
+          @Override
+          public void execute(Project project) {
+            deployTask.setDeployConfig(extension.getDeploy());
+            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+          }
+        });
       }
-
-    }
-
-    @Mutate
-    public void createCloudSdkBuilderFactory(final CloudSdkBuilderFactory factory,
-        final AppEngineStandardModel app) {
-      factory.setCloudSdkHome(app.getTools().getCloudSdkHome());
-    }
-
-    @Mutate
-    public void createExplodedWarTask(final ModelMap<Task> tasks,
-        @Path("tasks.war") final War warTask, @Path("buildDir") final File buildDir) {
-
-      tasks.create(EXPLODE_WAR_TASK_NAME, ExplodeWarTask.class, new Action<ExplodeWarTask>() {
-        @Override
-        public void execute(ExplodeWarTask explodeWarTask) {
-          explodeWarTask.setExplodedAppDirectory(new File(buildDir, EXPLODED_APP_DIR_NAME));
-          explodeWarTask.dependsOn(warTask);
-          explodeWarTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          explodeWarTask.setDescription("Explode a war into a directory");
-          explodeWarTask.setWarFile(warTask.getArchivePath());
-        }
-      });
-      tasks.get(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);
-
-    }
-
-    @Finalize
-    public void configureDevAppServerJava8RunFlag(final AppEngineStandardModel app) {
-      if (JavaVersion.current().compareTo(JavaVersion.VERSION_1_8) >= 0) {
-        List<String> jvmFlags = app.getRun().getJvmFlags();
-        jvmFlags = (jvmFlags == null) ? Lists.<String>newArrayList() : jvmFlags;
-        jvmFlags.add("-Dappengine.user.timezone=UTC");
-        app.getRun().setJvmFlags(jvmFlags);
-      }
-    }
-
-    @Finalize
-    public void createStageTask(final ModelMap<Task> tasks, final AppEngineStandardModel app,
-      final CloudSdkBuilderFactory factory) {
-
-      tasks.create(STAGE_TASK_NAME, StageStandardTask.class, new Action<StageStandardTask>() {
-        @Override
-        public void execute(StageStandardTask stageTask) {
-          stageTask.setStagingConfig(app.getStage());
-          stageTask.setCloudSdkBuilderFactory(factory);
-          stageTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          stageTask.setDescription("Stage an App Engine standard environment application for deployment");
-          stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
-        }
-      });
-    }
-
-    @Finalize
-    public void createRunTasks(final ModelMap<Task> tasks, final AppEngineStandardModel app,
-      final CloudSdkBuilderFactory factory) {
-
-      tasks.create(RUN_TASK_NAME, DevAppServerRunTask.class, new Action<DevAppServerRunTask>() {
-        @Override
-        public void execute(DevAppServerRunTask runTask) {
-          runTask.setRunConfig(app.getRun());
-          runTask.setCloudSdkBuilderFactory(factory);
-          runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          runTask.setDescription("Run an App Engine standard environment application locally");
-          runTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
-        }
-      });
-
-      tasks.create(START_TASK_NAME, DevAppServerStartTask.class, new Action<DevAppServerStartTask>() {
-        @Override
-        public void execute(DevAppServerStartTask startTask) {
-          startTask.setRunConfig(app.getRun());
-          startTask.setCloudSdkBuilderFactory(factory);
-          startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          startTask.setDescription("Run an App Engine standard environment application locally in the background");
-          startTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
-        }
-      });
-
-      tasks.create(STOP_TASK_NAME, DevAppServerStopTask.class, new Action<DevAppServerStopTask>() {
-        @Override
-        public void execute(DevAppServerStopTask stopTask) {
-          stopTask.setRunConfig(app.getRun());
-          stopTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          stopTask.setDescription("Stop a locally running App Engine standard environment application");
-        }
-      });
-    }
-
-    @Finalize
-    public void createDeployTask(final ModelMap<Task> tasks, final AppEngineStandardModel app,
-      final CloudSdkBuilderFactory factory) {
-
-      tasks.create(DEPLOY_TASK_NAME, DeployTask.class, new Action<DeployTask>() {
-        @Override
-        public void execute(DeployTask deployTask) {
-          deployTask.setDeployConfig(app.getDeploy());
-          deployTask.setCloudSdkBuilderFactory(factory);
-          deployTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-          deployTask.setDescription("Deploy an App Engine standard environment application");
-          deployTask.dependsOn(STAGE_TASK_NAME);
-        }
-      });
-    }
+    });
   }
 }

@@ -17,10 +17,17 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardExtension;
 import com.google.common.base.Charsets;
 
+import org.gradle.api.Project;
+import org.gradle.api.internal.project.ProjectInternal;
+import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.WarPlugin;
+import org.gradle.testfixtures.ProjectBuilder;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,7 +41,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Test App Engine Standard Plugin configuration
@@ -44,8 +53,7 @@ public class AppEngineStandardPluginTest {
   @Rule
   public final TemporaryFolder  testProjectDir = new TemporaryFolder();
 
-  @Before
-  public void setUp() throws IOException {
+  public void setUpTestProject() throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
     InputStream buildFileContent = getClass().getClassLoader()
         .getResourceAsStream("projects/AppEnginePluginTest/build.gradle");
@@ -58,7 +66,8 @@ public class AppEngineStandardPluginTest {
   }
 
   @Test
-  public void testDeploy_taskTree() {
+  public void testDeploy_taskTree() throws IOException {
+    setUpTestProject();
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
@@ -73,7 +82,8 @@ public class AppEngineStandardPluginTest {
   }
 
   @Test
-  public void testRun_taskTree() {
+  public void testRun_taskTree() throws IOException {
+    setUpTestProject();
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
@@ -88,7 +98,8 @@ public class AppEngineStandardPluginTest {
   }
 
   @Test
-  public void testStart_taskTree() {
+  public void testStart_taskTree() throws IOException {
+    setUpTestProject();
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
@@ -104,7 +115,8 @@ public class AppEngineStandardPluginTest {
   }
 
   @Test
-  public void testStop_taskTree() {
+  public void testStop_taskTree() throws IOException {
+    setUpTestProject();
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
@@ -115,5 +127,29 @@ public class AppEngineStandardPluginTest {
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
 
+  }
+
+  @Test
+  public void testDefaultConfiguration() throws IOException {
+    Project p = ProjectBuilder.builder().withProjectDir(testProjectDir.getRoot()).build();
+
+    File appengineWebXml = new File(testProjectDir.getRoot(), "src/main/webapp/WEB-INF/appengine-web.xml");
+    appengineWebXml.getParentFile().mkdirs();
+    appengineWebXml.createNewFile();
+    Files.write(appengineWebXml.toPath(), "<web-app/>".getBytes());
+
+    p.getPluginManager().apply(JavaPlugin.class);
+    p.getPluginManager().apply(WarPlugin.class);
+    p.getPluginManager().apply(AppEngineStandardPlugin.class);
+    ((ProjectInternal) p).evaluate();
+
+    Object ext = p.getExtensions().getByName("appengine");
+    Assert.assertThat(ext, Matchers.instanceOf(AppEngineStandardExtension.class));
+
+    AppEngineStandardExtension extension = (AppEngineStandardExtension) ext;
+    Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), extension.getStage().getStagingDirectory());
+    Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")), extension.getDeploy().getDeployables());
+    Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "exploded-app")), extension.getRun().getAppYamls());
+    Assert.assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
   }
 }

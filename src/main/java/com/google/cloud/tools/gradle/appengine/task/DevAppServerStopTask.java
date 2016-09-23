@@ -19,7 +19,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
-import com.google.cloud.tools.gradle.appengine.model.RunModel;
+import com.google.cloud.tools.gradle.appengine.model.Run;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -29,9 +29,9 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class DevAppServerStopTask extends DefaultTask {
 
-  private RunModel runConfig;
+  private Run runConfig;
 
-  public void setRunConfig(RunModel runConfig) {
+  public void setRunConfig(Run runConfig) {
     this.runConfig = runConfig;
   }
 

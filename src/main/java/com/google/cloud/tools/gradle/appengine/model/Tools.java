@@ -17,21 +17,20 @@
 
 package com.google.cloud.tools.gradle.appengine.model;
 
-import org.gradle.model.Managed;
-import org.gradle.model.Unmanaged;
-import org.gradle.model.internal.core.Hidden;
-
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
-
 import java.io.File;
 
 /**
- * Model interface to define the location of tooling
+ * Extension element to define the location of cloud sdk tooling
  */
-@Managed
-public interface Tools {
+public class Tools {
 
-  void setCloudSdkHome(File cloudSdkHome);
-  File getCloudSdkHome();
+  private File cloudSdkHome;
 
+  public File getCloudSdkHome() {
+    return cloudSdkHome;
+  }
+
+  public void setCloudSdkHome(File cloudSdkHome) {
+    this.cloudSdkHome = cloudSdkHome;
+  }
 }

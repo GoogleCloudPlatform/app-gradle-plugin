@@ -22,8 +22,7 @@ import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.model.DeployModel;
+import com.google.cloud.tools.gradle.appengine.model.Deploy;
 import com.google.cloud.tools.gradle.appengine.task.io.GradleLoggerOutputListener;
 
 import org.gradle.api.DefaultTask;
@@ -35,10 +34,10 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class DeployTask extends DefaultTask {
 
-  private DeployModel deployConfig;
+  private Deploy deployConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
-  public void setDeployConfig(DeployModel deployConfig) {
+  public void setDeployConfig(Deploy deployConfig) {
     this.deployConfig = deployConfig;
   }
 

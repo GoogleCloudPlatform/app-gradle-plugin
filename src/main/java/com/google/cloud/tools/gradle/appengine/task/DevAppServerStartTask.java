@@ -21,28 +21,24 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.model.RunModel;
-import com.google.cloud.tools.gradle.appengine.task.io.FileOutputLineListener;
+import com.google.cloud.tools.gradle.appengine.model.Run;
 import com.google.cloud.tools.gradle.appengine.task.io.GradleLoggerOutputListener;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.TaskAction;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 /**
  * Start the App Engine development server asynchronously
  */
 public class DevAppServerStartTask extends DefaultTask {
 
-  private RunModel runConfig;
+  private Run runConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
-  public void setRunConfig(RunModel runConfig) {
+  public void setRunConfig(Run runConfig) {
     this.runConfig = runConfig;
   }
 

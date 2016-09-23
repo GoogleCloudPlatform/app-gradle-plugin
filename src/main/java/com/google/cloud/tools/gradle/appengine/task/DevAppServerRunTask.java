@@ -21,8 +21,7 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.model.RunModel;
+import com.google.cloud.tools.gradle.appengine.model.Run;
 import com.google.cloud.tools.gradle.appengine.task.io.GradleLoggerOutputListener;
 
 import org.gradle.api.DefaultTask;
@@ -34,10 +33,10 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class DevAppServerRunTask extends DefaultTask {
 
-  private RunModel runConfig;
+  private Run runConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
-  public void setRunConfig(RunModel runConfig) {
+  public void setRunConfig(Run runConfig) {
     this.runConfig = runConfig;
   }
 

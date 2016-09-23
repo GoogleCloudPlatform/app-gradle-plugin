@@ -20,7 +20,7 @@ package com.google.cloud.tools.gradle.appengine.task;
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineFlexibleStaging;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineFlexibleStaging;
-import com.google.cloud.tools.gradle.appengine.model.StageFlexibleModel;
+import com.google.cloud.tools.gradle.appengine.model.StageFlexible;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
@@ -31,14 +31,14 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class StageFlexibleTask extends DefaultTask {
 
-  private StageFlexibleModel stagingConfig;
+  private StageFlexible stagingConfig;
 
   @Nested
-  public StageFlexibleModel getStagingConfig() {
+  public StageFlexible getStagingConfig() {
     return stagingConfig;
   }
 
-  public void setStagingConfig(StageFlexibleModel stagingConfig) {
+  public void setStagingConfig(StageFlexible stagingConfig) {
     this.stagingConfig = stagingConfig;
   }
 

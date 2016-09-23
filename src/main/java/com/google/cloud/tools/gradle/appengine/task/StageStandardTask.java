@@ -21,8 +21,7 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineStandardStaging;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
-import com.google.cloud.tools.gradle.appengine.model.hidden.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.model.StageStandardModel;
+import com.google.cloud.tools.gradle.appengine.model.StageStandard;
 import com.google.cloud.tools.gradle.appengine.task.io.GradleLoggerOutputListener;
 
 import org.gradle.api.DefaultTask;
@@ -35,15 +34,15 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class StageStandardTask extends DefaultTask {
 
-  private StageStandardModel stagingConfig;
+  private StageStandard stagingConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
   @Nested
-  public StageStandardModel getStagingConfig() {
+  public StageStandard getStagingConfig() {
                                                return stagingConfig;
                                                                     }
 
-  public void setStagingConfig(StageStandardModel stagingConfig) {
+  public void setStagingConfig(StageStandard stagingConfig) {
     this.stagingConfig = stagingConfig;
   }
 

@@ -19,39 +19,61 @@ package com.google.cloud.tools.gradle.appengine.model;
 
 import com.google.cloud.tools.appengine.api.deploy.StageFlexibleConfiguration;
 
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.model.Managed;
 
 import java.io.File;
 
 /**
- * Model element to define Stage configurations for App Engine Flexible Environments
+ * Extension element to define Stage configurations for App Engine Flexible Environments
  */
-@Managed
-public interface StageFlexibleModel extends StageFlexibleConfiguration {
+public class StageFlexible implements StageFlexibleConfiguration {
+
+  private File appEngineDirectory;
+  private File dockerDirectory;
+  private File artifact;
+  private File stagingDirectory;
 
   @Override
   @InputDirectory
+  public File getAppEngineDirectory() {
+    return appEngineDirectory;
+  }
+
+  public void setAppEngineDirectory(File appEngineDirectory) {
+    this.appEngineDirectory = appEngineDirectory;
+  }
+
+  @Override
   @Optional
-  File getDockerDirectory();
-  void setDockerDirectory(File dockerDirectory);
+  @InputDirectory
+  public File getDockerDirectory() {
+    return dockerDirectory;
+  }
+
+  public void setDockerDirectory(File dockerDirectory) {
+    this.dockerDirectory = dockerDirectory;
+  }
 
   @Override
   @InputFile
-  File getArtifact();
-  void setArtifact(File artifact);
+  public File getArtifact() {
+    return artifact;
+  }
+
+  public void setArtifact(File artifact) {
+    this.artifact = artifact;
+  }
 
   @Override
   @OutputDirectory
-  File getStagingDirectory();
-  void setStagingDirectory(File stagingDirectory);
+  public File getStagingDirectory() {
+    return stagingDirectory;
+  }
 
-  @Override
-  @InputDirectory
-  File getAppEngineDirectory();
-  void setAppEngineDirectory(File appEngineDirectory);
+  public void setStagingDirectory(File stagingDirectory) {
+    this.stagingDirectory = stagingDirectory;
+  }
 }

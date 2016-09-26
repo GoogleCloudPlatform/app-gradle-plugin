@@ -43,11 +43,6 @@ import java.util.Arrays;
  */
 public class AppEngineStandardPluginIntegrationTest {
 
-  @BeforeClass
-  public static void assertEnvironment() {
-    Assert.assertThat(System.getProperty("java.version"), CoreMatchers.startsWith("1.7"));
-  }
-
   @Rule
   public Timeout globalTimeout = Timeout.seconds(180);
 

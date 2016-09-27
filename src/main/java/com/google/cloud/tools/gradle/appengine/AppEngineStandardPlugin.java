@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineStandardExtension;
 import com.google.cloud.tools.gradle.appengine.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
+import com.google.cloud.tools.gradle.appengine.task.ShowConfigurationTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerRunTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStartTask;
 import com.google.cloud.tools.gradle.appengine.task.DevAppServerStopTask;
@@ -55,6 +56,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private static final String START_TASK_NAME = "appengineStart";
   private static final String STOP_TASK_NAME = "appengineStop";
   private static final String DEPLOY_TASK_NAME = "appengineDeploy";
+  private static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
 
   private static final String EXPLODED_APP_DIR_NAME = "exploded-app";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
@@ -74,6 +76,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     createStageTask();
     createRunTasks();
     createDeployTask();
+
+    createShowConfigurationTask();
   }
 
   private void createPluginExtension() {
@@ -233,5 +237,24 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         });
       }
     });
+  }
+
+  private void createShowConfigurationTask() {
+    project.getTasks().create(SHOW_CONFIG_TASK_NAME, ShowConfigurationTask.class,
+        new Action<ShowConfigurationTask>() {
+          @Override
+          public void execute(final ShowConfigurationTask showConfigurationTask) {
+            showConfigurationTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+            showConfigurationTask.setDescription("Show current App Engine plugin configuration");
+
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                showConfigurationTask.setExtensionClass(AppEngineStandardExtension.class);
+                showConfigurationTask.setExtensionInstance(extension);
+              }
+            });
+          }
+        });
   }
 }

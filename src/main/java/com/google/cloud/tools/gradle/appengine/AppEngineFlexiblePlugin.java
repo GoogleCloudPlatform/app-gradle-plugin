@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine;
 import com.google.cloud.tools.gradle.appengine.model.AppEngineFlexibleExtension;
 import com.google.cloud.tools.gradle.appengine.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.task.DeployTask;
+import com.google.cloud.tools.gradle.appengine.task.ShowConfigurationTask;
 import com.google.cloud.tools.gradle.appengine.task.StageFlexibleTask;
 
 import org.gradle.api.Action;
@@ -42,6 +43,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
   private static final String STAGE_TASK_NAME = "appengineStage";
   private static final String DEPLOY_TASK_NAME = "appengineDeploy";
+  private static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
+
   private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
@@ -57,6 +60,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
     createStageTask();
     createDeployTask();
+    createShowConfigurationTask();
   }
 
   private void createPluginExtension() {
@@ -132,5 +136,24 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
         });
       }
     });
+  }
+
+  private void createShowConfigurationTask() {
+    project.getTasks().create(SHOW_CONFIG_TASK_NAME, ShowConfigurationTask.class,
+        new Action<ShowConfigurationTask>() {
+          @Override
+          public void execute(final ShowConfigurationTask showConfigurationTask) {
+            showConfigurationTask.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
+            showConfigurationTask.setDescription("Show current App Engine plugin configuration");
+
+            project.afterEvaluate(new Action<Project>() {
+              @Override
+              public void execute(Project project) {
+                showConfigurationTask.setExtensionClass(AppEngineFlexibleExtension.class);
+                showConfigurationTask.setExtensionInstance(extension);
+              }
+            });
+          }
+        });
   }
 }

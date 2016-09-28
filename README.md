@@ -4,6 +4,16 @@
 
 This Gradle plugin provides tasks to build and deploy Google App Engine applications.
 
+# Reference Documentation
+
+App Engine Standard Environment:
+* [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle)
+* [App Engine Gradle Plugin Goals and Parameters (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle-reference)
+
+App Engine Flexible Environment:
+* [Using Gradle and the App Engine Plugin (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/using-gradle)
+* [App Engine Gradle Plugin Goals and Parameters (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/gradle-reference)
+
 # Requirements
 
 [Gradle](http://gradle.org) is required to build and run the plugin.
@@ -50,6 +60,9 @@ Dev App Server goals for standard environment apps only:
 - appengineRun
 - appengineStart 
 - appengineStop
+
+Show the current App Engine plugin configuration properties:
+- appengineShowConfiguration
 
 Task documentation is available by running:
 

@@ -1,3 +1,4 @@
+![project status image](https://img.shields.io/badge/stability-stable-brightgreen.svg)
 [![build status image](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin.svg?branch=master)](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin)
 # Google App Engine Gradle plugin (BETA)
 

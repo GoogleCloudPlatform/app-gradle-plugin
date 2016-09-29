@@ -30,7 +30,7 @@ repositories {
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.1.9'
+  compile 'com.google.cloud.tools:appengine-plugins-core:0.1.10'
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'org.hamcrest:hamcrest-library:1.3'

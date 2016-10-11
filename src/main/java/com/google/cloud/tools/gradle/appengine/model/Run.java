@@ -50,6 +50,7 @@ public class Run implements RunConfiguration, StopConfiguration {
   private String devAppserverLogLevel;
   private Boolean skipSdkUpdateCheck;
   private String defaultGcsBucketName;
+  private String javaHomeDir;
 
   @Override
   public List<File> getAppYamls() {
@@ -248,5 +249,15 @@ public class Run implements RunConfiguration, StopConfiguration {
   public void setDefaultGcsBucketName(String defaultGcsBucketName) {
     this.defaultGcsBucketName = defaultGcsBucketName;
   }
+
+  @Override
+  public String getJavaHomeDir() {
+    return javaHomeDir;
+  }
+
+  public void setJavaHomeDir(String javaHomeDir) {
+    this.javaHomeDir = javaHomeDir;
+  }
+
 }
 

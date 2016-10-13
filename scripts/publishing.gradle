@@ -2,8 +2,8 @@ apply plugin: 'com.bmuschko.nexus'
 
 modifyPom {
   project {
-    name 'Google Cloud Platform: App Gradle Plugin'
-    description 'Gradle plugin that provides tasks for uploading, running and managing Google App Engine projects.'
+    name 'App Engine Gradle Plugin'
+    description 'This Gradle plugin provides tasks to build and deploy Google App Engine applications.'
     url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
     inceptionYear '2016'
 

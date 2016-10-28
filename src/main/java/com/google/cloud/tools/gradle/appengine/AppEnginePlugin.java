@@ -17,12 +17,14 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
+import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.plugins.WarPluginConvention;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -57,7 +59,6 @@ public class AppEnginePlugin implements Plugin<Project> {
     Path appengineWebXml = project.getProjectDir().toPath()
         .resolve("src/main/java/webapp/WEB-INF/appengine-web.xml");
     if (Files.exists(appengineWebXml)) {
-      project.getPluginManager().apply(AppEngineStandardPlugin.class);
       return true;
     }
 

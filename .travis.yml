@@ -1,6 +1,18 @@
 language: java
 jdk:
   - openjdk7
+
+install:
+ # download Cloud SDK
+ - wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-112.0.0-linux-x86_64.tar.gz
+ - tar -xzvf google-cloud-sdk-112.0.0-linux-x86_64.tar.gz
+ - export PATH=$PWD/google-cloud-sdk/bin:$PATH
+ - export CLOUDSDK_CORE_DISABLE_USAGE_REPORTING=true
+ # update all Cloud SDK components
+ - gcloud components update --quiet
+ # add App Engine component to Cloud SDK
+ - gcloud components install app-engine-java --quiet
+
 before_cache:
   - rm -rf $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
@@ -8,3 +20,5 @@ cache:
    - $HOME/.gradle/caches
    - $HOME/.gradle/wrapper
 
+script:
+  - ./gradlew check

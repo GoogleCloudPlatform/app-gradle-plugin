@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
 import com.google.cloud.tools.gradle.appengine.core.extension.Tools;
 import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.sourcecontext.extension.GenRepoInfoFileExtension;
@@ -32,6 +33,8 @@ import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
 
+import java.io.File;
+
 import javax.annotation.Nullable;
 
 /**
@@ -43,6 +46,8 @@ public class SourceContextPlugin implements Plugin<Project> {
   private GenRepoInfoFileExtension extension;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
+  public static final String SOURCE_CONTEXT_EXTENSION = "sourceContext";
+
   @Override
   public void apply(Project project) {
     this.project = project;
@@ -52,13 +57,13 @@ public class SourceContextPlugin implements Plugin<Project> {
   }
 
   private void createExtension() {
-    ExtensionAware appengine = new ExtensionUtil(project).get("appengine");
-    final Tools tools = new ExtensionUtil(appengine).get("tools");
+    ExtensionAware appengine = new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    final Tools tools = new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
 
     // create our extension under the root appengine extension
     extension = appengine.getExtensions()
-        .create("sourceContext", GenRepoInfoFileExtension.class, project.getBuildDir(),
-            project.getRootDir());
+        .create(SOURCE_CONTEXT_EXTENSION, GenRepoInfoFileExtension.class, project.getBuildDir(),
+            new File(project.getRootDir(), "src"));
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(new Action<Project>() {
@@ -90,15 +95,15 @@ public class SourceContextPlugin implements Plugin<Project> {
   }
 
   // inject source-context into the META-INF directory of a jar or war
-  private void configureArchiveTask(@Nullable AbstractArchiveTask task) {
-    if (task == null) {
+  private void configureArchiveTask(@Nullable AbstractArchiveTask archiveTask) {
+    if (archiveTask == null) {
       return;
     }
-    task.dependsOn("_createSourceContext");
-    task.from(extension.getOutputDirectory(), new Action<CopySpec>() {
+    archiveTask.dependsOn("_createSourceContext");
+    archiveTask.from(extension.getOutputDirectory(), new Action<CopySpec>() {
       @Override
       public void execute(CopySpec copySpec) {
-        copySpec.into("META-INF");
+        copySpec.into("WEB-INF/classes");
       }
     });
   }

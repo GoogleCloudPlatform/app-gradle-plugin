@@ -29,9 +29,9 @@ public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
   private final File outputDirectory;
   private File sourceDirectory;
 
-  public GenRepoInfoFileExtension(File buildDir, File projectRoot) {
+  public GenRepoInfoFileExtension(File buildDir, File sourceRoot) {
     outputDirectory = new File(buildDir, "sourceContext");
-    sourceDirectory = projectRoot;
+    sourceDirectory = sourceRoot;
   }
 
   @OutputDirectory

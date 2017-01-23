@@ -17,21 +17,10 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
-import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.sourcecontext.extension.GenRepoInfoFileExtension;
-import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
-import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.util.FileUtils;
-import org.gradle.api.Project;
-import org.gradle.api.internal.project.ProjectInternal;
-import org.gradle.api.plugins.ExtensionAware;
-import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.plugins.WarPlugin;
-import org.gradle.testfixtures.ProjectBuilder;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.Assert;
@@ -46,16 +35,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/**
- * Created by appu on 1/17/17.
- */
-public class SourceContextPluginTest {
+public class SourceContextPluginIntegrationTest {
 
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder();
@@ -65,8 +49,33 @@ public class SourceContextPluginTest {
 
     Path src = Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
     InputStream buildFileContent = getClass().getClassLoader()
-        .getResourceAsStream("projects/SourceContextPluginTest/build.gradle");
+        .getResourceAsStream("projects/sourcecontext-project/build.gradle");
     Files.copy(buildFileContent, buildFile);
+
+    Path gitContext = testProjectDir.getRoot().toPath().resolve("gitContext.zip");
+    InputStream gitContextContent = getClass().getClassLoader()
+        .getResourceAsStream("projects/sourcecontext-project/gitContext.zip");
+    Files.copy(gitContextContent, gitContext);
+
+    try (ZipFile zipFile = new ZipFile(gitContext.toFile())) {
+      Enumeration<? extends ZipEntry> entries = zipFile.entries();
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = entries.nextElement();
+        File entryDestination = new File(testProjectDir.getRoot(), entry.getName());
+        if (entry.isDirectory()) {
+          entryDestination.mkdirs();
+        } else {
+          entryDestination.getParentFile().mkdirs();
+          InputStream in = zipFile.getInputStream(entry);
+          OutputStream out = new FileOutputStream(entryDestination);
+          IOUtils.copy(in, out);
+          IOUtils.closeQuietly(in);
+          out.close();
+        }
+      }
+    }
+
+    FileUtils.delete(gitContext.toFile());
 
     Path webInf = testProjectDir.getRoot().toPath().resolve("src/main/webapp/WEB-INF");
     Files.createDirectories(webInf);
@@ -75,36 +84,23 @@ public class SourceContextPluginTest {
   }
 
   @Test
-  public void testCreateSourceContextViaAssemble_taskTree() throws IOException {
+  public void testCreateSourceContext() throws IOException {
     setUpTestProject();
     BuildResult buildResult = GradleRunner.create()
         .withProjectDir(testProjectDir.getRoot())
         .withPluginClasspath()
-        .withArguments("assemble", "--dry-run")
+        .withArguments(":assemble")
         .build();
 
-    final List<String> expected = Arrays
-        .asList(":_createSourceContext", ":compileJava", ":processResources", ":classes", ":war",
-            ":explodeWar", ":assemble");
+    String commitHash = "9a282640c4a91769d328bbf23e8d8b2b5dcbbb5b";
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    File sourceContextsFile = new File(testProjectDir.getRoot(), "build/exploded-app/WEB-INF/classes/source-contexts.json");
+    Assert.assertTrue(sourceContextsFile.getAbsolutePath() + " is missing", sourceContextsFile.exists());
+    Assert.assertTrue(com.google.common.io.Files.toString(sourceContextsFile, Charsets.UTF_8).contains(commitHash));
+
+    File sourceContextFile = new File(testProjectDir.getRoot(), "build/exploded-app/WEB-INF/classes/source-context.json");
+    Assert.assertTrue(sourceContextFile.getAbsolutePath() + " is missing", sourceContextFile.exists());
+    Assert.assertTrue(com.google.common.io.Files.toString(sourceContextFile, Charsets.UTF_8).contains(commitHash));
   }
 
-  public void testDefaultConfiguration() throws IOException {
-    Project p = ProjectBuilder.builder().withProjectDir(testProjectDir.getRoot()).build();
-
-    File appengineWebXml = new File(testProjectDir.getRoot(), "src/main/webapp/WEB-INF/appengine-web.xml");
-    appengineWebXml.getParentFile().mkdirs();
-    appengineWebXml.createNewFile();
-    Files.write(appengineWebXml.toPath(), "<web-app/>".getBytes());
-
-    p.getPluginManager().apply(JavaPlugin.class);
-    p.getPluginManager().apply(WarPlugin.class);
-    p.getPluginManager().apply(AppEngineStandardPlugin.class);
-    ((ProjectInternal) p).evaluate();
-
-    ExtensionAware ext = (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    GenRepoInfoFileExtension genRepoInfoExt = new ExtensionUtil(ext).get(SourceContextPlugin.SOURCE_CONTEXT_EXTENSION);
-    Assert.assertEquals(new File(p.getBuildDir(), "sourceContext"), genRepoInfoExt.getOutputDirectory());
-  }
 }

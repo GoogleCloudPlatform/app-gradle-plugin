@@ -29,6 +29,9 @@ import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 
+/**
+ * Generate source context information.
+ */
 public class GenRepoInfoFileTask extends DefaultTask {
 
   private GenRepoInfoFileExtension configuration;

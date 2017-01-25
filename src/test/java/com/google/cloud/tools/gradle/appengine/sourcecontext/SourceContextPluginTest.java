@@ -24,8 +24,6 @@ import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.tools.ant.util.FileUtils;
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.plugins.ExtensionAware;
@@ -40,20 +38,15 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
- * Created by appu on 1/17/17.
+ * Test SourceContext Plugin configuration.
  */
 public class SourceContextPluginTest {
 
@@ -90,6 +83,7 @@ public class SourceContextPluginTest {
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
+  @Test
   public void testDefaultConfiguration() throws IOException {
     Project p = ProjectBuilder.builder().withProjectDir(testProjectDir.getRoot()).build();
 
@@ -101,6 +95,7 @@ public class SourceContextPluginTest {
     p.getPluginManager().apply(JavaPlugin.class);
     p.getPluginManager().apply(WarPlugin.class);
     p.getPluginManager().apply(AppEngineStandardPlugin.class);
+    p.getPluginManager().apply(SourceContextPlugin.class);
     ((ProjectInternal) p).evaluate();
 
     ExtensionAware ext = (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);

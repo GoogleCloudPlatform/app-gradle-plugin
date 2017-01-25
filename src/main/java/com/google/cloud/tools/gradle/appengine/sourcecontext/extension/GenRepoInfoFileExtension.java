@@ -24,6 +24,9 @@ import org.gradle.api.tasks.OutputDirectory;
 
 import java.io.File;
 
+/**
+ * Extension element to define Source Context configurations.
+ */
 public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
 
   private final File outputDirectory;

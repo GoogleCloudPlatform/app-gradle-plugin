@@ -39,6 +39,9 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * Tests for SourceContext plugin that use git context information.
+ */
 public class SourceContextPluginIntegrationTest {
 
   @Rule

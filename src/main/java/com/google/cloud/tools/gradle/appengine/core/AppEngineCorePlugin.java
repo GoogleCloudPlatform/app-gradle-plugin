@@ -64,8 +64,8 @@ public class AppEngineCorePlugin implements Plugin<Project> {
 
   private void createExtensions() {
     extension = project.getExtensions().create(APPENGINE_EXTENSION, AppEngine.class);
-    deployExtension = ((ExtensionAware) extension).getExtensions().create(DEPLOY_EXTENSION, Deploy.class);
-    toolsExtension = ((ExtensionAware) extension).getExtensions().create(TOOLS_EXTENSION, Tools.class);
+    deployExtension = ((ExtensionAware) extension).getExtensions().create(DEPLOY_EXTENSION, Deploy.class, project);
+    toolsExtension = ((ExtensionAware) extension).getExtensions().create(TOOLS_EXTENSION, Tools.class, project);
 
     project.afterEvaluate(new Action<Project>() {
       @Override

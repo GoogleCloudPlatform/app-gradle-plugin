@@ -44,7 +44,6 @@ import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,9 +90,9 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     File defaultExplodedAppDir = new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME);
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
 
-    runExtension = appengine.getExtensions().create(RUN_EXTENSION, Run.class, defaultExplodedAppDir);
-    stageExtension = appengine.getExtensions().create(STAGE_EXTENSION, StageStandard.class, defaultExplodedAppDir, defaultStagedAppDir);
-    deploy.setDeployables(Collections.singletonList(new File(defaultStagedAppDir, "app.yaml")));
+    runExtension = appengine.getExtensions().create(RUN_EXTENSION, Run.class, project, defaultExplodedAppDir);
+    stageExtension = appengine.getExtensions().create(STAGE_EXTENSION, StageStandard.class, project, defaultExplodedAppDir, defaultStagedAppDir);
+    deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
 
     project.afterEvaluate(new Action<Project>() {
       @Override

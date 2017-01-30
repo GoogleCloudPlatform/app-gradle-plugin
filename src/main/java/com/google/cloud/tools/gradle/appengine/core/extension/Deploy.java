@@ -19,13 +19,20 @@ package com.google.cloud.tools.gradle.appengine.core.extension;
 
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 
+import org.gradle.api.Project;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Extension element to define Deployable configurations for App Engine
  */
 public class Deploy implements DeployConfiguration {
+
+  // named gradleProject to disambiguate with deploy parameter "project"
+  private final Project gradleProject;
+
   private String bucket;
   private List<File> deployables;
   private String imageUrl;
@@ -34,6 +41,10 @@ public class Deploy implements DeployConfiguration {
   private String server;
   private Boolean stopPreviousVersion;
   private String version;
+
+  public Deploy(Project gradleProject) {
+    this.gradleProject = gradleProject;
+  }
 
   @Override
   public String getBucket() {
@@ -49,8 +60,8 @@ public class Deploy implements DeployConfiguration {
     return deployables;
   }
 
-  public void setDeployables(List<File> deployables) {
-    this.deployables = deployables;
+  public void setDeployables(Object deployables) {
+    this.deployables = new ArrayList<>(gradleProject.files(deployables).getFiles());
   }
 
   @Override

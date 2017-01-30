@@ -53,7 +53,7 @@ import java.util.List;
 public class AppEngineStandardPluginTest {
 
   @Rule
-  public final TemporaryFolder  testProjectDir = new TemporaryFolder();
+  public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   public void setUpTestProject() throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
@@ -135,25 +135,30 @@ public class AppEngineStandardPluginTest {
   public void testDefaultConfiguration() throws IOException {
     Project p = ProjectBuilder.builder().withProjectDir(testProjectDir.getRoot()).build();
 
-    File appengineWebXml = new File(testProjectDir.getRoot(), "src/main/webapp/WEB-INF/appengine-web.xml");
+    File appengineWebXml = new File(testProjectDir.getRoot(),
+        "src/main/webapp/WEB-INF/appengine-web.xml");
     appengineWebXml.getParentFile().mkdirs();
     appengineWebXml.createNewFile();
-    Files.write(appengineWebXml.toPath(), "<web-app/>".getBytes());
+    Files.write(appengineWebXml.toPath(), "<appengine-web-app/>".getBytes());
 
     p.getPluginManager().apply(JavaPlugin.class);
     p.getPluginManager().apply(WarPlugin.class);
     p.getPluginManager().apply(AppEngineStandardPlugin.class);
     ((ProjectInternal) p).evaluate();
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    ExtensionAware ext = (ExtensionAware) p.getExtensions()
+        .getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
     Deploy deployExt = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
     StageStandard stageExt = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
     Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
     Assert.assertEquals(new File(p.getBuildDir(), "exploded-app"), stageExt.getSourceDirectory());
     Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
-    Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")), deployExt.getDeployables());
-    Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "exploded-app")), run.getAppYamls());
+    Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
+        deployExt.getDeployables());
+    Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "exploded-app")),
+        run.getAppYamls());
     Assert.assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
   }
+
 }

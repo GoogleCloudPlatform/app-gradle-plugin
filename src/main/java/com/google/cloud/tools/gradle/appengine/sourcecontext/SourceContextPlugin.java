@@ -62,8 +62,7 @@ public class SourceContextPlugin implements Plugin<Project> {
 
     // create our extension under the root appengine extension
     extension = appengine.getExtensions()
-        .create(SOURCE_CONTEXT_EXTENSION, GenRepoInfoFileExtension.class, project.getBuildDir(),
-            new File(project.getRootDir(), "src"));
+        .create(SOURCE_CONTEXT_EXTENSION, GenRepoInfoFileExtension.class, project);
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(new Action<Project>() {

@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard.extension;
 
 import com.google.cloud.tools.appengine.api.deploy.StageStandardConfiguration;
 
+import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Optional;
@@ -30,6 +31,8 @@ import java.io.File;
  * Extension element to define Stage configurations for App Engine Standard Environments
  */
 public class StageStandard implements StageStandardConfiguration {
+
+  private final Project project;
 
   private File sourceDirectory;
   private File stagingDirectory;
@@ -44,7 +47,8 @@ public class StageStandard implements StageStandardConfiguration {
   private Boolean disableJarJsps;
   private String runtime;
 
-  public StageStandard(File sourceDirectory, File stagingDirectory) {
+  public StageStandard(Project project, File sourceDirectory, File stagingDirectory) {
+    this.project = project;
     this.sourceDirectory = sourceDirectory;
     this.stagingDirectory = stagingDirectory;
   }
@@ -54,8 +58,8 @@ public class StageStandard implements StageStandardConfiguration {
   public File getSourceDirectory() {
     return sourceDirectory;
   }
-  public void setSourceDirectory(File sourceDirectory) {
-    this.sourceDirectory = sourceDirectory;
+  public void setSourceDirectory(Object sourceDirectory) {
+    this.sourceDirectory = project.file(sourceDirectory);
   }
 
   @Override
@@ -63,8 +67,8 @@ public class StageStandard implements StageStandardConfiguration {
   public File getStagingDirectory() {
     return stagingDirectory;
   }
-  public void setStagingDirectory(File stagingDirectory) {
-    this.stagingDirectory = stagingDirectory;
+  public void setStagingDirectory(Object stagingDirectory) {
+    this.stagingDirectory = project.file(stagingDirectory);
   }
 
   @Override
@@ -74,8 +78,8 @@ public class StageStandard implements StageStandardConfiguration {
     return dockerfile;
   }
 
-  public void setDockerfile(File dockerfile) {
-    this.dockerfile = dockerfile;
+  public void setDockerfile(Object dockerfile) {
+    this.dockerfile = project.file(dockerfile);
   }
 
   @Override

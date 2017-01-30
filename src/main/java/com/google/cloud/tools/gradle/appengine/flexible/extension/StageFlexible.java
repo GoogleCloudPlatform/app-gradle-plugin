@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.flexible.extension;
 import com.google.cloud.tools.appengine.api.deploy.StageFlexibleConfiguration;
 import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
 
+import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
@@ -32,12 +33,17 @@ import java.io.File;
  */
 public class StageFlexible implements StageFlexibleConfiguration {
 
+  private final Project project;
+
   private File appEngineDirectory;
   private File dockerDirectory;
   private File artifact;
   private File stagingDirectory;
 
-  public StageFlexible(File stagingDirectory, File projectRoot) {
+  public StageFlexible(Project project, File stagingDirectory) {
+    this.project = project;
+    File projectRoot = project.getRootDir();
+
     this.stagingDirectory = stagingDirectory;
     this.appEngineDirectory = new File(projectRoot, "src/main/appengine");
     File dockerOptionalDir = new File(projectRoot, "src/main/docker");
@@ -52,8 +58,8 @@ public class StageFlexible implements StageFlexibleConfiguration {
     return appEngineDirectory;
   }
 
-  public void setAppEngineDirectory(File appEngineDirectory) {
-    this.appEngineDirectory = appEngineDirectory;
+  public void setAppEngineDirectory(Object appEngineDirectory) {
+    this.appEngineDirectory = project.file(appEngineDirectory);
   }
 
   @Override
@@ -63,8 +69,8 @@ public class StageFlexible implements StageFlexibleConfiguration {
     return dockerDirectory;
   }
 
-  public void setDockerDirectory(File dockerDirectory) {
-    this.dockerDirectory = dockerDirectory;
+  public void setDockerDirectory(Object dockerDirectory) {
+    this.dockerDirectory = project.file(dockerDirectory);
   }
 
   @Override
@@ -73,8 +79,8 @@ public class StageFlexible implements StageFlexibleConfiguration {
     return artifact;
   }
 
-  public void setArtifact(File artifact) {
-    this.artifact = artifact;
+  public void setArtifact(Object artifact) {
+    this.artifact = project.file(artifact);
   }
 
   @Override
@@ -83,7 +89,7 @@ public class StageFlexible implements StageFlexibleConfiguration {
     return stagingDirectory;
   }
 
-  public void setStagingDirectory(File stagingDirectory) {
-    this.stagingDirectory = stagingDirectory;
+  public void setStagingDirectory(Object stagingDirectory) {
+    this.stagingDirectory = project.file(stagingDirectory);
   }
 }

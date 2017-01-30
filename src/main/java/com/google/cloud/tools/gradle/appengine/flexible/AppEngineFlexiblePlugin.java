@@ -35,7 +35,6 @@ import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
 
 import java.io.File;
-import java.util.Collections;
 
 /**
  * Plugin definition for App Engine flexible environments
@@ -67,8 +66,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
 
-    stageExtension = appengine.getExtensions().create(STAGE_EXTENSION, StageFlexible.class, defaultStagedAppDir, project.getRootDir());
-    deploy.setDeployables(Collections.singletonList(new File(defaultStagedAppDir, "app.yaml")));
+    stageExtension = appengine.getExtensions().create(STAGE_EXTENSION, StageFlexible.class, project, defaultStagedAppDir);
+    deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
 
     project.afterEvaluate(new Action<Project>() {
       @Override

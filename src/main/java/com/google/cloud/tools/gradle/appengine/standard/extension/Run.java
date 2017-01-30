@@ -20,7 +20,10 @@ package com.google.cloud.tools.gradle.appengine.standard.extension;
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
 import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
 
+import org.gradle.api.Project;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +31,8 @@ import java.util.List;
  * Extension element to define Run configurations for App Engine Standard Environments
  */
 public class Run implements RunConfiguration, StopConfiguration {
+
+  private final Project project;
 
   private List<File> appYamls;
   private String host;
@@ -53,7 +58,8 @@ public class Run implements RunConfiguration, StopConfiguration {
   private String defaultGcsBucketName;
   private String javaHomeDir;
 
-  public Run(File explodedAppDir) {
+  public Run(Project project, File explodedAppDir) {
+    this.project = project;
     appYamls = Collections.singletonList(explodedAppDir);
   }
 
@@ -62,8 +68,8 @@ public class Run implements RunConfiguration, StopConfiguration {
     return appYamls;
   }
 
-  public void setAppYamls(List<File> appYamls) {
-    this.appYamls = appYamls;
+  public void setAppYamls(Object appYamls) {
+    this.appYamls = new ArrayList<>(project.files(appYamls).getFiles());
   }
 
   @Override

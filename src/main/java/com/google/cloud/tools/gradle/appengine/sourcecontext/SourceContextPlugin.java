@@ -35,8 +35,6 @@ import org.gradle.api.tasks.bundling.War;
 
 import java.io.File;
 
-import javax.annotation.Nullable;
-
 /**
  * Plugin for adding source context into App Engine project
  */
@@ -94,7 +92,7 @@ public class SourceContextPlugin implements Plugin<Project> {
   }
 
   // inject source-context into the META-INF directory of a jar or war
-  private void configureArchiveTask(@Nullable AbstractArchiveTask archiveTask) {
+  private void configureArchiveTask(AbstractArchiveTask archiveTask) {
     if (archiveTask == null) {
       return;
     }

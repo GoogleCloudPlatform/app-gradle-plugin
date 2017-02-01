@@ -54,7 +54,7 @@ public class DevAppServerStartTask extends DefaultTask {
 
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
         .async(true)
-        .runDevAppServerWait(20)
+        .runDevAppServerWait(runConfig.getStartSuccessTimeout())
         .addStdErrLineListener(listener)
         .addStdOutLineListener(listener)
         .build();

@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard.task;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
+import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
 
 import org.gradle.api.DefaultTask;
@@ -30,14 +31,20 @@ import org.gradle.api.tasks.TaskAction;
 public class DevAppServerStopTask extends DefaultTask {
 
   private Run runConfig;
+  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
   public void setRunConfig(Run runConfig) {
     this.runConfig = runConfig;
   }
 
+  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
+    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  }
+
   @TaskAction
   public void stopAction() throws AppEngineException {
-    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(null);
+    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(
+        cloudSdkBuilderFactory.newBuilder().build());
     server.stop(runConfig);
   }
 

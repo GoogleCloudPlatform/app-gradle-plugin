@@ -219,6 +219,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               @Override
               public void execute(Project project) {
                 stopTask.setRunConfig(runExtension);
+                stopTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
               }
             });
           }

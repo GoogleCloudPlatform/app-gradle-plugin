@@ -33,6 +33,7 @@ import java.util.List;
 public class Run implements RunConfiguration, StopConfiguration {
 
   private final Project project;
+  private int startSuccessTimeout;
 
   private List<File> appYamls;
   private String host;
@@ -57,10 +58,20 @@ public class Run implements RunConfiguration, StopConfiguration {
   private Boolean skipSdkUpdateCheck;
   private String defaultGcsBucketName;
   private String javaHomeDir;
+  private Boolean clearDatastore;
 
   public Run(Project project, File explodedAppDir) {
     this.project = project;
+    startSuccessTimeout = 20;
     appYamls = Collections.singletonList(explodedAppDir);
+  }
+
+  public int getStartSuccessTimeout() {
+    return startSuccessTimeout;
+  }
+
+  public void setStartSuccessTimeout(int startSuccessTimeout) {
+    this.startSuccessTimeout = startSuccessTimeout;
   }
 
   @Override
@@ -270,5 +281,13 @@ public class Run implements RunConfiguration, StopConfiguration {
     this.javaHomeDir = javaHomeDir;
   }
 
+  @Override
+  public Boolean getClearDatastore() {
+    return clearDatastore;
+  }
+
+  public void setClearDatastore(Boolean clearDatastore) {
+    this.clearDatastore = clearDatastore;
+  }
 }
 

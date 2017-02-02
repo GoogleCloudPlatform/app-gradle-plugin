@@ -25,8 +25,6 @@ import org.gradle.testkit.runner.BuildTask;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 /**
  * Tools to filter gradle test kit runner results
  */
@@ -37,9 +35,8 @@ public class BuildResultFilter {
     return FluentIterable
         .from(buildResult.getTasks())
         .transform(new Function<BuildTask, String>() {
-          @Nullable
           @Override
-          public String apply(@Nullable BuildTask buildTask) {
+          public String apply(BuildTask buildTask) {
             return buildTask.getPath();
           }
         })

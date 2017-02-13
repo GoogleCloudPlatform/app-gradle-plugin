@@ -111,14 +111,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             stageExtension.setRuntime("java");
           }
         }
-
-        // add special flag for devappserver on java8
-        if (JavaVersion.current().compareTo(JavaVersion.VERSION_1_8) >= 0) {
-          List<String> jvmFlags = runExtension.getJvmFlags();
-          jvmFlags = (jvmFlags == null) ? Lists.<String>newArrayList() : jvmFlags;
-          jvmFlags.add("-Dappengine.user.timezone=UTC");
-          runExtension.setJvmFlags(jvmFlags);
-        }
       }
     });
   }

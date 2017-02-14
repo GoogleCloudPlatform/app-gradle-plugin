@@ -22,15 +22,12 @@ version = '1.0.1-SNAPSHOT'
 
 repositories {
   mavenCentral()
-  maven {
-    url 'https://oss.sonatype.org/content/repositories/snapshots'
-  }
 }
 
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.2.6'
+  compile 'com.google.cloud.tools:appengine-plugins-core:0.2.8'
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'junit:junit:4.12'

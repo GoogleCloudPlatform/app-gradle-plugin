@@ -35,21 +35,24 @@ public class ShowConfigurationTaskTest {
   @Test
   public void testGetAllFields_NestedExtensions() throws IllegalAccessException {
     String expected = ""
-        + " x {\n"
-        + "   y {\n"
-        + "     (int) a = 0\n"
-        + "     z {\n"
-        + "       (String) z = hello\n"
-        + "     }\n"
-        + "   }\n"
-        + " }\n";
+        + "root {\n"
+        + "  x {\n"
+        + "    y {\n"
+        + "      (int) a = 0\n"
+        + "      z {\n"
+        + "        (String) z = hello\n"
+        + "        (Map<String, List<String>>) zNested = {a=[a1, a2], b=[b1, b2]}\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n";
     Project p = ProjectBuilder.builder().build();
     ExtensionAware root = (ExtensionAware) p.getExtensions().create("root", ExtX.class);
     ExtensionAware x = (ExtensionAware) root.getExtensions().create("x", ExtX.class);
     ExtensionAware y = (ExtensionAware) x.getExtensions().create("y", ExtY.class);
     y.getExtensions().create("z", ExtZ.class);
 
-    String result = ShowConfigurationTask.getAllFields(root, 0);
+    String result = ShowConfigurationTask.getExtensionData("root", root, 0);
     Assert.assertEquals(expected, result);
   }
 }

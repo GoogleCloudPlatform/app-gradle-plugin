@@ -39,62 +39,69 @@ import java.util.Map;
  */
 public class ShowConfigurationTask extends DefaultTask {
 
-  private static final String MODEL_PKG = "com.google.cloud.tools.gradle.appengine";
-  // don't access extensionInstance directly, we need to evaluate it AS LATE AS POSSIBLE
-  private Object extensionInstance;
+  private String extensionId;
 
   @Input
-  public Object getExtensionInstance() {
-    return extensionInstance;
+  public String getExtensionId() {
+    return extensionId;
   }
 
-  public void setExtensionInstance(Object extensionInstance) {
-    this.extensionInstance = extensionInstance;
+  public void setExtensionId(String extensionId) {
+    this.extensionId = extensionId;
   }
 
   @TaskAction
   public void showConfiguration() throws IllegalAccessException {
     // this is hardcoded in
-    getLogger().lifecycle("appengine {");
-    getLogger().lifecycle(getAllFields(getExtensionInstance(), 0) + "}");
+    Object extensionInstance = getProject().getExtensions().getByName(extensionId);
+    getLogger().lifecycle(getExtensionData(extensionId, extensionInstance, 0));
   }
 
   @VisibleForTesting
   // recursive (but doesn't search through nested objects, only nested extensions)
-  static String getAllFields(Object instance, int depth) throws IllegalAccessException {
+  static String getExtensionData(String extensionName, Object extensionInstance, int depth)
+      throws IllegalAccessException {
     StringBuilder result = new StringBuilder("");
-    // inspect all fields of the extension
-    if (instance.getClass().getName().endsWith("_Decorated")) {
-      for (Field field : instance.getClass().getSuperclass().getDeclaredFields()) {
-        result.append(getFieldData(field, instance, depth + 1));
+    // extension start block
+    result.append(spaces(depth))
+        .append(extensionName)
+        .append(" {\n");
+
+    // all non-extension fields
+    for (Field field : extensionInstance.getClass().getSuperclass().getDeclaredFields()) {
+      // ignore synthetic fields (stuff added by compiler or instrumenter)
+      if (field.isSynthetic()) {
+        continue;
+      }
+      result.append(getFieldData(field, extensionInstance, depth + 1));
+    }
+
+    // all extension fields
+    Map<String, Object> map = ((ExtensionContainerInternal) ((ExtensionAware) extensionInstance)
+        .getExtensions()).getAsMap();
+    for (String childExtensionName : map.keySet()) {
+      Object childExtensionInstance = map.get(childExtensionName);
+      // only expand out extensions we understand (we're ignoring the default ext group here, which
+      // is not ExtensionAware)
+      if (childExtensionInstance instanceof ExtensionAware) {
+        result.append(getExtensionData(childExtensionName, map.get(childExtensionName), depth + 1));
       }
     }
-    // inspect all extensions of the extension
-    if (instance instanceof ExtensionAware) {
-      depth += 1;
-      Map<String, Object> map =
-          ((ExtensionContainerInternal) ((ExtensionAware) instance).getExtensions()).getAsMap();
-      for (String extensionName : map.keySet()) {
-        if (map.get(extensionName).getClass().getSuperclass().getPackage().getName().startsWith(MODEL_PKG)) {
-          result.append(spaces(depth))
-              .append(extensionName)
-              .append(" {\n");
-          result.append(getAllFields(map.get(extensionName), depth + 1));
-          result.append(spaces(depth))
-              .append("}\n");
-        }
-      }
-    }
+
+    // extension end block
+    result.append(spaces(depth)).append("}\n");
+
     return result.toString();
   }
 
+  // Extract the type (and generic type parameters) and value for a given field.
   private static String getFieldData(Field root, Object instance, int depth) throws IllegalAccessException {
     StringBuilder result = new StringBuilder("");
     root.setAccessible(true);
     result.append(spaces(depth))
         .append("(")
         .append(root.getType().getSimpleName())
-        .append(getGenericTypeData(root))
+        .append(getGenericTypeData(root.getGenericType()))
         .append(") ")
         .append(root.getName())
         .append(" = ")
@@ -103,18 +110,26 @@ public class ShowConfigurationTask extends DefaultTask {
     return result.toString();
   }
 
-  private static String getGenericTypeData(Field f) {
-    Type genericType = f.getGenericType();
+  // Extract the generic type information <...>, recursively including any nested generic type info.
+  private static String getGenericTypeData(Type genericType) {
     List<String> types = Lists.newArrayList();
     if (genericType != null && genericType instanceof ParameterizedType) {
       for (Type t :((ParameterizedType)genericType).getActualTypeArguments()) {
-        types.add(((Class) t).getSimpleName());
+        if (t instanceof ParameterizedType) {
+          String nestedGeneric = ((Class) ((ParameterizedType) t).getRawType()).getSimpleName();
+          nestedGeneric += getGenericTypeData(t);
+          types.add(nestedGeneric);
+        }
+        else {
+          types.add(((Class) t).getSimpleName());
+        }
       }
     }
     return (types.size() > 0) ? "<" + Joiner.on(", ").join(types) + ">" : "";
   }
 
+  // control spaces to control tab width
   private static String spaces(int depth) {
-    return Strings.repeat(" ", depth);
+    return Strings.repeat(" ", depth * 2);
   }
 }

@@ -102,13 +102,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             showConfigurationTask.setGroup(APP_ENGINE_TASK_GROUP);
             showConfigurationTask.setDescription("Show current App Engine plugin configuration");
 
-            ((IConventionAware) showConfigurationTask).getConventionMapping()
-                .map("extensionInstance", new Callable<Object>() {
-                  @Override
-                  public Object call() throws Exception {
-                    return extension;
-                  }
-                });
+            showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
           }
         });
   }

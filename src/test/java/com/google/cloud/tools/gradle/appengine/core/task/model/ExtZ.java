@@ -17,6 +17,20 @@
 
 package com.google.cloud.tools.gradle.appengine.core.task.model;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ExtZ {
   private String z = "hello";
+  private Map<String, List<String>> zNested;
+
+  public ExtZ() {
+    // preserve order for testing
+    zNested = new LinkedHashMap<>();
+    zNested.put("a", Arrays.asList("a1", "a2"));
+    zNested.put("b", Arrays.asList("b1", "b2"));
+  }
 }

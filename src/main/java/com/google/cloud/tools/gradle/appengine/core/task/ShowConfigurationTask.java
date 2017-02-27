@@ -52,7 +52,6 @@ public class ShowConfigurationTask extends DefaultTask {
 
   @TaskAction
   public void showConfiguration() throws IllegalAccessException {
-    // this is hardcoded in
     Object extensionInstance = getProject().getExtensions().getByName(extensionId);
     getLogger().lifecycle(getExtensionData(extensionId, extensionInstance, 0));
   }

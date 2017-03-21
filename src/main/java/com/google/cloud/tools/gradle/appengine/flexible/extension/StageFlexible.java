@@ -42,11 +42,11 @@ public class StageFlexible implements StageFlexibleConfiguration {
 
   public StageFlexible(Project project, File stagingDirectory) {
     this.project = project;
-    File projectRoot = project.getProjectDir();
+    File projectDir = project.getProjectDir();
 
     this.stagingDirectory = stagingDirectory;
-    this.appEngineDirectory = new File(projectRoot, "src/main/appengine");
-    File dockerOptionalDir = new File(projectRoot, "src/main/docker");
+    this.appEngineDirectory = new File(projectDir, "src/main/appengine");
+    File dockerOptionalDir = new File(projectDir, "src/main/docker");
     if (dockerOptionalDir.exists()) {
       dockerDirectory = dockerOptionalDir;
     }

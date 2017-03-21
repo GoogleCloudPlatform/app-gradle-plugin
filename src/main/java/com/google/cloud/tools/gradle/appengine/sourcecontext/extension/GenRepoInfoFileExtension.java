@@ -38,7 +38,7 @@ public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
   public GenRepoInfoFileExtension(Project project) {
     this.project = project;
     outputDirectory = new File(project.getBuildDir(), "sourceContext");
-    sourceDirectory = new File(project.getRootDir(), "src");
+    sourceDirectory = new File(project.getProjectDir(), "src");
   }
 
   @OutputDirectory

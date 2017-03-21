@@ -42,7 +42,7 @@ public class StageFlexible implements StageFlexibleConfiguration {
 
   public StageFlexible(Project project, File stagingDirectory) {
     this.project = project;
-    File projectRoot = project.getRootDir();
+    File projectRoot = project.getProjectDir();
 
     this.stagingDirectory = stagingDirectory;
     this.appEngineDirectory = new File(projectRoot, "src/main/appengine");

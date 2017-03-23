@@ -49,14 +49,10 @@ public class DevAppServerStartTask extends DefaultTask {
 
   @TaskAction
   public void startAction() throws AppEngineException, IOException {
-    ProcessOutputLineListener listener =
-        new GradleLoggerOutputListener(getLogger(), LogLevel.LIFECYCLE);
 
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger())
         .async(true)
         .runDevAppServerWait(runConfig.getStartSuccessTimeout())
-        .addStdErrLineListener(listener)
-        .addStdOutLineListener(listener)
         .build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);

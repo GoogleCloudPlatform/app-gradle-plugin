@@ -47,12 +47,7 @@ public class DevAppServerRunTask extends DefaultTask {
 
   @TaskAction
   public void runAction() throws AppEngineException {
-    ProcessOutputLineListener listener =
-        new GradleLoggerOutputListener(getLogger(), LogLevel.LIFECYCLE);
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
-        .addStdOutLineListener(listener)
-        .addStdErrLineListener(listener)
-        .build();
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(sdk);
     server.run(runConfig);
   }

@@ -47,12 +47,7 @@ public class DeployTask extends DefaultTask {
 
   @TaskAction
   public void deployAction() throws AppEngineException {
-    ProcessOutputLineListener listener =
-        new GradleLoggerOutputListener(getLogger(), LogLevel.LIFECYCLE);
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
-        .addStdOutLineListener(listener)
-        .addStdErrLineListener(listener)
-        .build();
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deploy(deployConfig);
   }

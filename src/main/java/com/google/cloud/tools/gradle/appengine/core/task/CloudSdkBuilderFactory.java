@@ -20,7 +20,11 @@ package com.google.cloud.tools.gradle.appengine.core.task;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
+import com.google.cloud.tools.gradle.appengine.util.io.GradleLoggerOutputListener;
 import java.io.File;
+import org.gradle.api.logging.LogLevel;
+import org.gradle.api.logging.Logger;
 
 /**
  * Factory for generating Cloud Sdk Builder with all common configuration
@@ -40,4 +44,22 @@ public class CloudSdkBuilderFactory {
         .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
         .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion());
   }
+
+  /**
+   * Create a builder with auto-configured output handlers.
+   */
+  public CloudSdk.Builder newBuilder(Logger logger) {
+    ProcessOutputLineListener listener =
+        new GradleLoggerOutputListener(logger, LogLevel.LIFECYCLE);
+
+    return new CloudSdk.Builder()
+        .sdkPath(cloudSdkHome != null ? cloudSdkHome.toPath() : null)
+        .exitListener(new NonZeroExceptionExitListener())
+        .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
+        .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion())
+        .addStdOutLineListener(listener)
+        .addStdErrLineListener(listener);
+  }
+
+
 }

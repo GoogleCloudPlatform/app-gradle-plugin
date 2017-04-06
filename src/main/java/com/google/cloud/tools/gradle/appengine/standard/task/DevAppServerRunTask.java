@@ -19,18 +19,13 @@ package com.google.cloud.tools.gradle.appengine.standard.task;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer1;
 import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
-import com.google.common.collect.ImmutableList;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.ProjectConfigurationException;
 import org.gradle.api.tasks.TaskAction;
 
-/**
- * Run App Engine Standard Environment applications locally
- */
+/** Run App Engine Standard Environment applications locally. */
 public class DevAppServerRunTask extends DefaultTask {
 
   private Run runConfig;
@@ -45,12 +40,11 @@ public class DevAppServerRunTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task entrypoint : run the devappserver (blocking). */
   @TaskAction
   public void runAction() throws AppEngineException, ProjectConfigurationException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
 
     serverHelper.getAppServer(sdk, runConfig).run(runConfig);
   }
-
-
 }

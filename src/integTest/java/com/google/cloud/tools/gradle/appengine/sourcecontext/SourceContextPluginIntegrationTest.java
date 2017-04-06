@@ -18,16 +18,6 @@
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
 import com.google.common.base.Charsets;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.tools.ant.util.FileUtils;
-import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.GradleRunner;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,26 +28,36 @@ import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.apache.commons.io.IOUtils;
+import org.apache.tools.ant.util.FileUtils;
+import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.GradleRunner;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-/**
- * Tests for SourceContext plugin that use git context information.
- */
+/** Tests for SourceContext plugin that use git context information. */
 public class SourceContextPluginIntegrationTest {
 
-  @Rule
-  public final TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
+  /** Create a test project with git source context. */
   public void setUpTestProject() throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
 
     Path src = Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
-    InputStream buildFileContent = getClass().getClassLoader()
-        .getResourceAsStream("projects/sourcecontext-project/build.gradle");
+    InputStream buildFileContent =
+        getClass()
+            .getClassLoader()
+            .getResourceAsStream("projects/sourcecontext-project/build.gradle");
     Files.copy(buildFileContent, buildFile);
 
     Path gitContext = testProjectDir.getRoot().toPath().resolve("gitContext.zip");
-    InputStream gitContextContent = getClass().getClassLoader()
-        .getResourceAsStream("projects/sourcecontext-project/gitContext.zip");
+    InputStream gitContextContent =
+        getClass()
+            .getClassLoader()
+            .getResourceAsStream("projects/sourcecontext-project/gitContext.zip");
     Files.copy(gitContextContent, gitContext);
 
     try (ZipFile zipFile = new ZipFile(gitContext.toFile())) {
@@ -89,21 +89,31 @@ public class SourceContextPluginIntegrationTest {
   @Test
   public void testCreateSourceContext() throws IOException {
     setUpTestProject();
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments(":assemble")
-        .build();
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withArguments(":assemble")
+            .build();
 
     String commitHash = "9a282640c4a91769d328bbf23e8d8b2b5dcbbb5b";
 
-    File sourceContextsFile = new File(testProjectDir.getRoot(), "build/exploded-app/WEB-INF/classes/source-contexts.json");
-    Assert.assertTrue(sourceContextsFile.getAbsolutePath() + " is missing", sourceContextsFile.exists());
-    Assert.assertTrue(com.google.common.io.Files.toString(sourceContextsFile, Charsets.UTF_8).contains(commitHash));
+    File sourceContextsFile =
+        new File(
+            testProjectDir.getRoot(), "build/exploded-app/WEB-INF/classes/source-contexts.json");
+    Assert.assertTrue(
+        sourceContextsFile.getAbsolutePath() + " is missing", sourceContextsFile.exists());
+    Assert.assertTrue(
+        com.google.common.io.Files.toString(sourceContextsFile, Charsets.UTF_8)
+            .contains(commitHash));
 
-    File sourceContextFile = new File(testProjectDir.getRoot(), "build/exploded-app/WEB-INF/classes/source-context.json");
-    Assert.assertTrue(sourceContextFile.getAbsolutePath() + " is missing", sourceContextFile.exists());
-    Assert.assertTrue(com.google.common.io.Files.toString(sourceContextFile, Charsets.UTF_8).contains(commitHash));
+    File sourceContextFile =
+        new File(
+            testProjectDir.getRoot(), "build/exploded-app/WEB-INF/classes/source-context.json");
+    Assert.assertTrue(
+        sourceContextFile.getAbsolutePath() + " is missing", sourceContextFile.exists());
+    Assert.assertTrue(
+        com.google.common.io.Files.toString(sourceContextFile, Charsets.UTF_8)
+            .contains(commitHash));
   }
-
 }

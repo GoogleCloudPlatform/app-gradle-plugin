@@ -18,13 +18,10 @@
 package com.google.cloud.tools.gradle.appengine.util.io;
 
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
-
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 
-/**
- * Output listener that writes to a gradle logger
- */
+/** Output listener that writes to a gradle logger. */
 public class GradleLoggerOutputListener implements ProcessOutputLineListener {
 
   private final Logger logger;

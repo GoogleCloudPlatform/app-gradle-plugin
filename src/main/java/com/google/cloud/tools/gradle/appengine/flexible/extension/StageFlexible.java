@@ -18,19 +18,14 @@
 package com.google.cloud.tools.gradle.appengine.flexible.extension;
 
 import com.google.cloud.tools.appengine.api.deploy.StageFlexibleConfiguration;
-import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
-
+import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
-import java.io.File;
-
-/**
- * Extension element to define Stage configurations for App Engine Flexible Environments
- */
+/** Extension element to define Stage configurations for App Engine Flexible Environments. */
 public class StageFlexible implements StageFlexibleConfiguration {
 
   private final Project project;
@@ -40,6 +35,7 @@ public class StageFlexible implements StageFlexibleConfiguration {
   private File artifact;
   private File stagingDirectory;
 
+  /** Constructor. */
   public StageFlexible(Project project, File stagingDirectory) {
     this.project = project;
     File projectDir = project.getProjectDir();

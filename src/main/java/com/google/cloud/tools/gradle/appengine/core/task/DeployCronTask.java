@@ -25,6 +25,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
+/** Task to deploy cron configuration. */
 public class DeployCronTask extends DefaultTask {
 
   private DeployProjectConfigurationConfiguration config;
@@ -38,6 +39,7 @@ public class DeployCronTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task Entrypoint : Deploy cron.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();

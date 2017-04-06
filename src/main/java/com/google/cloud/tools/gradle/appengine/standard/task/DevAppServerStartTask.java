@@ -19,18 +19,13 @@ package com.google.cloud.tools.gradle.appengine.standard.task;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer1;
 import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-/**
- * Start the App Engine development server asynchronously
- */
+/** Start the App Engine development server asynchronously. */
 public class DevAppServerStartTask extends DefaultTask {
 
   private Run runConfig;
@@ -45,15 +40,17 @@ public class DevAppServerStartTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task entrypoint : start the dev appserver (non-blocking). */
   @TaskAction
   public void startAction() throws AppEngineException, IOException {
 
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger())
-        .async(true)
-        .runDevAppServerWait(runConfig.getStartSuccessTimeout())
-        .build();
+    CloudSdk sdk =
+        cloudSdkBuilderFactory
+            .newBuilder(getLogger())
+            .async(true)
+            .runDevAppServerWait(runConfig.getStartSuccessTimeout())
+            .build();
 
     serverHelper.getAppServer(sdk, runConfig).run(runConfig);
   }
-
 }

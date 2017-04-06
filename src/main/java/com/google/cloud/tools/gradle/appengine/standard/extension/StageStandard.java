@@ -18,18 +18,14 @@
 package com.google.cloud.tools.gradle.appengine.standard.extension;
 
 import com.google.cloud.tools.appengine.api.deploy.StageStandardConfiguration;
-
+import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
-import java.io.File;
-
-/**
- * Extension element to define Stage configurations for App Engine Standard Environments
- */
+/** Extension element to define Stage configurations for App Engine Standard Environments. */
 public class StageStandard implements StageStandardConfiguration {
 
   private final Project project;
@@ -47,6 +43,7 @@ public class StageStandard implements StageStandardConfiguration {
   private Boolean disableJarJsps;
   private String runtime;
 
+  /** Constuctor. */
   public StageStandard(Project project, File sourceDirectory, File stagingDirectory) {
     this.project = project;
     this.sourceDirectory = sourceDirectory;
@@ -58,6 +55,7 @@ public class StageStandard implements StageStandardConfiguration {
   public File getSourceDirectory() {
     return sourceDirectory;
   }
+
   public void setSourceDirectory(Object sourceDirectory) {
     this.sourceDirectory = project.file(sourceDirectory);
   }
@@ -67,6 +65,7 @@ public class StageStandard implements StageStandardConfiguration {
   public File getStagingDirectory() {
     return stagingDirectory;
   }
+
   public void setStagingDirectory(Object stagingDirectory) {
     this.stagingDirectory = project.file(stagingDirectory);
   }

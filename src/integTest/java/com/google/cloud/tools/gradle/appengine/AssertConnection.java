@@ -18,21 +18,18 @@
 package com.google.cloud.tools.gradle.appengine;
 
 import com.google.common.io.CharStreams;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 
-/**
- * Assertions for checking connections web apps
- */
+/** Assertions for checking connections web apps. */
 public class AssertConnection {
 
+  /** Connect and assert response is as expected. */
   public static void assertResponse(String url, int expectedCode, String expectedText) {
     try {
       HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
@@ -45,10 +42,11 @@ public class AssertConnection {
     }
   }
 
+  /** Connect and assert that the target is unreachable. */
   public static void assertUnreachable(String url) throws IOException {
     try {
-      HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:8080")
-          .openConnection();
+      HttpURLConnection urlConnection =
+          (HttpURLConnection) new URL("http://localhost:8080").openConnection();
       urlConnection.getResponseCode();
       Assert.fail("ConnectException expected");
     } catch (IOException e) {
@@ -57,5 +55,4 @@ public class AssertConnection {
       }
     }
   }
-
 }

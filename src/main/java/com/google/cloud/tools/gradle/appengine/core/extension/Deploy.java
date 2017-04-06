@@ -19,16 +19,12 @@ package com.google.cloud.tools.gradle.appengine.core.extension;
 
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
-
-import org.gradle.api.Project;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.gradle.api.Project;
 
-/**
- * Extension element to define Deployable configurations for App Engine
- */
+/** Extension element to define Deployable configurations for App Engine. */
 public class Deploy implements DeployConfiguration, DeployProjectConfigurationConfiguration {
 
   // named gradleProject to disambiguate with deploy parameter "project"
@@ -128,5 +124,4 @@ public class Deploy implements DeployConfiguration, DeployProjectConfigurationCo
   public File getAppEngineDirectory() {
     return appEngineDirectory;
   }
-
 }

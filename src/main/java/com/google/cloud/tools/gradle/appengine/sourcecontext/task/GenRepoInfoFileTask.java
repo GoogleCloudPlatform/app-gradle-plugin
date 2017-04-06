@@ -19,19 +19,13 @@ package com.google.cloud.tools.gradle.appengine.sourcecontext.task;
 
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkGenRepoInfoFile;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
 import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.sourcecontext.extension.GenRepoInfoFileExtension;
-import com.google.cloud.tools.gradle.appengine.util.io.GradleLoggerOutputListener;
-
 import org.gradle.api.DefaultTask;
-import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 
-/**
- * Generate source context information.
- */
+/** Generate source context information. */
 public class GenRepoInfoFileTask extends DefaultTask {
 
   private GenRepoInfoFileExtension configuration;
@@ -50,6 +44,7 @@ public class GenRepoInfoFileTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task entrypoint : generate source context file. */
   @TaskAction
   public void generateRepositoryInfoFile() {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();

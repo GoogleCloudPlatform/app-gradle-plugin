@@ -23,7 +23,13 @@ import com.google.cloud.tools.gradle.appengine.sourcecontext.extension.GenRepoIn
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.plugins.ExtensionAware;
@@ -37,28 +43,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-
-/**
- * Test SourceContext Plugin configuration.
- */
+/** Test SourceContext plugin configuration. */
 public class SourceContextPluginTest {
 
-  @Rule
-  public final TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
-  public void setUpTestProject() throws IOException {
+  private void setUpTestProject() throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
 
     Path src = Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
-    InputStream buildFileContent = getClass().getClassLoader()
-        .getResourceAsStream("projects/SourceContextPluginTest/build.gradle");
+    InputStream buildFileContent =
+        getClass()
+            .getClassLoader()
+            .getResourceAsStream("projects/SourceContextPluginTest/build.gradle");
     Files.copy(buildFileContent, buildFile);
 
     Path webInf = testProjectDir.getRoot().toPath().resolve("src/main/webapp/WEB-INF");
@@ -70,36 +67,46 @@ public class SourceContextPluginTest {
   @Test
   public void testCreateSourceContextViaAssemble_taskTree() throws IOException {
     setUpTestProject();
-    BuildResult buildResult = GradleRunner.create()
-        .withProjectDir(testProjectDir.getRoot())
-        .withPluginClasspath()
-        .withArguments("assemble", "--dry-run")
-        .build();
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withArguments("assemble", "--dry-run")
+            .build();
 
-    final List<String> expected = Arrays
-        .asList(":_createSourceContext", ":compileJava", ":processResources", ":classes", ":war",
-            ":explodeWar", ":assemble");
+    final List<String> expected =
+        Arrays.asList(
+            ":_createSourceContext",
+            ":compileJava",
+            ":processResources",
+            ":classes",
+            ":war",
+            ":explodeWar",
+            ":assemble");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
   public void testDefaultConfiguration() throws IOException {
-    Project p = ProjectBuilder.builder().withProjectDir(testProjectDir.getRoot()).build();
-
-    File appengineWebXml = new File(testProjectDir.getRoot(), "src/main/webapp/WEB-INF/appengine-web.xml");
+    File appengineWebXml =
+        new File(testProjectDir.getRoot(), "src/main/webapp/WEB-INF/appengine-web.xml");
     appengineWebXml.getParentFile().mkdirs();
     appengineWebXml.createNewFile();
     Files.write(appengineWebXml.toPath(), "<web-app/>".getBytes());
 
-    p.getPluginManager().apply(JavaPlugin.class);
-    p.getPluginManager().apply(WarPlugin.class);
-    p.getPluginManager().apply(AppEngineStandardPlugin.class);
-    p.getPluginManager().apply(SourceContextPlugin.class);
-    ((ProjectInternal) p).evaluate();
+    Project project = ProjectBuilder.builder().withProjectDir(testProjectDir.getRoot()).build();
+    project.getPluginManager().apply(JavaPlugin.class);
+    project.getPluginManager().apply(WarPlugin.class);
+    project.getPluginManager().apply(AppEngineStandardPlugin.class);
+    project.getPluginManager().apply(SourceContextPlugin.class);
+    ((ProjectInternal) project).evaluate();
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    GenRepoInfoFileExtension genRepoInfoExt = new ExtensionUtil(ext).get(SourceContextPlugin.SOURCE_CONTEXT_EXTENSION);
-    Assert.assertEquals(new File(p.getBuildDir(), "sourceContext"), genRepoInfoExt.getOutputDirectory());
+    ExtensionAware ext =
+        (ExtensionAware) project.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    GenRepoInfoFileExtension genRepoInfoExt =
+        new ExtensionUtil(ext).get(SourceContextPlugin.SOURCE_CONTEXT_EXTENSION);
+    Assert.assertEquals(
+        new File(project.getBuildDir(), "sourceContext"), genRepoInfoExt.getOutputDirectory());
   }
 }

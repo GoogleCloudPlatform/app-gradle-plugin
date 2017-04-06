@@ -24,7 +24,11 @@ import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
 import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.plugins.ExtensionAware;
@@ -36,21 +40,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
+/** Tests to check we are parsing objects -> file/files correctly. */
 public class AppEngineStandardExtensionParserTest {
 
-  @Rule
-  public final TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
-  public Project setUpTestProject(String buildFileName) throws IOException {
+  private Project setUpTestProject(String buildFileName) throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
-    InputStream buildFileContent = getClass().getClassLoader()
-        .getResourceAsStream("projects/AppEnginePluginTest/Extension/" + buildFileName + ".gradle");
+    InputStream buildFileContent =
+        getClass()
+            .getClassLoader()
+            .getResourceAsStream(
+                "projects/AppEnginePluginTest/Extension/" + buildFileName + ".gradle");
     Files.copy(buildFileContent, buildFile);
 
     Path webInf = testProjectDir.getRoot().toPath().resolve("src/main/webapp/WEB-INF");
@@ -71,8 +72,8 @@ public class AppEngineStandardExtensionParserTest {
   public void testFileAsString() throws IOException {
     Project p = setUpTestProject("file-as-string");
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions()
-        .getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    ExtensionAware ext =
+        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
     Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
     StageStandard stage = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
     Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
@@ -92,8 +93,8 @@ public class AppEngineStandardExtensionParserTest {
   public void testFilesAsString() throws IOException {
     Project p = setUpTestProject("files-as-string");
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions()
-        .getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    ExtensionAware ext =
+        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
     Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
     Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
@@ -109,8 +110,8 @@ public class AppEngineStandardExtensionParserTest {
   public void testFileAsFile() throws IOException {
     Project p = setUpTestProject("file-as-file");
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions()
-        .getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    ExtensionAware ext =
+        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
     Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
     StageStandard stage = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
     Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
@@ -130,8 +131,8 @@ public class AppEngineStandardExtensionParserTest {
   public void testFilesAsFiles() throws IOException {
     Project p = setUpTestProject("files-as-files");
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions()
-        .getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    ExtensionAware ext =
+        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
     Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
     Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 

@@ -1,5 +1,4 @@
 import java.io.IOException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,8 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
 
   @Override
-  public void service(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException {
+  public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
 
     // no cache
@@ -18,5 +16,4 @@ public class HelloServlet extends HttpServlet {
 
     resp.getWriter().print("Hello from the App Engine Flexible project.");
   }
-
 }

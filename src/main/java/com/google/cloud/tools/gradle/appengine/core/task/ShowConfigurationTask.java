@@ -21,22 +21,18 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.internal.plugins.ExtensionContainerInternal;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Task to print the appengine configuration closure
- */
+/** Task to print the appengine configuration closure. */
 public class ShowConfigurationTask extends DefaultTask {
 
   private String extensionId;
@@ -50,6 +46,7 @@ public class ShowConfigurationTask extends DefaultTask {
     this.extensionId = extensionId;
   }
 
+  /** Task entrypoint : Log out configuration to lifecyle. */
   @TaskAction
   public void showConfiguration() throws IllegalAccessException {
     Object extensionInstance = getProject().getExtensions().getByName(extensionId);
@@ -62,9 +59,7 @@ public class ShowConfigurationTask extends DefaultTask {
       throws IllegalAccessException {
     StringBuilder result = new StringBuilder("");
     // extension start block
-    result.append(spaces(depth))
-        .append(extensionName)
-        .append(" {\n");
+    result.append(spaces(depth)).append(extensionName).append(" {\n");
 
     // all non-extension fields
     for (Field field : extensionInstance.getClass().getSuperclass().getDeclaredFields()) {
@@ -76,8 +71,9 @@ public class ShowConfigurationTask extends DefaultTask {
     }
 
     // all extension fields
-    Map<String, Object> map = ((ExtensionContainerInternal) ((ExtensionAware) extensionInstance)
-        .getExtensions()).getAsMap();
+    Map<String, Object> map =
+        ((ExtensionContainerInternal) ((ExtensionAware) extensionInstance).getExtensions())
+            .getAsMap();
     for (String childExtensionName : map.keySet()) {
       Object childExtensionInstance = map.get(childExtensionName);
       // only expand out extensions we understand (we're ignoring the default ext group here, which
@@ -94,10 +90,12 @@ public class ShowConfigurationTask extends DefaultTask {
   }
 
   // Extract the type (and generic type parameters) and value for a given field.
-  private static String getFieldData(Field root, Object instance, int depth) throws IllegalAccessException {
+  private static String getFieldData(Field root, Object instance, int depth)
+      throws IllegalAccessException {
     StringBuilder result = new StringBuilder("");
     root.setAccessible(true);
-    result.append(spaces(depth))
+    result
+        .append(spaces(depth))
         .append("(")
         .append(root.getType().getSimpleName())
         .append(getGenericTypeData(root.getGenericType()))
@@ -113,13 +111,12 @@ public class ShowConfigurationTask extends DefaultTask {
   private static String getGenericTypeData(Type genericType) {
     List<String> types = Lists.newArrayList();
     if (genericType != null && genericType instanceof ParameterizedType) {
-      for (Type t :((ParameterizedType)genericType).getActualTypeArguments()) {
+      for (Type t : ((ParameterizedType) genericType).getActualTypeArguments()) {
         if (t instanceof ParameterizedType) {
           String nestedGeneric = ((Class) ((ParameterizedType) t).getRawType()).getSimpleName();
           nestedGeneric += getGenericTypeData(t);
           types.add(nestedGeneric);
-        }
-        else {
+        } else {
           types.add(((Class) t).getSimpleName());
         }
       }

@@ -26,9 +26,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 
-/**
- * Stage App Engine Standard Environment applications for deployment
- */
+/** Stage App Engine Standard Environment applications for deployment. */
 public class StageStandardTask extends DefaultTask {
 
   private StageStandard stagingConfig;
@@ -36,8 +34,8 @@ public class StageStandardTask extends DefaultTask {
 
   @Nested
   public StageStandard getStagingConfig() {
-                                               return stagingConfig;
-                                                                    }
+    return stagingConfig;
+  }
 
   public void setStagingConfig(StageStandard stagingConfig) {
     this.stagingConfig = stagingConfig;
@@ -47,6 +45,7 @@ public class StageStandardTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task entrypoint : stage the standard app. */
   @TaskAction
   public void stageAction() throws AppEngineException {
     getProject().delete(stagingConfig.getStagingDirectory());

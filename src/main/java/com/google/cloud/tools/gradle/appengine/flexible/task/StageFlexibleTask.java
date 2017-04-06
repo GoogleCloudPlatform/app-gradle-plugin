@@ -21,14 +21,11 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineFlexibleStaging;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineFlexibleStaging;
 import com.google.cloud.tools.gradle.appengine.flexible.extension.StageFlexible;
-
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 
-/**
- * Stage App Engine Flexible Environment applications for deployment
- */
+/** Stage App Engine Flexible Environment applications for deployment. */
 public class StageFlexibleTask extends DefaultTask {
 
   private StageFlexible stagingConfig;
@@ -42,6 +39,7 @@ public class StageFlexibleTask extends DefaultTask {
     this.stagingConfig = stagingConfig;
   }
 
+  /** Task entrypoint : Stage the flexible application. */
   @TaskAction
   public void stageAction() throws AppEngineException {
     getProject().delete(stagingConfig.getStagingDirectory());

@@ -31,17 +31,17 @@ import org.gradle.api.ProjectConfigurationException;
 
 /**
  * Helper class for DevAppServer[X]Task to obtain the correct server or configuration based on the
- * server version
+ * server version.
  */
 public class DevAppServerHelper {
 
   private static final String V1 = "1";
   private static final String V2 = "2-alpha";
-  @VisibleForTesting
-  static final List<String> SERVER_VERSIONS = ImmutableList.of(V1, V2);
+  @VisibleForTesting static final List<String> SERVER_VERSIONS = ImmutableList.of(V1, V2);
 
   private Validator validator = new Validator();
 
+  /** Return an appserver based on serverVersion. */
   public AppEngineDevServer getAppServer(CloudSdk sdk, Run run) {
 
     String serverVersion = run.getServerVersion();
@@ -57,6 +57,7 @@ public class DevAppServerHelper {
     }
   }
 
+  /** Return a stop configuration based on serverVersion. */
   public StopConfiguration getStopConfiguration(Run run) {
 
     String serverVersion = run.getServerVersion();
@@ -66,13 +67,13 @@ public class DevAppServerHelper {
 
     switch (serverVersion) {
       case V1:
-          stop.setAdminHost(run.getHost());
-          stop.setAdminPort(run.getPort());
-          return stop;
+        stop.setAdminHost(run.getHost());
+        stop.setAdminPort(run.getPort());
+        return stop;
       case V2:
-          stop.setAdminHost(run.getAdminHost());
-          stop.setAdminPort(run.getAdminPort());
-          return stop;
+        stop.setAdminHost(run.getAdminHost());
+        stop.setAdminPort(run.getAdminPort());
+        return stop;
       default:
         throw new AssertionError("Unexpected serverVersion " + run.getServerVersion());
     }
@@ -85,8 +86,7 @@ public class DevAppServerHelper {
     void validateServerVersion(String serverVersion) throws ProjectConfigurationException {
       if (!SERVER_VERSIONS.contains(serverVersion)) {
         throw new ProjectConfigurationException(
-            "Invalid serverVersion '" + serverVersion + "' use one of " + SERVER_VERSIONS,
-            null);
+            "Invalid serverVersion '" + serverVersion + "' use one of " + SERVER_VERSIONS, null);
       }
     }
   }

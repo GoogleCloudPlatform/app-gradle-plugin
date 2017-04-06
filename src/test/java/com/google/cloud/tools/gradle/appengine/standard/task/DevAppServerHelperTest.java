@@ -42,32 +42,29 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DevAppServerHelperTest {
 
-  @Mock
-  private CloudSdk sdk;
+  @Mock private CloudSdk sdk;
 
-  @Mock
-  private Run run;
+  @Mock private Run run;
 
-  @Spy
-  private Validator validator;
+  @Spy private Validator validator;
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
+  @Rule public ExpectedException exception = ExpectedException.none();
 
-  @InjectMocks
-  private DevAppServerHelper helper = new DevAppServerHelper();
+  @InjectMocks private DevAppServerHelper helper = new DevAppServerHelper();
 
   @Test
   public void testGetAppServer_v1() {
     when(run.getServerVersion()).thenReturn("1");
-    Assert.assertThat(helper.getAppServer(sdk, run), Matchers.instanceOf(CloudSdkAppEngineDevServer1.class));
+    Assert.assertThat(
+        helper.getAppServer(sdk, run), Matchers.instanceOf(CloudSdkAppEngineDevServer1.class));
     verify(validator, times(1)).validateServerVersion(run.getServerVersion());
   }
 
   @Test
   public void testGetAppServer_v2() {
     when(run.getServerVersion()).thenReturn("2-alpha");
-    Assert.assertThat(helper.getAppServer(sdk, run), Matchers.instanceOf(CloudSdkAppEngineDevServer.class));
+    Assert.assertThat(
+        helper.getAppServer(sdk, run), Matchers.instanceOf(CloudSdkAppEngineDevServer.class));
     verify(validator, times(1)).validateServerVersion(run.getServerVersion());
   }
 
@@ -75,7 +72,8 @@ public class DevAppServerHelperTest {
   public void testGetAppServer_badValue() {
     when(run.getServerVersion()).thenReturn("nonsense");
     exception.expect(ProjectConfigurationException.class);
-    exception.expectMessage("Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
+    exception.expectMessage(
+        "Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
 
     helper.getAppServer(sdk, run);
   }
@@ -111,7 +109,8 @@ public class DevAppServerHelperTest {
     when(run.getServerVersion()).thenReturn("nonsense");
 
     exception.expect(ProjectConfigurationException.class);
-    exception.expectMessage("Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
+    exception.expectMessage(
+        "Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
 
     helper.getStopConfiguration(run);
   }
@@ -131,9 +130,9 @@ public class DevAppServerHelperTest {
     Validator validatorUnderTest = new Validator();
 
     exception.expect(ProjectConfigurationException.class);
-    exception.expectMessage("Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
+    exception.expectMessage(
+        "Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
 
     validatorUnderTest.validateServerVersion("nonsense");
   }
-
 }

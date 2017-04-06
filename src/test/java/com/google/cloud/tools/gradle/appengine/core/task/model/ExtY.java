@@ -18,5 +18,5 @@
 package com.google.cloud.tools.gradle.appengine.core.task.model;
 
 public class ExtY {
-  int a = 0;
+  int yy = 0;
 }

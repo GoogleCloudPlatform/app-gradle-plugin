@@ -18,18 +18,14 @@
 package com.google.cloud.tools.gradle.appengine.standard.extension;
 
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
-
 import com.google.common.collect.ImmutableList;
-import org.gradle.api.Project;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
 
-/**
- * Extension element to define Run configurations for App Engine Standard Environments
- */
+/** Extension element to define Run configurations for App Engine Standard Environments. */
 public class Run implements RunConfiguration {
 
   private final Project project;
@@ -61,6 +57,7 @@ public class Run implements RunConfiguration {
   private Boolean clearDatastore;
   private File datastorePath;
 
+  /** Constructor. */
   public Run(Project project, File explodedAppDir) {
     this.project = project;
     startSuccessTimeout = 20;
@@ -84,9 +81,14 @@ public class Run implements RunConfiguration {
     this.serverVersion = serverVersion;
   }
 
+  /** Deprecated in favor of "services". */
   @Deprecated
   public void setAppYamls(Object appYamls) {
-    project.getLogger().warn("'appYamls' is deprecated, this parameter will set 'services'. Use 'services' in the future.");
+    project
+        .getLogger()
+        .warn(
+            "'appYamls' is deprecated, this parameter will set 'services'."
+                + " Use 'services' in the future.");
     setServices(appYamls);
   }
 
@@ -306,4 +308,3 @@ public class Run implements RunConfiguration {
     this.datastorePath = project.file(datastorePath);
   }
 }
-

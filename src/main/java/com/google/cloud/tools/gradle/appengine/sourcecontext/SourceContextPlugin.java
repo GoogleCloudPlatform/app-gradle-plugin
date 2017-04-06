@@ -23,7 +23,6 @@ import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.sourcecontext.extension.GenRepoInfoFileExtension;
 import com.google.cloud.tools.gradle.appengine.sourcecontext.task.GenRepoInfoFileTask;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
-
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -33,11 +32,7 @@ import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
 
-import java.io.File;
-
-/**
- * Plugin for adding source context into App Engine project
- */
+/** Plugin for adding source context into App Engine project. */
 public class SourceContextPlugin implements Plugin<Project> {
 
   private Project project;
@@ -55,38 +50,47 @@ public class SourceContextPlugin implements Plugin<Project> {
   }
 
   private void createExtension() {
-    ExtensionAware appengine = new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
+    ExtensionAware appengine =
+        new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
     final Tools tools = new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
 
     // create our extension under the root appengine extension
-    extension = appengine.getExtensions()
-        .create(SOURCE_CONTEXT_EXTENSION, GenRepoInfoFileExtension.class, project);
+    extension =
+        appengine
+            .getExtensions()
+            .create(SOURCE_CONTEXT_EXTENSION, GenRepoInfoFileExtension.class, project);
 
     // wait to read the cloudSdkHome till after project evaluation
-    project.afterEvaluate(new Action<Project>() {
-      @Override
-      public void execute(Project project) {
-        cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome());
-      }
-    });
+    project.afterEvaluate(
+        new Action<Project>() {
+          @Override
+          public void execute(Project project) {
+            cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome());
+          }
+        });
   }
 
   private void createSourceContextTask() {
-    project.getTasks().create("_createSourceContext", GenRepoInfoFileTask.class,
-        new Action<GenRepoInfoFileTask>() {
-          @Override
-          public void execute(final GenRepoInfoFileTask genRepoInfoFile) {
-            genRepoInfoFile.setDescription("_internal");
-
-            project.afterEvaluate(new Action<Project>() {
+    project
+        .getTasks()
+        .create(
+            "_createSourceContext",
+            GenRepoInfoFileTask.class,
+            new Action<GenRepoInfoFileTask>() {
               @Override
-              public void execute(Project project) {
-                genRepoInfoFile.setConfiguration(extension);
-                genRepoInfoFile.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+              public void execute(final GenRepoInfoFileTask genRepoInfoFile) {
+                genRepoInfoFile.setDescription("_internal");
+
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        genRepoInfoFile.setConfiguration(extension);
+                        genRepoInfoFile.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
               }
             });
-          }
-        });
     configureArchiveTask(project.getTasks().withType(War.class).findByName("war"));
     configureArchiveTask(project.getTasks().withType(Jar.class).findByName("jar"));
   }
@@ -97,11 +101,13 @@ public class SourceContextPlugin implements Plugin<Project> {
       return;
     }
     archiveTask.dependsOn("_createSourceContext");
-    archiveTask.from(extension.getOutputDirectory(), new Action<CopySpec>() {
-      @Override
-      public void execute(CopySpec copySpec) {
-        copySpec.into("WEB-INF/classes");
-      }
-    });
+    archiveTask.from(
+        extension.getOutputDirectory(),
+        new Action<CopySpec>() {
+          @Override
+          public void execute(CopySpec copySpec) {
+            copySpec.into("WEB-INF/classes");
+          }
+        });
   }
 }

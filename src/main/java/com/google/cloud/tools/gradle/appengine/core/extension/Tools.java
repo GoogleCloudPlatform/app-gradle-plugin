@@ -17,13 +17,10 @@
 
 package com.google.cloud.tools.gradle.appengine.core.extension;
 
+import java.io.File;
 import org.gradle.api.Project;
 
-import java.io.File;
-
-/**
- * Extension element to define the location of cloud sdk tooling
- */
+/** Extension element to define the location of cloud sdk tooling. */
 public class Tools {
 
   private final Project project;

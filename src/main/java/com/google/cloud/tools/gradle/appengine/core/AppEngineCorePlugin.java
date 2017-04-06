@@ -28,18 +28,14 @@ import com.google.cloud.tools.gradle.appengine.core.task.DeployIndexTask;
 import com.google.cloud.tools.gradle.appengine.core.task.DeployQueueTask;
 import com.google.cloud.tools.gradle.appengine.core.task.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.task.ShowConfigurationTask;
-
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.internal.IConventionAware;
 import org.gradle.api.plugins.ExtensionAware;
 
-import java.util.concurrent.Callable;
-
 /**
- * Core plugin for App Engine, contains common tasks like deploy and show configuration
- * Also instantiates the "tools" extension to specify the cloud sdk path
+ * Core plugin for App Engine, contains common tasks like deploy and show configuration Also
+ * instantiates the "tools" extension to specify the cloud sdk path.
  */
 public class AppEngineCorePlugin implements Plugin<Project> {
 
@@ -79,136 +75,182 @@ public class AppEngineCorePlugin implements Plugin<Project> {
 
   private void createExtensions() {
     extension = project.getExtensions().create(APPENGINE_EXTENSION, AppEngine.class);
-    deployExtension = ((ExtensionAware) extension).getExtensions().create(DEPLOY_EXTENSION, Deploy.class, project);
-    toolsExtension = ((ExtensionAware) extension).getExtensions().create(TOOLS_EXTENSION, Tools.class, project);
+    deployExtension =
+        ((ExtensionAware) extension)
+            .getExtensions()
+            .create(DEPLOY_EXTENSION, Deploy.class, project);
+    toolsExtension =
+        ((ExtensionAware) extension).getExtensions().create(TOOLS_EXTENSION, Tools.class, project);
 
-    project.afterEvaluate(new Action<Project>() {
-      @Override
-      public void execute(Project project) {
-        // create the sdk builder factory after we know the location of the sdk
-        cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
-      }
-    });
+    project.afterEvaluate(
+        new Action<Project>() {
+          @Override
+          public void execute(Project project) {
+            // create the sdk builder factory after we know the location of the sdk
+            cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
+          }
+        });
   }
 
   private void createDeployTask() {
-    project.getTasks().create(DEPLOY_TASK_NAME, DeployTask.class, new Action<DeployTask>() {
-      @Override
-      public void execute(final DeployTask deployTask) {
-        deployTask.setGroup(APP_ENGINE_TASK_GROUP);
-        deployTask.setDescription("Deploy an App Engine application");
+    project
+        .getTasks()
+        .create(
+            DEPLOY_TASK_NAME,
+            DeployTask.class,
+            new Action<DeployTask>() {
+              @Override
+              public void execute(final DeployTask deployTask) {
+                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setDescription("Deploy an App Engine application");
 
-        project.afterEvaluate(new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            deployTask.setDeployConfig(deployExtension);
-            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-          }
-        });
-      }
-    });
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        deployTask.setDeployConfig(deployExtension);
+                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
+              }
+            });
   }
 
   private void createDeployCronTask() {
-    project.getTasks().create(DEPLOY_CRON_TASK_NAME, DeployCronTask.class, new Action<DeployCronTask>() {
-      @Override
-      public void execute(final DeployCronTask deployTask) {
-        deployTask.setGroup(APP_ENGINE_TASK_GROUP);
-        deployTask.setDescription("Deploy Cron configuration");
+    project
+        .getTasks()
+        .create(
+            DEPLOY_CRON_TASK_NAME,
+            DeployCronTask.class,
+            new Action<DeployCronTask>() {
+              @Override
+              public void execute(final DeployCronTask deployTask) {
+                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setDescription("Deploy Cron configuration");
 
-        project.afterEvaluate(new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            deployTask.setDeployConfig(deployExtension);
-            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-          }
-        });
-      }
-    });
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        deployTask.setDeployConfig(deployExtension);
+                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
+              }
+            });
   }
 
   private void createDeployDispatchTask() {
-    project.getTasks().create(DEPLOY_DISPATCH_TASK_NAME, DeployDispatchTask.class, new Action<DeployDispatchTask>() {
-      @Override
-      public void execute(final DeployDispatchTask deployTask) {
-        deployTask.setGroup(APP_ENGINE_TASK_GROUP);
-        deployTask.setDescription("Deploy Dispatch configuration");
+    project
+        .getTasks()
+        .create(
+            DEPLOY_DISPATCH_TASK_NAME,
+            DeployDispatchTask.class,
+            new Action<DeployDispatchTask>() {
+              @Override
+              public void execute(final DeployDispatchTask deployTask) {
+                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setDescription("Deploy Dispatch configuration");
 
-        project.afterEvaluate(new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            deployTask.setDeployConfig(deployExtension);
-            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-          }
-        });
-      }
-    });
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        deployTask.setDeployConfig(deployExtension);
+                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
+              }
+            });
   }
 
   private void createDeployDosTask() {
-    project.getTasks().create(DEPLOY_DOS_TASK_NAME, DeployDosTask.class, new Action<DeployDosTask>() {
-      @Override
-      public void execute(final DeployDosTask deployTask) {
-        deployTask.setGroup(APP_ENGINE_TASK_GROUP);
-        deployTask.setDescription("Deploy Dos configuration");
+    project
+        .getTasks()
+        .create(
+            DEPLOY_DOS_TASK_NAME,
+            DeployDosTask.class,
+            new Action<DeployDosTask>() {
+              @Override
+              public void execute(final DeployDosTask deployTask) {
+                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setDescription("Deploy Dos configuration");
 
-        project.afterEvaluate(new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            deployTask.setDeployConfig(deployExtension);
-            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-          }
-        });
-      }
-    });
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        deployTask.setDeployConfig(deployExtension);
+                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
+              }
+            });
   }
 
   private void createDeployIndexTask() {
-    project.getTasks().create(DEPLOY_INDEX_TASK_NAME, DeployIndexTask.class, new Action<DeployIndexTask>() {
-      @Override
-      public void execute(final DeployIndexTask deployTask) {
-        deployTask.setGroup(APP_ENGINE_TASK_GROUP);
-        deployTask.setDescription("Deploy Index configuration");
+    project
+        .getTasks()
+        .create(
+            DEPLOY_INDEX_TASK_NAME,
+            DeployIndexTask.class,
+            new Action<DeployIndexTask>() {
+              @Override
+              public void execute(final DeployIndexTask deployTask) {
+                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setDescription("Deploy Index configuration");
 
-        project.afterEvaluate(new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            deployTask.setDeployConfig(deployExtension);
-            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-          }
-        });
-      }
-    });
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        deployTask.setDeployConfig(deployExtension);
+                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
+              }
+            });
   }
 
   private void createDeployQueueTask() {
-    project.getTasks().create(DEPLOY_QUEUE_TASK_NAME, DeployQueueTask.class, new Action<DeployQueueTask>() {
-      @Override
-      public void execute(final DeployQueueTask deployTask) {
-        deployTask.setGroup(APP_ENGINE_TASK_GROUP);
-        deployTask.setDescription("Deploy Queue configuration");
+    project
+        .getTasks()
+        .create(
+            DEPLOY_QUEUE_TASK_NAME,
+            DeployQueueTask.class,
+            new Action<DeployQueueTask>() {
+              @Override
+              public void execute(final DeployQueueTask deployTask) {
+                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setDescription("Deploy Queue configuration");
 
-        project.afterEvaluate(new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            deployTask.setDeployConfig(deployExtension);
-            deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-          }
-        });
-      }
-    });
+                project.afterEvaluate(
+                    new Action<Project>() {
+                      @Override
+                      public void execute(Project project) {
+                        deployTask.setDeployConfig(deployExtension);
+                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      }
+                    });
+              }
+            });
   }
 
   private void createShowConfigurationTask() {
-    project.getTasks().create(SHOW_CONFIG_TASK_NAME, ShowConfigurationTask.class,
-        new Action<ShowConfigurationTask>() {
-          @Override
-          public void execute(final ShowConfigurationTask showConfigurationTask) {
-            showConfigurationTask.setGroup(APP_ENGINE_TASK_GROUP);
-            showConfigurationTask.setDescription("Show current App Engine plugin configuration");
+    project
+        .getTasks()
+        .create(
+            SHOW_CONFIG_TASK_NAME,
+            ShowConfigurationTask.class,
+            new Action<ShowConfigurationTask>() {
+              @Override
+              public void execute(final ShowConfigurationTask showConfigurationTask) {
+                showConfigurationTask.setGroup(APP_ENGINE_TASK_GROUP);
+                showConfigurationTask.setDescription(
+                    "Show current App Engine plugin configuration");
 
-            showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
-          }
-        });
+                showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
+              }
+            });
   }
 }

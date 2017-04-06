@@ -25,6 +25,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
+/** Task to deploy dos configuration. */
 public class DeployDosTask extends DefaultTask {
 
   private DeployProjectConfigurationConfiguration config;
@@ -38,6 +39,7 @@ public class DeployDosTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task entrypoint : deploy dos.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();

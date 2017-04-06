@@ -17,22 +17,18 @@
 
 package com.google.cloud.tools.gradle.appengine.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-/**
- * Tests for appengine-web.xml parsing
- */
+/** Tests for appengine-web.xml parsing */
 public class AppEngineWebXmlTest {
 
-  @Rule
-  public final TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   @Test
   public void testIsVm_true() throws IOException {

@@ -17,23 +17,21 @@
 
 package com.google.cloud.tools.gradle.appengine.util;
 
-import org.gradle.api.GradleException;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.gradle.api.GradleException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Simple parser for appengine-web.xml, this should ideally not exist, but we need it to correctly
- * error when vm=false and the user is using java8 as the target platform
+ * error when vm=false and the user is using java8 as the target platform.
  */
 public class AppEngineWebXml {
 
@@ -51,6 +49,7 @@ public class AppEngineWebXml {
     return new AppEngineWebXml(appengineWebXml);
   }
 
+  /** Check if vm = true. */
   public boolean isVm() {
     try {
       XPath xpath = XPathFactory.newInstance().newXPath();
@@ -60,5 +59,4 @@ public class AppEngineWebXml {
       throw new GradleException("XPath evaluation failed on appengine-web.xml", e);
     }
   }
-
 }

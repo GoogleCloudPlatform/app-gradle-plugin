@@ -19,18 +19,16 @@ package com.google.cloud.tools.gradle.appengine;
 
 import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.plugins.WarPluginConvention;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 /**
- * This is a getting-started plugin that auto detects the user's configuration
- * and assigns it a standard or flexible environment build
+ * This is a getting-started plugin that auto detects the user's configuration and assigns it a
+ * standard or flexible environment build.
  */
 public class AppEnginePlugin implements Plugin<Project> {
 
@@ -39,8 +37,7 @@ public class AppEnginePlugin implements Plugin<Project> {
 
     if (isAppEngineStandard(project)) {
       project.getPluginManager().apply(AppEngineStandardPlugin.class);
-    }
-    else {
+    } else {
       project.getPluginManager().apply(AppEngineFlexiblePlugin.class);
     }
   }
@@ -56,8 +53,8 @@ public class AppEnginePlugin implements Plugin<Project> {
       }
     }
     // convention based lookup of appengine-web.xml as a fallback
-    Path appengineWebXml = project.getProjectDir().toPath()
-        .resolve("src/main/java/webapp/WEB-INF/appengine-web.xml");
+    Path appengineWebXml =
+        project.getProjectDir().toPath().resolve("src/main/java/webapp/WEB-INF/appengine-web.xml");
     if (Files.exists(appengineWebXml)) {
       return true;
     }

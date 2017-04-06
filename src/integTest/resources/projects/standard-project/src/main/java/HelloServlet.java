@@ -6,8 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
 
   @Override
-  public void service(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException {
+  public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
 
     // no cache
@@ -17,5 +16,4 @@ public class HelloServlet extends HttpServlet {
 
     resp.getWriter().print("Hello from the App Engine Standard project.");
   }
-
 }

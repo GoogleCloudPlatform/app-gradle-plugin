@@ -17,6 +17,4 @@
 
 package com.google.cloud.tools.gradle.appengine.core.task.model;
 
-public class ExtX {
-
-}
+public class ExtX {}

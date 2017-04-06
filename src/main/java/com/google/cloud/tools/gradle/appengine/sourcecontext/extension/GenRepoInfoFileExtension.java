@@ -18,16 +18,12 @@
 package com.google.cloud.tools.gradle.appengine.sourcecontext.extension;
 
 import com.google.cloud.tools.appengine.api.debug.GenRepoInfoFileConfiguration;
-
+import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
 
-import java.io.File;
-
-/**
- * Extension element to define Source Context configurations.
- */
+/** Extension element to define Source Context configurations. */
 public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
 
   private final Project project;
@@ -35,6 +31,7 @@ public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
   private final File outputDirectory;
   private File sourceDirectory;
 
+  /** Constructor. */
   public GenRepoInfoFileExtension(Project project) {
     this.project = project;
     outputDirectory = new File(project.getBuildDir(), "sourceContext");

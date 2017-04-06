@@ -19,28 +19,24 @@ package com.google.cloud.tools.gradle.appengine;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-
+import java.util.List;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 
-import java.util.List;
-
-/**
- * Tools to filter gradle test kit runner results
- */
+/** Tools to filter gradle test kit runner results. */
 public class BuildResultFilter {
 
+  /** Extract task as a list of path strings. */
   public static List<String> extractTasks(BuildResult buildResult) {
 
-    return FluentIterable
-        .from(buildResult.getTasks())
-        .transform(new Function<BuildTask, String>() {
-          @Override
-          public String apply(BuildTask buildTask) {
-            return buildTask.getPath();
-          }
-        })
+    return FluentIterable.from(buildResult.getTasks())
+        .transform(
+            new Function<BuildTask, String>() {
+              @Override
+              public String apply(BuildTask buildTask) {
+                return buildTask.getPath();
+              }
+            })
         .toList();
   }
-
 }

@@ -17,9 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.core.extension;
 
-/**
- * Base Extension class for all our appengine extensions to include themselves into.
- */
+/** Base Extension class for all our appengine extensions to include themselves into. */
 public class AppEngine {
   // dynamically fill this in in AppEngineCorePlugin
 }

@@ -29,16 +29,15 @@ public class ExtensionUtil {
   }
 
   /**
-   * Get an extension by it's path, potentially will throw all kinds
-   * of exceptions. Be very careful.
+   * Get an extension by it's path, potentially will throw all kinds of exceptions. Be very careful.
    */
+  @SuppressWarnings("unchecked")
   public <T> T get(String... path) {
     ExtensionAware root = searchRoot;
     for (String name : path) {
       ExtensionContainer children = root.getExtensions();
       root = (ExtensionAware) children.getByName(name);
     }
-    return (T) root;
+    return (T) root; // this is potentially unchecked.
   }
-
 }

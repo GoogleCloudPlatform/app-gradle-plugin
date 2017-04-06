@@ -20,32 +20,30 @@ package com.google.cloud.tools.gradle.appengine.core.task;
 import com.google.cloud.tools.gradle.appengine.core.task.model.ExtX;
 import com.google.cloud.tools.gradle.appengine.core.task.model.ExtY;
 import com.google.cloud.tools.gradle.appengine.core.task.model.ExtZ;
-
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * Test ShowConfigurationTask
- */
+/** Test for ShowConfigurationTask. */
 public class ShowConfigurationTaskTest {
 
   @Test
   public void testGetAllFields_NestedExtensions() throws IllegalAccessException {
-    String expected = ""
-        + "root {\n"
-        + "  x {\n"
-        + "    y {\n"
-        + "      (int) a = 0\n"
-        + "      z {\n"
-        + "        (String) z = hello\n"
-        + "        (Map<String, List<String>>) zNested = {a=[a1, a2], b=[b1, b2]}\n"
-        + "      }\n"
-        + "    }\n"
-        + "  }\n"
-        + "}\n";
+    String expected =
+        ""
+            + "root {\n"
+            + "  x {\n"
+            + "    y {\n"
+            + "      (int) yy = 0\n"
+            + "      z {\n"
+            + "        (String) zz = hello\n"
+            + "        (Map<String, List<String>>) zzNested = {a=[a1, a2], b=[b1, b2]}\n"
+            + "      }\n"
+            + "    }\n"
+            + "  }\n"
+            + "}\n";
     Project p = ProjectBuilder.builder().build();
     ExtensionAware root = (ExtensionAware) p.getExtensions().create("root", ExtX.class);
     ExtensionAware x = (ExtensionAware) root.getExtensions().create("x", ExtX.class);

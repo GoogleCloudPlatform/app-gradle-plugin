@@ -69,6 +69,9 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     stageExtension = appengine.getExtensions().create(STAGE_EXTENSION, StageFlexible.class, project, defaultStagedAppDir);
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
 
+    // grab default from staging default
+    deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
+
     project.afterEvaluate(new Action<Project>() {
       @Override
       public void execute(Project project) {

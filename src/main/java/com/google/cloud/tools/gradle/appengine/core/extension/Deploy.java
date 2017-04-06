@@ -18,6 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.core.extension;
 
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
+import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
 
 import org.gradle.api.Project;
 
@@ -28,7 +29,7 @@ import java.util.List;
 /**
  * Extension element to define Deployable configurations for App Engine
  */
-public class Deploy implements DeployConfiguration {
+public class Deploy implements DeployConfiguration, DeployProjectConfigurationConfiguration {
 
   // named gradleProject to disambiguate with deploy parameter "project"
   private final Project gradleProject;
@@ -41,6 +42,7 @@ public class Deploy implements DeployConfiguration {
   private String server;
   private Boolean stopPreviousVersion;
   private String version;
+  private File appEngineDirectory;
 
   public Deploy(Project gradleProject) {
     this.gradleProject = gradleProject;
@@ -117,4 +119,14 @@ public class Deploy implements DeployConfiguration {
   public void setVersion(String version) {
     this.version = version;
   }
+
+  public void setAppEngineDirectory(Object appEngineDirectory) {
+    this.appEngineDirectory = gradleProject.file(appEngineDirectory);
+  }
+
+  @Override
+  public File getAppEngineDirectory() {
+    return appEngineDirectory;
+  }
+
 }

@@ -25,6 +25,7 @@ import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
 
+import com.google.common.collect.ImmutableList;
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.plugins.ExtensionAware;
@@ -43,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,9 +76,89 @@ public class AppEngineStandardPluginTest {
         .withArguments("appengineDeploy", "--dry-run")
         .build();
 
-    final List<String> expected = Arrays
-        .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
             ":appengineStage", ":appengineDeploy");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testDeployCron_taskTree() throws IOException {
+    setUpTestProject();
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineDeployCron", "--dry-run")
+        .build();
+
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":appengineStage", ":appengineDeployCron");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testDeployDispatch_taskTree() throws IOException {
+    setUpTestProject();
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineDeployDispatch", "--dry-run")
+        .build();
+
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":appengineStage", ":appengineDeployDispatch");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testDeployDos_taskTree() throws IOException {
+    setUpTestProject();
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineDeployDos", "--dry-run")
+        .build();
+
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":appengineStage", ":appengineDeployDos");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testDeployIndex_taskTree() throws IOException {
+    setUpTestProject();
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineDeployIndex", "--dry-run")
+        .build();
+
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":appengineStage", ":appengineDeployIndex");
+
+    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testDeployQueue_taskTree() throws IOException {
+    setUpTestProject();
+    BuildResult buildResult = GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineDeployQueue", "--dry-run")
+        .build();
+
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+            ":appengineStage", ":appengineDeployQueue");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
@@ -92,8 +172,8 @@ public class AppEngineStandardPluginTest {
         .withArguments("appengineRun", "--dry-run")
         .build();
 
-    final List<String> expected = Arrays
-        .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
             ":appengineRun");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -108,8 +188,8 @@ public class AppEngineStandardPluginTest {
         .withArguments("appengineStart", "--dry-run")
         .build();
 
-    final List<String> expected = Arrays
-        .asList(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
+    final List<String> expected = ImmutableList
+        .of(":compileJava", ":processResources", ":classes", ":war", ":explodeWar", ":assemble",
             ":appengineStart");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -154,6 +234,7 @@ public class AppEngineStandardPluginTest {
 
     Assert.assertEquals(new File(p.getBuildDir(), "exploded-app"), stageExt.getSourceDirectory());
     Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
+    Assert.assertEquals(new File(p.getBuildDir(), "staged-app/WEB-INF/appengine-generated"), deployExt.getAppEngineDirectory());
     Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
         deployExt.getDeployables());
     Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "exploded-app")),

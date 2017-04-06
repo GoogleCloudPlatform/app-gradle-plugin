@@ -30,7 +30,6 @@ import com.google.cloud.tools.gradle.appengine.standard.task.ExplodeWarTask;
 import com.google.cloud.tools.gradle.appengine.standard.task.StageStandardTask;
 import com.google.cloud.tools.gradle.appengine.util.AppEngineWebXml;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
-import com.google.common.collect.Lists;
 
 import org.gradle.api.Action;
 import org.gradle.api.JavaVersion;
@@ -44,7 +43,6 @@ import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Plugin definition for App Engine standard environments
@@ -93,6 +91,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     runExtension = appengine.getExtensions().create(RUN_EXTENSION, Run.class, project, defaultExplodedAppDir);
     stageExtension = appengine.getExtensions().create(STAGE_EXTENSION, StageStandard.class, project, defaultExplodedAppDir, defaultStagedAppDir);
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
+    deploy.setAppEngineDirectory(new File(defaultStagedAppDir, "WEB-INF/appengine-generated"));
 
     project.afterEvaluate(new Action<Project>() {
       @Override
@@ -158,7 +157,14 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             });
           }
         });
+
+    // All deployment tasks depend on the stage task.
     project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_TASK_NAME).dependsOn(stageTask);
+    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_CRON_TASK_NAME).dependsOn(stageTask);
+    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_DISPATCH_TASK_NAME).dependsOn(stageTask);
+    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_DOS_TASK_NAME).dependsOn(stageTask);
+    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_INDEX_TASK_NAME).dependsOn(stageTask);
+    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_QUEUE_TASK_NAME).dependsOn(stageTask);
   }
 
   private void createRunTasks() {

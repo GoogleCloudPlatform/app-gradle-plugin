@@ -52,13 +52,7 @@ public class GenRepoInfoFileTask extends DefaultTask {
 
   @TaskAction
   public void generateRepositoryInfoFile() {
-    ProcessOutputLineListener listener =
-        new GradleLoggerOutputListener(getLogger(), LogLevel.LIFECYCLE);
-
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder()
-        .addStdErrLineListener(listener)
-        .addStdOutLineListener(listener)
-        .build();
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     CloudSdkGenRepoInfoFile generator = new CloudSdkGenRepoInfoFile(sdk);
     generator.generate(configuration);
   }

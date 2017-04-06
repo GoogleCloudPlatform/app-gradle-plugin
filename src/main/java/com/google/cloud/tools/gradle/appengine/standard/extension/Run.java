@@ -84,6 +84,11 @@ public class Run implements RunConfiguration, StopConfiguration {
   }
 
   @Override
+  public List<File> getServices() {
+    return null;
+  }
+
+  @Override
   public String getHost() {
     return host;
   }

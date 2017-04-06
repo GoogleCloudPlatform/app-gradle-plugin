@@ -18,30 +18,31 @@
 package com.google.cloud.tools.gradle.appengine.standard.extension;
 
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
-import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
 
+import com.google.common.collect.ImmutableList;
 import org.gradle.api.Project;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import org.gradle.api.ProjectConfigurationException;
 
 /**
  * Extension element to define Run configurations for App Engine Standard Environments
  */
-public class Run implements RunConfiguration, StopConfiguration {
+public class Run implements RunConfiguration {
 
   private final Project project;
   private int startSuccessTimeout;
+  private String serverVersion;
 
-  private List<File> appYamls;
+  private List<File> services;
   private String host;
   private Integer port;
   private String adminHost;
   private Integer adminPort;
   private String authDomain;
-  private String storagePath;
+  private File storagePath;
   private String logLevel;
   private Integer maxModuleInstances;
   private Boolean useMtimeFileWatcher;
@@ -57,13 +58,14 @@ public class Run implements RunConfiguration, StopConfiguration {
   private String devAppserverLogLevel;
   private Boolean skipSdkUpdateCheck;
   private String defaultGcsBucketName;
-  private String javaHomeDir;
   private Boolean clearDatastore;
+  private File datastorePath;
 
   public Run(Project project, File explodedAppDir) {
     this.project = project;
     startSuccessTimeout = 20;
-    appYamls = Collections.singletonList(explodedAppDir);
+    services = ImmutableList.of(explodedAppDir);
+    serverVersion = "1";
   }
 
   public int getStartSuccessTimeout() {
@@ -74,18 +76,18 @@ public class Run implements RunConfiguration, StopConfiguration {
     this.startSuccessTimeout = startSuccessTimeout;
   }
 
-  @Override
-  public List<File> getAppYamls() {
-    return appYamls;
+  public String getServerVersion() {
+    return serverVersion;
   }
 
+  public void setServerVersion(String serverVersion) throws ProjectConfigurationException {
+    this.serverVersion = serverVersion;
+  }
+
+  @Deprecated
   public void setAppYamls(Object appYamls) {
-    this.appYamls = new ArrayList<>(project.files(appYamls).getFiles());
-  }
-
-  @Override
-  public List<File> getServices() {
-    return null;
+    project.getLogger().warn("'appYamls' is deprecated, this parameter will set 'services'. Use 'services' in the future.");
+    setServices(appYamls);
   }
 
   @Override
@@ -134,12 +136,12 @@ public class Run implements RunConfiguration, StopConfiguration {
   }
 
   @Override
-  public String getStoragePath() {
+  public File getStoragePath() {
     return storagePath;
   }
 
-  public void setStoragePath(String storagePath) {
-    this.storagePath = storagePath;
+  public void setStoragePath(File storagePath) {
+    this.storagePath = project.file(storagePath);
   }
 
   @Override
@@ -278,21 +280,30 @@ public class Run implements RunConfiguration, StopConfiguration {
   }
 
   @Override
-  public String getJavaHomeDir() {
-    return javaHomeDir;
-  }
-
-  public void setJavaHomeDir(String javaHomeDir) {
-    this.javaHomeDir = javaHomeDir;
-  }
-
-  @Override
   public Boolean getClearDatastore() {
     return clearDatastore;
   }
 
   public void setClearDatastore(Boolean clearDatastore) {
     this.clearDatastore = clearDatastore;
+  }
+
+  @Override
+  public List<File> getServices() {
+    return services;
+  }
+
+  public void setServices(Object services) {
+    this.services = new ArrayList<>(project.files(services).getFiles());
+  }
+
+  @Override
+  public File getDatastorePath() {
+    return datastorePath;
+  }
+
+  public void setDatastorePath(Object datastorePath) {
+    this.datastorePath = project.file(datastorePath);
   }
 }
 

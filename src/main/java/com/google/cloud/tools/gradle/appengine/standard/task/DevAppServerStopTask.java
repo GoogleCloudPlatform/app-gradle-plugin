@@ -18,6 +18,8 @@
 package com.google.cloud.tools.gradle.appengine.standard.task;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
+import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer;
 import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
@@ -32,6 +34,7 @@ public class DevAppServerStopTask extends DefaultTask {
 
   private Run runConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private DevAppServerHelper serverHelper = new DevAppServerHelper();
 
   public void setRunConfig(Run runConfig) {
     this.runConfig = runConfig;
@@ -43,9 +46,10 @@ public class DevAppServerStopTask extends DefaultTask {
 
   @TaskAction
   public void stopAction() throws AppEngineException {
-    CloudSdkAppEngineDevServer server = new CloudSdkAppEngineDevServer(
-        cloudSdkBuilderFactory.newBuilder().build());
-    server.stop(runConfig);
+    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
+
+    AppEngineDevServer server = serverHelper.getAppServer(sdk, runConfig);
+    server.stop(serverHelper.getStopConfiguration(runConfig));
   }
 
 }

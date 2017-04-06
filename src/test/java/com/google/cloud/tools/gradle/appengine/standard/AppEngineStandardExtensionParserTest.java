@@ -80,8 +80,8 @@ public class AppEngineStandardExtensionParserTest {
 
     Assert.assertEquals(deploy.getDeployables().size(), 1);
     Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
-    Assert.assertEquals(run.getAppYamls().size(), 1);
-    Assert.assertEquals("test", run.getAppYamls().get(0).getName());
+    Assert.assertEquals(run.getServices().size(), 1);
+    Assert.assertEquals("test", run.getServices().get(0).getName());
     Assert.assertEquals("test", stage.getSourceDirectory().getName());
     Assert.assertEquals("test", stage.getStagingDirectory().getName());
     Assert.assertEquals("test", stage.getDockerfile().getName());
@@ -100,9 +100,9 @@ public class AppEngineStandardExtensionParserTest {
     Assert.assertEquals(deploy.getDeployables().size(), 2);
     Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());
     Assert.assertEquals("test1", deploy.getDeployables().get(1).getName());
-    Assert.assertEquals(run.getAppYamls().size(), 2);
-    Assert.assertEquals("test0", run.getAppYamls().get(0).getName());
-    Assert.assertEquals("test1", run.getAppYamls().get(1).getName());
+    Assert.assertEquals(run.getServices().size(), 2);
+    Assert.assertEquals("test0", run.getServices().get(0).getName());
+    Assert.assertEquals("test1", run.getServices().get(1).getName());
   }
 
   @Test
@@ -118,8 +118,8 @@ public class AppEngineStandardExtensionParserTest {
 
     Assert.assertEquals(deploy.getDeployables().size(), 1);
     Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
-    Assert.assertEquals(run.getAppYamls().size(), 1);
-    Assert.assertEquals("test", run.getAppYamls().get(0).getName());
+    Assert.assertEquals(run.getServices().size(), 1);
+    Assert.assertEquals("test", run.getServices().get(0).getName());
     Assert.assertEquals("test", stage.getSourceDirectory().getName());
     Assert.assertEquals("test", stage.getStagingDirectory().getName());
     Assert.assertEquals("test", stage.getDockerfile().getName());
@@ -138,8 +138,8 @@ public class AppEngineStandardExtensionParserTest {
     Assert.assertEquals(deploy.getDeployables().size(), 2);
     Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());
     Assert.assertEquals("test1", deploy.getDeployables().get(1).getName());
-    Assert.assertEquals(run.getAppYamls().size(), 2);
-    Assert.assertEquals("test0", run.getAppYamls().get(0).getName());
-    Assert.assertEquals("test1", run.getAppYamls().get(1).getName());
+    Assert.assertEquals(run.getServices().size(), 2);
+    Assert.assertEquals("test0", run.getServices().get(0).getName());
+    Assert.assertEquals("test1", run.getServices().get(1).getName());
   }
 }

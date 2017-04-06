@@ -238,7 +238,7 @@ public class AppEngineStandardPluginTest {
     Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
         deployExt.getDeployables());
     Assert.assertEquals(Collections.singletonList(new File(p.getBuildDir(), "exploded-app")),
-        run.getAppYamls());
+        run.getServices());
     Assert.assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     Assert.assertEquals(20, run.getStartSuccessTimeout());
   }

@@ -1,28 +1,33 @@
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'java-gradle-plugin'
-
 buildscript {
   repositories {
     jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2"
+    }
   }
   dependencies {
     classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
   }
+}
+
+apply plugin: 'java'
+apply plugin: 'java-gradle-plugin'
+
+repositories {
+  mavenCentral()
 }
 
 apply from: 'scripts/publishing.gradle'
 apply from: 'scripts/integTest.gradle'
+apply from: 'scripts/google-java-format.gradle'
+apply from: 'scripts/checkstyle.gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 group = 'com.google.cloud.tools'
 version = '1.1.2-SNAPSHOT'
-
-repositories {
-  mavenCentral()
-}
 
 dependencies {
   compile localGroovy()
@@ -47,5 +52,5 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.3'
+  gradleVersion = '3.4.1'
 }

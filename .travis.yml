@@ -1,5 +1,6 @@
 language: java
 jdk:
+  # don't let this fool you, we still build to target java7
   - oraclejdk8
 
 install:

@@ -42,7 +42,9 @@ import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 
-/** Plugin definition for App Engine standard environments. */
+/**
+ *  Plugin definition for App Engine standard environments.
+ */
 public class AppEngineStandardPlugin implements Plugin<Project> {
 
   private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine standard environment";
@@ -53,7 +55,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   public static final String START_TASK_NAME = "appengineStart";
   public static final String STOP_TASK_NAME = "appengineStop";
 
-  private static final String EXPLODED_APP_DIR_NAME = "exploded-app";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
   public static final String STAGE_EXTENSION = "stage";
@@ -63,11 +64,14 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private Run runExtension;
   private StageStandard stageExtension;
+  private File explodedWarDir;
 
   @Override
   public void apply(Project project) {
     this.project = project;
     project.getPluginManager().apply(AppEngineCorePlugin.class);
+
+    explodedWarDir = new File(project.getBuildDir(), "exploded-" + project.getName());
 
     createPluginExtension();
 
@@ -82,11 +86,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     final Tools tools = new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
     Deploy deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
 
-    File defaultExplodedAppDir = new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME);
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
 
     runExtension =
-        appengine.getExtensions().create(RUN_EXTENSION, Run.class, project, defaultExplodedAppDir);
+        appengine.getExtensions().create(RUN_EXTENSION, Run.class, project, explodedWarDir);
     stageExtension =
         appengine
             .getExtensions()
@@ -94,7 +97,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                 STAGE_EXTENSION,
                 StageStandard.class,
                 project,
-                defaultExplodedAppDir,
+                explodedWarDir,
                 defaultStagedAppDir);
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
     deploy.setAppEngineDirectory(new File(defaultStagedAppDir, "WEB-INF/appengine-generated"));
@@ -134,8 +137,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             new Action<ExplodeWarTask>() {
               @Override
               public void execute(final ExplodeWarTask explodeWar) {
-                explodeWar.setExplodedAppDirectory(
-                    new File(project.getBuildDir(), EXPLODED_APP_DIR_NAME));
+                explodeWar.setExplodedAppDirectory(explodedWarDir);
                 explodeWar.dependsOn(WarPlugin.WAR_TASK_NAME);
                 explodeWar.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
                 explodeWar.setDescription("Explode a war into a directory");

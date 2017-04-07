@@ -32,7 +32,7 @@ version = '1.1.2-SNAPSHOT'
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.3.0'
+  compile 'com.google.cloud.tools:appengine-plugins-core:0.3.1'
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'junit:junit:4.12'

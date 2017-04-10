@@ -42,9 +42,7 @@ import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 
-/**
- *  Plugin definition for App Engine standard environments.
- */
+/** Plugin definition for App Engine standard environments. */
 public class AppEngineStandardPlugin implements Plugin<Project> {
 
   private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine standard environment";
@@ -94,11 +92,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         appengine
             .getExtensions()
             .create(
-                STAGE_EXTENSION,
-                StageStandard.class,
-                project,
-                explodedWarDir,
-                defaultStagedAppDir);
+                STAGE_EXTENSION, StageStandard.class, project, explodedWarDir, defaultStagedAppDir);
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
     deploy.setAppEngineDirectory(new File(defaultStagedAppDir, "WEB-INF/appengine-generated"));
 

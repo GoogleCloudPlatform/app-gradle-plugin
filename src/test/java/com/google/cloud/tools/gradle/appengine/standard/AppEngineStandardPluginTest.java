@@ -289,7 +289,8 @@ public class AppEngineStandardPluginTest {
     StageStandard stageExt = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
     Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
-    Assert.assertEquals(new File(p.getBuildDir(), "exploded-" + p.getName()), stageExt.getSourceDirectory());
+    Assert.assertEquals(
+        new File(p.getBuildDir(), "exploded-" + p.getName()), stageExt.getSourceDirectory());
     Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
     Assert.assertEquals(
         new File(p.getBuildDir(), "staged-app/WEB-INF/appengine-generated"),
@@ -298,7 +299,8 @@ public class AppEngineStandardPluginTest {
         Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
         deployExt.getDeployables());
     Assert.assertEquals(
-        Collections.singletonList(new File(p.getBuildDir(), "exploded-" + p.getName())), run.getServices());
+        Collections.singletonList(new File(p.getBuildDir(), "exploded-" + p.getName())),
+        run.getServices());
     Assert.assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     Assert.assertEquals(20, run.getStartSuccessTimeout());
   }

@@ -18,9 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.flexible;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.core.extension.Deploy;
-import com.google.cloud.tools.gradle.appengine.flexible.extension.StageFlexible;
-import com.google.cloud.tools.gradle.appengine.flexible.task.StageFlexibleTask;
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import java.io.File;
 import org.gradle.api.Action;
@@ -45,31 +43,38 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   public static final String STAGE_EXTENSION = "stage";
 
   private Project project;
-  private StageFlexible stageExtension;
+  private StageFlexibleExtension stageExtension;
 
   @Override
   public void apply(Project project) {
     this.project = project;
     project.getPluginManager().apply(AppEngineCorePlugin.class);
 
-    createPluginExtension();
+    configureExtensions();
     createStageTask();
   }
 
-  private void createPluginExtension() {
+  private void configureExtensions() {
+    // obtain extensions defined by core plugin.
     ExtensionAware appengine =
         new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    Deploy deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
 
-    File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
-
+    // create the flexible stage extension and set defaults.
     stageExtension =
-        appengine
-            .getExtensions()
-            .create(STAGE_EXTENSION, StageFlexible.class, project, defaultStagedAppDir);
-    deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
+        appengine.getExtensions().create(STAGE_EXTENSION, StageFlexibleExtension.class, project);
+    File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
+    stageExtension.setStagingDirectory(defaultStagedAppDir);
+    stageExtension.setAppEngineDirectory(new File(project.getProjectDir(), "src/main/appengine"));
+    File dockerOptionalDir = new File(project.getProjectDir(), "src/main/docker");
+    if (dockerOptionalDir.exists()) {
+      // only set the docker directory if we find it.
+      stageExtension.setDockerDirectory(dockerOptionalDir);
+    }
 
-    // grab default from staging default
+    // obtain deploy extension set defaults
+    DeployExtension deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
+    // grab default project configuration from staging default
     deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
 
     project.afterEvaluate(

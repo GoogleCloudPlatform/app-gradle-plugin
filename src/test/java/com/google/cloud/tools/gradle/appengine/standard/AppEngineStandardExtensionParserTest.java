@@ -18,10 +18,8 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.core.extension.Deploy;
-import com.google.cloud.tools.gradle.appengine.core.extension.Tools;
-import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
-import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
 import java.io.File;
@@ -74,10 +72,11 @@ public class AppEngineStandardExtensionParserTest {
 
     ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    StageStandard stage = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
-    Tools tools = new ExtensionUtil(ext).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    StageStandardExtension stage =
+        new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
+    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    ToolsExtension tools = new ExtensionUtil(ext).get(AppEngineCorePlugin.TOOLS_EXTENSION);
 
     Assert.assertEquals(deploy.getDeployables().size(), 1);
     Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
@@ -95,8 +94,8 @@ public class AppEngineStandardExtensionParserTest {
 
     ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
     Assert.assertEquals(deploy.getDeployables().size(), 2);
     Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());
@@ -112,10 +111,11 @@ public class AppEngineStandardExtensionParserTest {
 
     ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    StageStandard stage = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
-    Tools tools = new ExtensionUtil(ext).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    StageStandardExtension stage =
+        new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
+    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    ToolsExtension tools = new ExtensionUtil(ext).get(AppEngineCorePlugin.TOOLS_EXTENSION);
 
     Assert.assertEquals(deploy.getDeployables().size(), 1);
     Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
@@ -133,8 +133,8 @@ public class AppEngineStandardExtensionParserTest {
 
     ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    Deploy deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
     Assert.assertEquals(deploy.getDeployables().size(), 2);
     Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());

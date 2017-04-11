@@ -19,9 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.core.extension.Deploy;
-import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
-import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -285,9 +283,10 @@ public class AppEngineStandardPluginTest {
 
     ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    Deploy deployExt = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    StageStandard stageExt = new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    Run run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    DeployExtension deployExt = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    StageStandardExtension stageExt =
+        new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
+    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
     Assert.assertEquals(
         new File(p.getBuildDir(), "exploded-" + p.getName()), stageExt.getSourceDirectory());

@@ -23,7 +23,7 @@ import java.util.List;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 
-/** Tools to filter gradle test kit runner results. */
+/** ToolsExtension to filter gradle test kit runner results. */
 public class BuildResultFilter {
 
   /** Extract task as a list of path strings. */

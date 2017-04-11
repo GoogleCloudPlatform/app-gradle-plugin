@@ -18,11 +18,10 @@
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.core.extension.Tools;
-import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.sourcecontext.extension.GenRepoInfoFileExtension;
-import com.google.cloud.tools.gradle.appengine.sourcecontext.task.GenRepoInfoFileTask;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
+import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -50,15 +49,19 @@ public class SourceContextPlugin implements Plugin<Project> {
   }
 
   private void createExtension() {
+    // obtain extensions defined by core plugin.
     ExtensionAware appengine =
         new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    final Tools tools = new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    final ToolsExtension tools =
+        new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
 
-    // create our extension under the root appengine extension
+    // create source context extension and set defaults
     extension =
         appengine
             .getExtensions()
             .create(SOURCE_CONTEXT_EXTENSION, GenRepoInfoFileExtension.class, project);
+    extension.setOutputDirectory(new File(project.getBuildDir(), "sourceContext"));
+    extension.setSourceDirectory(new File(project.getProjectDir(), "src"));
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(

@@ -19,8 +19,7 @@ package com.google.cloud.tools.gradle.appengine.flexible;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.core.extension.Deploy;
-import com.google.cloud.tools.gradle.appengine.flexible.extension.StageFlexible;
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -161,8 +160,8 @@ public class AppEngineFlexiblePluginTest {
     ((ProjectInternal) p).evaluate();
 
     ExtensionAware ext = (ExtensionAware) p.getExtensions().getByName("appengine");
-    Deploy deployExt = new ExtensionUtil(ext).get("deploy");
-    StageFlexible stageExt = new ExtensionUtil(ext).get("stage");
+    DeployExtension deployExt = new ExtensionUtil(ext).get("deploy");
+    StageFlexibleExtension stageExt = new ExtensionUtil(ext).get("stage");
 
     Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
     Assert.assertEquals(
@@ -190,7 +189,8 @@ public class AppEngineFlexiblePluginTest {
 
     ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    StageFlexible stageExt = new ExtensionUtil(ext).get(AppEngineFlexiblePlugin.STAGE_EXTENSION);
+    StageFlexibleExtension stageExt =
+        new ExtensionUtil(ext).get(AppEngineFlexiblePlugin.STAGE_EXTENSION);
 
     Assert.assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     Assert.assertEquals(

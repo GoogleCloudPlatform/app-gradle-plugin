@@ -18,28 +18,17 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
-import com.google.cloud.tools.gradle.appengine.core.extension.Deploy;
-import com.google.cloud.tools.gradle.appengine.core.extension.Tools;
-import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.standard.extension.Run;
-import com.google.cloud.tools.gradle.appengine.standard.extension.StageStandard;
-import com.google.cloud.tools.gradle.appengine.standard.task.DevAppServerRunTask;
-import com.google.cloud.tools.gradle.appengine.standard.task.DevAppServerStartTask;
-import com.google.cloud.tools.gradle.appengine.standard.task.DevAppServerStopTask;
-import com.google.cloud.tools.gradle.appengine.standard.task.ExplodeWarTask;
-import com.google.cloud.tools.gradle.appengine.standard.task.StageStandardTask;
-import com.google.cloud.tools.gradle.appengine.util.AppEngineWebXml;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import java.io.File;
 import org.gradle.api.Action;
-import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.ExtensionAware;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.WarPlugin;
-import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 
 /** Plugin definition for App Engine standard environments. */
@@ -60,8 +49,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
   private Project project;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  private Run runExtension;
-  private StageStandard stageExtension;
+  private RunExtension runExtension;
+  private StageStandardExtension stageExtension;
   private File explodedWarDir;
 
   @Override
@@ -71,53 +60,45 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
     explodedWarDir = new File(project.getBuildDir(), "exploded-" + project.getName());
 
-    createPluginExtension();
+    configureExtensions();
 
     createExplodedWarTask();
     createStageTask();
     createRunTasks();
   }
 
-  private void createPluginExtension() {
+  private void configureExtensions() {
+    // obtain extensions defined by core plugin.
     ExtensionAware appengine =
         new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    final Tools tools = new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
-    Deploy deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
 
-    File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
+    // create the run extension and set defaults.
+    runExtension = appengine.getExtensions().create(RUN_EXTENSION, RunExtension.class, project);
+    runExtension.setStartSuccessTimeout(20);
+    runExtension.setServices(explodedWarDir);
+    runExtension.setServerVersion("1");
 
-    runExtension =
-        appengine.getExtensions().create(RUN_EXTENSION, Run.class, project, explodedWarDir);
+    // create the stage extension and set defaults.
     stageExtension =
-        appengine
-            .getExtensions()
-            .create(
-                STAGE_EXTENSION, StageStandard.class, project, explodedWarDir, defaultStagedAppDir);
+        appengine.getExtensions().create(STAGE_EXTENSION, StageStandardExtension.class, project);
+    File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
+    stageExtension.setSourceDirectory(explodedWarDir);
+    stageExtension.setStagingDirectory(defaultStagedAppDir);
+
+    // obtain deploy extension and set defaults
+    DeployExtension deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
     deploy.setAppEngineDirectory(new File(defaultStagedAppDir, "WEB-INF/appengine-generated"));
 
+    // tools extension required to initialize cloudSdkBuilderFactory
+    final ToolsExtension tools =
+        new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
     project.afterEvaluate(
         new Action<Project>() {
           @Override
           public void execute(Project project) {
             // create the sdk builder factory after we know the location of the sdk
             cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome());
-
-            // special handing for java8
-            if (stageExtension.getRuntime() == null) {
-              WarPluginConvention war =
-                  project.getConvention().getPlugin(WarPluginConvention.class);
-              File appengineWebXml = new File(war.getWebAppDir(), "WEB-INF/appengine-web.xml");
-              JavaVersion javaVersion =
-                  project
-                      .getConvention()
-                      .getPlugin(JavaPluginConvention.class)
-                      .getTargetCompatibility();
-              if (javaVersion.compareTo(JavaVersion.VERSION_1_8) >= 0
-                  && AppEngineWebXml.parse(appengineWebXml).isVm()) {
-                stageExtension.setRuntime("java");
-              }
-            }
           }
         });
   }

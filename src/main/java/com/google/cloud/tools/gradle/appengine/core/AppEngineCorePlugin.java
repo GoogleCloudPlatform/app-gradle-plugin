@@ -17,17 +17,6 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.gradle.appengine.core.extension.AppEngine;
-import com.google.cloud.tools.gradle.appengine.core.extension.Deploy;
-import com.google.cloud.tools.gradle.appengine.core.extension.Tools;
-import com.google.cloud.tools.gradle.appengine.core.task.CloudSdkBuilderFactory;
-import com.google.cloud.tools.gradle.appengine.core.task.DeployCronTask;
-import com.google.cloud.tools.gradle.appengine.core.task.DeployDispatchTask;
-import com.google.cloud.tools.gradle.appengine.core.task.DeployDosTask;
-import com.google.cloud.tools.gradle.appengine.core.task.DeployIndexTask;
-import com.google.cloud.tools.gradle.appengine.core.task.DeployQueueTask;
-import com.google.cloud.tools.gradle.appengine.core.task.DeployTask;
-import com.google.cloud.tools.gradle.appengine.core.task.ShowConfigurationTask;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -54,9 +43,9 @@ public class AppEngineCorePlugin implements Plugin<Project> {
   public static final String TOOLS_EXTENSION = "tools";
 
   private Project project;
-  private AppEngine extension;
-  private Deploy deployExtension;
-  private Tools toolsExtension;
+  private AppEngineExtension extension;
+  private DeployExtension deployExtension;
+  private ToolsExtension toolsExtension;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
   @Override
@@ -74,13 +63,15 @@ public class AppEngineCorePlugin implements Plugin<Project> {
   }
 
   private void createExtensions() {
-    extension = project.getExtensions().create(APPENGINE_EXTENSION, AppEngine.class);
+    extension = project.getExtensions().create(APPENGINE_EXTENSION, AppEngineExtension.class);
     deployExtension =
         ((ExtensionAware) extension)
             .getExtensions()
-            .create(DEPLOY_EXTENSION, Deploy.class, project);
+            .create(DEPLOY_EXTENSION, DeployExtension.class, project);
     toolsExtension =
-        ((ExtensionAware) extension).getExtensions().create(TOOLS_EXTENSION, Tools.class, project);
+        ((ExtensionAware) extension)
+            .getExtensions()
+            .create(TOOLS_EXTENSION, ToolsExtension.class, project);
 
     project.afterEvaluate(
         new Action<Project>() {

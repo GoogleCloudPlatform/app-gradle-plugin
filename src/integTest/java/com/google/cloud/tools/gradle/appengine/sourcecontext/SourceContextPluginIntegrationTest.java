@@ -102,7 +102,7 @@ public class SourceContextPluginIntegrationTest {
         new File(
             testProjectDir.getRoot(),
             "build/exploded-"
-                + testProjectDir.getRoot().getName()
+                + testProjectDir.getRoot().getName() // this is project.name
                 + "/WEB-INF/classes/source-contexts.json");
     Assert.assertTrue(
         sourceContextsFile.getAbsolutePath() + " is missing", sourceContextsFile.exists());
@@ -114,7 +114,7 @@ public class SourceContextPluginIntegrationTest {
         new File(
             testProjectDir.getRoot(),
             "build/exploded-"
-                + testProjectDir.getRoot().getName()
+                + testProjectDir.getRoot().getName() // this is project.name
                 + "/WEB-INF/classes/source-context.json");
     Assert.assertTrue(
         sourceContextFile.getAbsolutePath() + " is missing", sourceContextFile.exists());

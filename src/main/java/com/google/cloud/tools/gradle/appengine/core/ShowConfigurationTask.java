@@ -67,6 +67,10 @@ public class ShowConfigurationTask extends DefaultTask {
       if (field.isSynthetic()) {
         continue;
       }
+      // This is just a helper for the extensions, don't show it
+      if (field.getType().equals(org.gradle.api.Project.class)) {
+        continue;
+      }
       result.append(getFieldData(field, extensionInstance, depth + 1));
     }
 

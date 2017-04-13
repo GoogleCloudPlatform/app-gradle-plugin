@@ -17,6 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.core.model;
 
+import org.gradle.api.Project;
+
 public class ExtY {
+  Project ignored;
   int yy = 0;
 }

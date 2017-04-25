@@ -17,10 +17,15 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import static com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin.APPENGINE_EXTENSION;
+
+import com.google.cloud.tools.gradle.appengine.core.AppEngineExtension;
+import com.google.cloud.tools.gradle.appengine.core.Environment;
 import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.WarPlugin;
@@ -33,32 +38,56 @@ import org.gradle.api.plugins.WarPluginConvention;
 public class AppEnginePlugin implements Plugin<Project> {
 
   @Override
-  public void apply(Project project) {
-
-    if (isAppEngineStandard(project)) {
-      project.getPluginManager().apply(AppEngineStandardPlugin.class);
-    } else {
-      project.getPluginManager().apply(AppEngineFlexiblePlugin.class);
-    }
+  public void apply(final Project project) {
+    final AppEngineExtension appEngineExtension =
+        project.getExtensions().create(APPENGINE_EXTENSION, AppEngineExtension.class);
+    project.afterEvaluate(new ApplyInnerPluginAction(appEngineExtension));
   }
 
-  private boolean isAppEngineStandard(Project project) {
+  private static class ApplyInnerPluginAction implements Action<Project> {
+    private final AppEngineExtension appEngineExtension;
 
-    // ask the war plugin if it has appengine-web.xml
-    if (project.getPlugins().hasPlugin(WarPlugin.class)) {
-      WarPluginConvention warConfig = project.getConvention().getPlugin(WarPluginConvention.class);
-      Path appengineWebXml = warConfig.getWebAppDir().toPath().resolve("WEB-INF/appengine-web.xml");
+    public ApplyInnerPluginAction(final AppEngineExtension appEngineExtension) {
+      this.appEngineExtension = appEngineExtension;
+    }
+
+    @Override
+    public void execute(final Project project) {
+      final Environment environment = appEngineExtension.getEnvironment();
+      if (Environment.STANDARD == environment) {
+        project.getPluginManager().apply(AppEngineStandardPlugin.class);
+      } else if (Environment.FLEXIBLE == environment) {
+        project.getPluginManager().apply(AppEngineFlexiblePlugin.class);
+      } else if (isAppEngineStandard(project)) {
+        project.getPluginManager().apply(AppEngineStandardPlugin.class);
+      } else {
+        project.getPluginManager().apply(AppEngineFlexiblePlugin.class);
+      }
+    }
+
+    private static boolean isAppEngineStandard(final Project project) {
+
+      // ask the war plugin if it has appengine-web.xml
+      if (project.getPlugins().hasPlugin(WarPlugin.class)) {
+        final WarPluginConvention warConfig =
+            project.getConvention().getPlugin(WarPluginConvention.class);
+        final Path appengineWebXml =
+            warConfig.getWebAppDir().toPath().resolve("WEB-INF/appengine-web.xml");
+        if (Files.exists(appengineWebXml)) {
+          return true;
+        }
+      }
+      // convention based lookup of appengine-web.xml as a fallback
+      final Path appengineWebXml =
+          project
+              .getProjectDir()
+              .toPath()
+              .resolve("src/main/java/webapp/WEB-INF/appengine-web.xml");
       if (Files.exists(appengineWebXml)) {
         return true;
       }
-    }
-    // convention based lookup of appengine-web.xml as a fallback
-    Path appengineWebXml =
-        project.getProjectDir().toPath().resolve("src/main/java/webapp/WEB-INF/appengine-web.xml");
-    if (Files.exists(appengineWebXml)) {
-      return true;
-    }
 
-    return false;
+      return false;
+    }
   }
 }

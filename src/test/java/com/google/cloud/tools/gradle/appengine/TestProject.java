@@ -55,7 +55,7 @@ public class TestProject {
     return this;
   }
 
-  /** Add an generic appengine-gradle-plugin build file (for auto detection cases) */
+  /** Add an generic appengine-gradle-plugin build file (for auto detection cases). */
   public TestProject addAutoDetectingBuildFile() throws IOException {
     addBuildFile("projects/AppEnginePluginTest/build-auto.gradle");
     return this;
@@ -63,10 +63,7 @@ public class TestProject {
 
   private void addBuildFile(String pathInResources) throws IOException {
     Path buildFile = projectRoot.toPath().resolve("build.gradle");
-    InputStream buildFileContent =
-        getClass()
-            .getClassLoader()
-            .getResourceAsStream(pathInResources);
+    InputStream buildFileContent = getClass().getClassLoader().getResourceAsStream(pathInResources);
     Files.copy(buildFileContent, buildFile);
   }
 

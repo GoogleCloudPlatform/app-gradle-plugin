@@ -28,11 +28,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/** Tests for the AppEnginePluginTest */
+/** Tests for the AppEnginePluginTest. */
 public class AppEnginePluginTest {
 
-  @Rule
-  public TemporaryFolder testProjectRoot = new TemporaryFolder();
+  @Rule public TemporaryFolder testProjectRoot = new TemporaryFolder();
 
   @Test
   public void testDetectStandard_withGradleRunner() throws IOException {
@@ -81,12 +80,9 @@ public class AppEnginePluginTest {
     Assert.assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
   }
 
-
   @Test
   public void testDetectFlexible_withProjectBuilder() throws IOException {
-    Project p =
-        new TestProject(testProjectRoot.getRoot())
-            .applyAutoDetectingProjectBuilder();
+    Project p = new TestProject(testProjectRoot.getRoot()).applyAutoDetectingProjectBuilder();
 
     // we applied this
     Assert.assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));

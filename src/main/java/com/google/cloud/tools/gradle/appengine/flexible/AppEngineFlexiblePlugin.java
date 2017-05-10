@@ -35,11 +35,10 @@ import org.gradle.api.tasks.bundling.War;
 /** Plugin definition for App Engine flexible environments. */
 public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
+  public static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGE_TASK_NAME = "appengineStage";
 
-  private static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
   private static final String STAGED_APP_DIR_NAME = "staged-app";
-
   public static final String STAGE_EXTENSION = "stage";
 
   private Project project;
@@ -52,6 +51,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
     configureExtensions();
     createStageTask();
+
+    AppEngineCorePlugin.overrideCoreTasksGroup(project, APP_ENGINE_FLEXIBLE_TASK_GROUP);
   }
 
   private void configureExtensions() {

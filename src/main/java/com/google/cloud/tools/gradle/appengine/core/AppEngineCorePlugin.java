@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.core;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.ExtensionAware;
 
 /**
@@ -28,7 +29,8 @@ import org.gradle.api.plugins.ExtensionAware;
  */
 public class AppEngineCorePlugin implements Plugin<Project> {
 
-  public static final String APP_ENGINE_TASK_GROUP = "appengine";
+  // this is just a placeholder to be replaced by the standard/flex group
+  public static final String APP_ENGINE_TASK_GROUP = "App Engine core tasks";
 
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";
   public static final String DEPLOY_CRON_TASK_NAME = "appengineDeployCron";
@@ -241,6 +243,23 @@ public class AppEngineCorePlugin implements Plugin<Project> {
                     "Show current App Engine plugin configuration");
 
                 showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
+              }
+            });
+  }
+
+  /** Override the default task group of tasks from this plugin. */
+  public static void overrideCoreTasksGroup(Project project, final String overrideGroup) {
+    project
+        .getTasks()
+        .all(
+            new Action<Task>() {
+              @Override
+              public void execute(Task task) {
+                String oldGroup = task.getGroup();
+                if (oldGroup != null
+                    && oldGroup.equals(AppEngineCorePlugin.APP_ENGINE_TASK_GROUP)) {
+                  task.setGroup(overrideGroup);
+                }
               }
             });
   }

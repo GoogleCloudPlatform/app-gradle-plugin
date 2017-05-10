@@ -34,8 +34,7 @@ import org.gradle.api.tasks.bundling.War;
 /** Plugin definition for App Engine standard environments. */
 public class AppEngineStandardPlugin implements Plugin<Project> {
 
-  private static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine standard environment";
-
+  public static final String APP_ENGINE_STANDARD_TASK_GROUP = "App Engine standard environment";
   public static final String EXPLODE_WAR_TASK_NAME = "explodeWar";
   public static final String STAGE_TASK_NAME = "appengineStage";
   public static final String RUN_TASK_NAME = "appengineRun";
@@ -65,6 +64,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     createExplodedWarTask();
     createStageTask();
     createRunTasks();
+
+    AppEngineCorePlugin.overrideCoreTasksGroup(project, APP_ENGINE_STANDARD_TASK_GROUP);
   }
 
   private void configureExtensions() {

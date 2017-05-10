@@ -43,16 +43,31 @@ public class TestProject {
     this.projectRoot = projectRoot;
   }
 
-  /** Add a generic appengine-gradle-plugin build file. */
-  public TestProject addBuildFile() throws IOException {
+  /** Add a standard appengine-gradle-plugin build file. */
+  public TestProject addStandardBuildFile() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-standard.gradle");
+    return this;
+  }
+
+  /** Add a flexible appengine-gradle-plugin build file. */
+  public TestProject addFlexibleBuildFile() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-flexible.gradle");
+    return this;
+  }
+
+  /** Add an generic appengine-gradle-plugin build file (for auto detection cases) */
+  public TestProject addAutoDetectingBuildFile() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-auto.gradle");
+    return this;
+  }
+
+  private void addBuildFile(String pathInResources) throws IOException {
     Path buildFile = projectRoot.toPath().resolve("build.gradle");
     InputStream buildFileContent =
         getClass()
             .getClassLoader()
-            .getResourceAsStream("projects/AppEnginePluginTest/build.gradle");
+            .getResourceAsStream(pathInResources);
     Files.copy(buildFileContent, buildFile);
-
-    return this;
   }
 
   /** Add a minimal appengine-web.xml file in the standard location. */
@@ -96,6 +111,11 @@ public class TestProject {
   /** Run the project builder and return an evaluated project. */
   public Project applyFlexibleWarProjectBuilder() throws IOException {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineFlexiblePlugin.class);
+  }
+
+  /** Run the project builder and return an evaluated project. */
+  public Project applyAutoDetectingProjectBuilder() throws IOException {
+    return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEnginePlugin.class);
   }
 
   private Project applyProjectBuilder(Class<?>... plugins) throws IOException {

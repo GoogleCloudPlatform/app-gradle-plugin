@@ -44,7 +44,7 @@ public class AppEngineStandardPluginTest {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   private TestProject createTestProject() throws IOException {
-    return new TestProject(testProjectDir.getRoot()).addBuildFile().addAppEngineWebXml();
+    return new TestProject(testProjectDir.getRoot()).addStandardBuildFile().addAppEngineWebXml();
   }
 
   @Test

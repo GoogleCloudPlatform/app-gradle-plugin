@@ -46,7 +46,7 @@ public class AppEngineFlexiblePluginTest {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   private TestProject createTestProject() throws IOException {
-    return new TestProject(testProjectDir.getRoot()).addBuildFile();
+    return new TestProject(testProjectDir.getRoot()).addFlexibleBuildFile();
   }
 
   @Test

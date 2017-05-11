@@ -1,5 +1,0 @@
-# on Kokoro Windows during checkout files were changed, assumingly due line ending conversion
-# these enforce to keep them as is
-*.java text
-*.xml text
-*.properties text

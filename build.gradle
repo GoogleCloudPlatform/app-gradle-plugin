@@ -66,6 +66,13 @@ jar {
   }
 }
 
+test {
+  testLogging {
+    showStandardStream = true
+    exceptionFormat = 'full'
+  }
+}
+
 task wrapper(type: Wrapper) {
   gradleVersion = '3.4.1'
 }

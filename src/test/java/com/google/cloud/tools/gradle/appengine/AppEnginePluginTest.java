@@ -75,18 +75,43 @@ public class AppEnginePluginTest {
             .addAppEngineWebXml()
             .applyAutoDetectingProjectBuilder();
 
-    // we applied this
-    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
-
-    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
-    assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
+    assertStandard(p);
   }
 
   @Test
   public void testDetectFlexible_withProjectBuilder() throws IOException {
     Project p = new TestProject(testProjectRoot.getRoot()).applyAutoDetectingProjectBuilder();
 
-    // we applied this
+    assertFlexible(p);
+  }
+
+  @Test
+  public void testDetectStandard_withFallbackMechanism() throws IOException {
+    Project p =
+        new TestProject(testProjectRoot.getRoot())
+            .addAppEngineWebXml()
+            .applyAutoDetectingProjectBuilderWithFallbackTrigger();
+
+    assertStandard(p);
+  }
+
+  @Test
+  public void testDetectFlexible_withFallbackNegative() throws IOException {
+    Project p =
+        new TestProject(testProjectRoot.getRoot())
+            .applyAutoDetectingProjectBuilderWithFallbackTrigger();
+
+    assertFlexible(p);
+  }
+
+  private void assertStandard(Project p) {
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
+
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
+    assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
+  }
+
+  private void assertFlexible(Project p) {
     assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
 
     assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));

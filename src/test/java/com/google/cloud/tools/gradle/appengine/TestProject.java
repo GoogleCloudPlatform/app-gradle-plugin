@@ -115,6 +115,11 @@ public class TestProject {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEnginePlugin.class);
   }
 
+  /** Run the project builder and return an evaluated project. */
+  public Project applyAutoDetectingProjectBuilderWithFallbackTrigger() throws IOException {
+    return applyProjectBuilder(JavaPlugin.class, AppEnginePlugin.class, WarPlugin.class);
+  }
+
   private Project applyProjectBuilder(Class<?>... plugins) throws IOException {
     Project p = ProjectBuilder.builder().withProjectDir(projectRoot).build();
     for (Class<?> clazz : plugins) {

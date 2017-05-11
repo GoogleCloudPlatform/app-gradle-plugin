@@ -54,7 +54,7 @@ public class AppEnginePlugin implements Plugin<Project> {
     }
     // convention based lookup of appengine-web.xml as a fallback
     Path appengineWebXml =
-        project.getProjectDir().toPath().resolve("src/main/java/webapp/WEB-INF/appengine-web.xml");
+        project.getProjectDir().toPath().resolve("src/main/webapp/WEB-INF/appengine-web.xml");
     if (Files.exists(appengineWebXml)) {
       return true;
     }

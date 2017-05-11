@@ -128,8 +128,7 @@ public class AppEngineFlexiblePluginTest {
     assertEquals(
         testProjectDir.getRoot().toPath().toRealPath().resolve("src/main/appengine"),
         deployExt.getAppEngineDirectory().toPath());
-    assertEquals(
-        (((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
+    assertEquals((((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     assertEquals(
         Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),

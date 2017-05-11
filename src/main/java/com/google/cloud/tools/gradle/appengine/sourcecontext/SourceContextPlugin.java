@@ -43,9 +43,14 @@ public class SourceContextPlugin implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     this.project = project;
-
-    createExtension();
-    createSourceContextTask();
+    project.afterEvaluate(
+        new Action<Project>() {
+          @Override
+          public void execute(Project project) {
+            createExtension();
+            createSourceContextTask();
+          }
+        });
   }
 
   private void createExtension() {

@@ -63,7 +63,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
   }
 
   private void createExtensions() {
-    extension = project.getExtensions().create(APPENGINE_EXTENSION, AppEngineExtension.class);
+    extension = getOrCreate();
     deployExtension =
         ((ExtensionAware) extension)
             .getExtensions()
@@ -81,6 +81,16 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
           }
         });
+  }
+
+  private AppEngineExtension getOrCreate() {
+    AppEngineExtension appEngineExtension =
+        project.getExtensions().findByType(AppEngineExtension.class);
+    if (appEngineExtension == null) {
+      appEngineExtension =
+          project.getExtensions().create(APPENGINE_EXTENSION, AppEngineExtension.class);
+    }
+    return appEngineExtension;
   }
 
   private void createDeployTask() {

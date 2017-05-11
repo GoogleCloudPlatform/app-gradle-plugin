@@ -17,6 +17,10 @@
 
 package com.google.cloud.tools.gradle.appengine.flexible;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
@@ -35,7 +39,6 @@ import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
 import org.gradle.testkit.runner.BuildResult;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -62,7 +65,7 @@ public class AppEngineFlexiblePluginTest {
             ":assemble",
             ":appengineStage",
             ":appengineDeploy");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -71,7 +74,7 @@ public class AppEngineFlexiblePluginTest {
         createTestProject().applyGradleRunner("appengineDeployCron", "--dry-run");
 
     final List<String> expected = ImmutableList.of(":appengineDeployCron");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -80,7 +83,7 @@ public class AppEngineFlexiblePluginTest {
         createTestProject().applyGradleRunner("appengineDeployDispatch", "--dry-run");
 
     final List<String> expected = ImmutableList.of(":appengineDeployDispatch");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -89,7 +92,7 @@ public class AppEngineFlexiblePluginTest {
         createTestProject().applyGradleRunner("appengineDeployDos", "--dry-run");
 
     final List<String> expected = ImmutableList.of(":appengineDeployDos");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -98,7 +101,7 @@ public class AppEngineFlexiblePluginTest {
         createTestProject().applyGradleRunner("appengineDeployIndex", "--dry-run");
 
     final List<String> expected = ImmutableList.of(":appengineDeployIndex");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -107,7 +110,7 @@ public class AppEngineFlexiblePluginTest {
         createTestProject().applyGradleRunner("appengineDeployQueue", "--dry-run");
 
     final List<String> expected = ImmutableList.of(":appengineDeployQueue");
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -118,17 +121,15 @@ public class AppEngineFlexiblePluginTest {
     DeployExtension deployExt = new ExtensionUtil(ext).get("deploy");
     StageFlexibleExtension stageExt = new ExtensionUtil(ext).get("stage");
 
-    Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
-    Assert.assertEquals(
-        testProjectDir.getRoot().toPath().toRealPath().resolve("src/main/appengine"),
-        stageExt.getAppEngineDirectory().toPath());
-    Assert.assertEquals(
-        testProjectDir.getRoot().toPath().toRealPath().resolve("src/main/appengine"),
-        deployExt.getAppEngineDirectory().toPath());
-    Assert.assertEquals(
-        (((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
-    Assert.assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
-    Assert.assertEquals(
+    assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
+    assertEquals(
+        new File(testProjectDir.getRoot(), "src/main/appengine"), stageExt.getAppEngineDirectory());
+    assertEquals(
+        new File(testProjectDir.getRoot(), "src/main/appengine"),
+        deployExt.getAppEngineDirectory());
+    assertEquals((((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
+    assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
+    assertEquals(
         Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
         deployExt.getDeployables());
   }
@@ -143,9 +144,8 @@ public class AppEngineFlexiblePluginTest {
     StageFlexibleExtension stageExt =
         new ExtensionUtil(ext).get(AppEngineFlexiblePlugin.STAGE_EXTENSION);
 
-    Assert.assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
-    Assert.assertEquals(
-        (((Jar) p.getProperties().get("jar")).getArchivePath()), stageExt.getArtifact());
+    assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
+    assertEquals((((Jar) p.getProperties().get("jar")).getArchivePath()), stageExt.getArtifact());
   }
 
   @Test
@@ -164,7 +164,7 @@ public class AppEngineFlexiblePluginTest {
             new Action<Task>() {
               @Override
               public void execute(Task task) {
-                Assert.assertEquals(
+                assertEquals(
                     AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP, task.getGroup());
               }
             });

@@ -33,6 +33,7 @@ public class RunExtensionTest {
   @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
 
   @Test
+  @SuppressWarnings("deprecation") // this is intentionally testing deprecated methods
   public void testSetAppYamls() throws IOException {
     Project p = ProjectBuilder.builder().build();
     RunExtension run = p.getExtensions().create("run", RunExtension.class, p);

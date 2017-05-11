@@ -17,13 +17,17 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.IOException;
 import org.gradle.api.Project;
 import org.gradle.testkit.runner.BuildResult;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -41,13 +45,12 @@ public class AppEnginePluginTest {
             .addAppEngineWebXml()
             .applyGradleRunner("tasks");
 
-    Assert.assertThat(
+    assertThat(
         buildResult.getOutput(),
-        CoreMatchers.containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP));
-    Assert.assertThat(
+        containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP));
+    assertThat(
         buildResult.getOutput(),
-        CoreMatchers.not(
-            CoreMatchers.containsString(AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP)));
+        not(containsString(AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP)));
   }
 
   @Test
@@ -57,13 +60,12 @@ public class AppEnginePluginTest {
             .addAutoDetectingBuildFile()
             .applyGradleRunner("tasks");
 
-    Assert.assertThat(
+    assertThat(
         buildResult.getOutput(),
-        CoreMatchers.containsString(AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP));
-    Assert.assertThat(
+        containsString(AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP));
+    assertThat(
         buildResult.getOutput(),
-        CoreMatchers.not(
-            CoreMatchers.containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP)));
+        not(containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP)));
   }
 
   @Test
@@ -74,10 +76,10 @@ public class AppEnginePluginTest {
             .applyAutoDetectingProjectBuilder();
 
     // we applied this
-    Assert.assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
 
-    Assert.assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
-    Assert.assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
+    assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
   }
 
   @Test
@@ -85,9 +87,9 @@ public class AppEnginePluginTest {
     Project p = new TestProject(testProjectRoot.getRoot()).applyAutoDetectingProjectBuilder();
 
     // we applied this
-    Assert.assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
 
-    Assert.assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
-    Assert.assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
+    assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
   }
 }

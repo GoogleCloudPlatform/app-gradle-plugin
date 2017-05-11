@@ -35,7 +35,7 @@ import org.gradle.api.tasks.bundling.War;
 /** Plugin definition for App Engine flexible environments. */
 public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
-  public static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine flexible environment";
+  public static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine Flexible environment";
   private static final String STAGE_TASK_NAME = "appengineStage";
 
   private static final String STAGED_APP_DIR_NAME = "staged-app";

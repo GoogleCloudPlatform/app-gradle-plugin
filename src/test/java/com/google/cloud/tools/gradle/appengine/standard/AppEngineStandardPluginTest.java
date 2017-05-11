@@ -17,6 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
@@ -33,7 +36,6 @@ import org.gradle.api.Task;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.specs.Spec;
 import org.gradle.testkit.runner.BuildResult;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -62,7 +64,7 @@ public class AppEngineStandardPluginTest {
             ":appengineStage",
             ":appengineDeploy");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -81,7 +83,7 @@ public class AppEngineStandardPluginTest {
             ":appengineStage",
             ":appengineDeployCron");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -100,7 +102,7 @@ public class AppEngineStandardPluginTest {
             ":appengineStage",
             ":appengineDeployDispatch");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -119,7 +121,7 @@ public class AppEngineStandardPluginTest {
             ":appengineStage",
             ":appengineDeployDos");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -138,7 +140,7 @@ public class AppEngineStandardPluginTest {
             ":appengineStage",
             ":appengineDeployIndex");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -157,7 +159,7 @@ public class AppEngineStandardPluginTest {
             ":appengineStage",
             ":appengineDeployQueue");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -174,7 +176,7 @@ public class AppEngineStandardPluginTest {
             ":assemble",
             ":appengineRun");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -191,7 +193,7 @@ public class AppEngineStandardPluginTest {
             ":assemble",
             ":appengineStart");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -200,7 +202,7 @@ public class AppEngineStandardPluginTest {
 
     final List<String> expected = Collections.singletonList(":appengineStop");
 
-    Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
   @Test
@@ -210,27 +212,28 @@ public class AppEngineStandardPluginTest {
             .addAppEngineWebXml()
             .applyStandardProjectBuilder();
 
-    ExtensionAware ext =
+    final ExtensionAware ext =
         (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    DeployExtension deployExt = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    StageStandardExtension stageExt =
+    final DeployExtension deployExt =
+        new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    final StageStandardExtension stageExt =
         new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    final RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
 
-    Assert.assertEquals(
+    assertEquals(
         new File(p.getBuildDir(), "exploded-" + p.getName()), stageExt.getSourceDirectory());
-    Assert.assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
-    Assert.assertEquals(
+    assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
+    assertEquals(
         new File(p.getBuildDir(), "staged-app/WEB-INF/appengine-generated"),
         deployExt.getAppEngineDirectory());
-    Assert.assertEquals(
+    assertEquals(
         Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
         deployExt.getDeployables());
-    Assert.assertEquals(
+    assertEquals(
         Collections.singletonList(new File(p.getBuildDir(), "exploded-" + p.getName())),
         run.getServices());
-    Assert.assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
-    Assert.assertEquals(20, run.getStartSuccessTimeout());
+    assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
+    assertEquals(20, run.getStartSuccessTimeout());
   }
 
   @Test
@@ -252,7 +255,7 @@ public class AppEngineStandardPluginTest {
             new Action<Task>() {
               @Override
               public void execute(Task task) {
-                Assert.assertEquals(
+                assertEquals(
                     AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP, task.getGroup());
               }
             });

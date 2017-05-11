@@ -68,7 +68,7 @@ jar {
 
 test {
   testLogging {
-    showStandardStream = true
+    showStandardStreams = true
     exceptionFormat = 'full'
   }
 }

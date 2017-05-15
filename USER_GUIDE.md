@@ -203,7 +203,7 @@ appengine {
 }
 ```
 
-### How do I enable hot reload of classes?
+### How do I enable hot reload of my application?
 
 To enable hot reload of classes:
 1. You must tell the Dev App Server v1 to scan for changes :

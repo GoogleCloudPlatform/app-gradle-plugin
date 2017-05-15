@@ -203,6 +203,31 @@ appengine {
 }
 ```
 
+### How do I enable hot reload of classes?
+
+To enable hot reload of classes:
+1. You must tell the Dev App Server v1 to scan for changes :
+    ```groovy
+    appengine {
+      run {
+        jvmFlags = ["-Dappengine.fullscan.seconds=5"]
+      }
+    }
+    ```
+2. You can either use `explodeApp` which clears and rebuilds the output directory OR 
+   you can configure a new `reloadApp` task to rebuild into the `exploded-<project>` directory without deleting it.
+    ```groovy
+    task reloadApp(type: Copy) {
+      dependsOn war
+  
+      project.afterEvaluate {
+        into project.tasks.explodeWar.explodedAppDirectory
+         with war
+      }
+    }
+    ```
+While your app is running, just run `explodeApp` or `reloadApp` to reflect your changes into the running application.
+
 ### How do I put datastore somewhere else (so it's not deleted across rebuilds)?
 ```groovy
 appengine {

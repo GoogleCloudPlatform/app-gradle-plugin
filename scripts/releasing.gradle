@@ -15,6 +15,11 @@
  *
  */
 
+// This script contains
+// 1. The release builder (for building releasable bundles)
+// 2. The release helper (for git tagging and version automation)
+
+// Release builder (provides prepareRelease script)
 apply plugin: 'maven'
 
 task sourceJar(type: Jar) {
@@ -77,4 +82,14 @@ task prepareRelease(type: Copy) {
 
   dependsOn build
   dependsOn cleanPrepareRelease
+}
+
+// Release helper (git release commits and version updates)
+apply plugin: 'net.researchgate.release'
+
+release {
+  tagTemplate = 'v$version'
+  git {
+    requireBranch = '/^release_v\d+.*$/'
+  }
 }

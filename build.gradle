@@ -23,7 +23,7 @@ buildscript {
   }
   dependencies {
     classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
-    classpath 'net.researchgate:gradle-release:2.4.0'
+    classpath 'net.researchgate:gradle-release:2.6.0'
   }
 }
 

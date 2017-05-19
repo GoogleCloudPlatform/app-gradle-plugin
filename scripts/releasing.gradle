@@ -90,6 +90,6 @@ apply plugin: 'net.researchgate.release'
 release {
   tagTemplate = 'v$version'
   git {
-    requireBranch = '/^release_v\d+.*$/'
+    requireBranch = /^release_v\d+.*$/  //regex
   }
 }

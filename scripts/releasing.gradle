@@ -78,7 +78,7 @@ task prepareRelease(type: Copy) {
   from javadocJar
   from writePom
 
-  into "${buildDir}/release"
+  into "${buildDir}/release-artifacts"
 
   dependsOn build
   dependsOn cleanPrepareRelease

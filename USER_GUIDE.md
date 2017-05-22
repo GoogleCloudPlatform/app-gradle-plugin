@@ -1,7 +1,7 @@
 # User Guide
 
 ## Applying the Plugin
-Include the plugin jar in your buildscript classpath and apply the appropriate standard or flexible plugin:
+Include the plugin jar in your buildscript classpath and apply the appropriate Standard or Flexible plugin:
 
 ```groovy
 buildscript {
@@ -19,8 +19,8 @@ apply plugin: "com.google.cloud.tools.appengine-flexible"
 ```
 
 You can also use the `com.google.cloud.tools.appengine` plugin that will automatically determine
-your environment (standard or flexible) based on the presence of an `appengine-web.xml`
-in `src/main/webapp/WEB-INF/`
+your environment based on the presence of an `appengine-web.xml`
+in `src/main/webapp/WEB-INF/`, _Standard_ if present, _Flexible_ otherwise.
 
 The [Cloud SDK](https://cloud.google.com/sdk) is required for this plugin to
 function. Download and install it before running any tasks.
@@ -28,8 +28,6 @@ function. Download and install it before running any tasks.
 ---
 
 ## App Engine Standard
-The plugin will target the App Engine standard environment if you include an `appengine-web.xml`
-in `src/main/webapp/WEB-INF/`, otherwise it will assume it is an [App Engine flexible](#app-engine-flexible) application.
 
 ### Tasks
 For App Engine standard, the plugin exposes the following tasks :
@@ -286,8 +284,6 @@ appengine {
 ---
 
 ## App Engine Flexible
-The plugin will target the App Engine flexible environment if you do **NOT** include an `appengine-web.xml`
-in `src/main/webapp/WEB-INF/`.
 
 ### Tasks
 For App Engine flexible, the plugin exposes the following tasks :

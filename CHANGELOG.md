@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## 1.3.2
+
+### Added
+* Allow direct application of standard or flexible plugin ([#144](../../issues/144))
+
+### Fixed
+* Fix path to appengine-web.xml in fallback detection of standard or flexible environment ([#136](../../issues/136))
+
 ## 1.3.1
 ### Added
 * New `environment` option in the `run` closure to pass environment variables to Dev App Server ([#128](../../pulls/128)) ([appengine-plugins-core/381](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/381))

@@ -37,24 +37,22 @@ import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- * End to end tests for standard projects.
- */
+/** End to end tests for standard projects. */
 @RunWith(Parameterized.class)
 public class AppEngineStandardPluginIntegrationTest {
 
-  @Rule
-  public Timeout globalTimeout = Timeout.seconds(180);
+  @Rule public Timeout globalTimeout = Timeout.seconds(180);
 
-  @Rule
-  public TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public TemporaryFolder testProjectDir = new TemporaryFolder();
 
   private final String testProjectSrcDirectory;
 
   @Parameterized.Parameters
   public static Object[] data() {
-    return new Object[]{"src/integTest/resources/projects/standard-project",
-        "src/integTest/resources/projects/standard-project-java8"};
+    return new Object[] {
+      "src/integTest/resources/projects/standard-project",
+      "src/integTest/resources/projects/standard-project-java8"
+    };
   }
 
   public AppEngineStandardPluginIntegrationTest(String testProjectSrcDirectory) {
@@ -63,8 +61,7 @@ public class AppEngineStandardPluginIntegrationTest {
 
   @Before
   public void setUp() throws IOException {
-    FileUtils.copyDirectory(
-        new File(testProjectSrcDirectory), testProjectDir.getRoot());
+    FileUtils.copyDirectory(new File(testProjectSrcDirectory), testProjectDir.getRoot());
   }
 
   @Ignore
@@ -118,5 +115,4 @@ public class AppEngineStandardPluginIntegrationTest {
         new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
     cloudSdk.runAppCommand(Arrays.asList("services", "delete", "standard-project"));
   }
-
 }

@@ -47,6 +47,7 @@ public class AppEngineStandardPluginIntegrationTest {
 
   private final String testProjectSrcDirectory;
 
+  /** Parameterize the project source for the test. */
   @Parameterized.Parameters
   public static Object[] data() {
     return new Object[] {

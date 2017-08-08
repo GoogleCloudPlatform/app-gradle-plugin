@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.DirectoryScanner;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -47,8 +46,8 @@ public class AppEngineStandardPluginIntegrationTest {
   @Parameterized.Parameters
   public static Object[] data() {
     return new Object[] {
-        "src/integTest/resources/projects/standard-project",
-        "src/integTest/resources/projects/standard-project-java8"
+      "src/integTest/resources/projects/standard-project",
+      "src/integTest/resources/projects/standard-project-java8"
     };
   }
 
@@ -88,12 +87,13 @@ public class AppEngineStandardPluginIntegrationTest {
 
       File expectedLogFileDir = new File(testProjectDir.getRoot(), "/build/tmp/appengineStart");
       DirectoryScanner ds = new DirectoryScanner();
-      ds.setIncludes(new String[]{"dev_appserver*.out"});
+      ds.setIncludes(new String[] {"dev_appserver*.out"});
       ds.setBasedir(expectedLogFileDir);
       ds.scan();
       String[] devAppserverLogFiles = ds.getIncludedFiles();
       Assert.assertEquals(1, devAppserverLogFiles.length);
-      String devAppServerOutput = FileUtils.readFileToString(new File(expectedLogFileDir, devAppserverLogFiles[0]));
+      String devAppServerOutput =
+          FileUtils.readFileToString(new File(expectedLogFileDir, devAppserverLogFiles[0]));
       System.out.println(devAppServerOutput);
       Assert.assertTrue(
           devAppServerOutput.contains("Dev App Server is now running")

@@ -22,8 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+/** A listener that redirects process output to a file. */
 public class FileOutputLineListener implements ProcessOutputLineListener {
-  final PrintStream logFilePrinter;
+  private final PrintStream logFilePrinter;
 
   public FileOutputLineListener(File logFile) throws IOException {
     logFilePrinter = new PrintStream(logFile);

@@ -20,6 +20,8 @@ package com.google.cloud.tools.gradle.appengine.standard;
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
+import java.io.File;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -43,13 +45,22 @@ public class DevAppServerStartTask extends DefaultTask {
   @TaskAction
   public void startAction() throws AppEngineException, IOException {
 
+    // Add a listener to write to a file for non-blocking starts, this really only works
+    // when the gradle daemon is running (which is default for newer versions of gradle)
+    File logFile = File.createTempFile("dev_appserver", ".out", getTemporaryDir());
+    FileOutputLineListener logFileWriter = new FileOutputLineListener(logFile);
+
     CloudSdk sdk =
         cloudSdkBuilderFactory
             .newBuilder(getLogger())
             .async(true)
             .runDevAppServerWait(runConfig.getStartSuccessTimeout())
+            .addStdErrLineListener(logFileWriter)
+            .addStdOutLineListener(logFileWriter)
             .build();
 
     serverHelper.getAppServer(sdk, runConfig).run(runConfig);
+
+    getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
   }
 }

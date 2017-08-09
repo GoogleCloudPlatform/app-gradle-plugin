@@ -95,7 +95,8 @@ public class AppEngineStandardPluginIntegrationTest {
       String devAppServerOutput =
           FileUtils.readFileToString(new File(expectedLogFileDir, devAppserverLogFiles[0]));
       System.out.println(devAppServerOutput);
-      Assert.assertTrue(devAppServerOutput.contains("Dev App Server is now running")
+      Assert.assertTrue(
+          devAppServerOutput.contains("Dev App Server is now running")
               || devAppServerOutput.contains("INFO:oejs.Server:main: Started"));
 
       AssertConnection.assertResponse(

@@ -95,13 +95,12 @@ public class AppEngineStandardPluginIntegrationTest {
       String devAppServerOutput =
           FileUtils.readFileToString(new File(expectedLogFileDir, devAppserverLogFiles[0]));
       System.out.println(devAppServerOutput);
-      Assert.assertTrue(
-          devAppServerOutput.contains("Dev App Server is now running")
+      Assert.assertTrue(devAppServerOutput.contains("Dev App Server is now running")
               || devAppServerOutput.contains("INFO:oejs.Server:main: Started"));
 
       AssertConnection.assertResponse(
           "http://localhost:8080", 200, "Hello from the App Engine Standard project.");
-    } finally {
+
       GradleRunner.create()
           .withProjectDir(testProjectDir.getRoot())
           .withPluginClasspath()
@@ -112,6 +111,13 @@ public class AppEngineStandardPluginIntegrationTest {
       Thread.sleep(8000);
 
       AssertConnection.assertUnreachable("http://localhost:8080");
+    } finally {
+      // just in case the test fails, make sure we stop the dev appserver
+      GradleRunner.create()
+          .withProjectDir(testProjectDir.getRoot())
+          .withPluginClasspath()
+          .withArguments("appengineStop")
+          .build();
     }
   }
 

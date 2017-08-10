@@ -24,7 +24,6 @@ import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
 import java.io.File;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
@@ -76,5 +75,4 @@ public class DevAppServerStartTask extends DefaultTask {
 
     getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
   }
-
 }

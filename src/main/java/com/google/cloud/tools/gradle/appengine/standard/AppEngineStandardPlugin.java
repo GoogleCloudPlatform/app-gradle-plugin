@@ -41,7 +41,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   public static final String START_TASK_NAME = "appengineStart";
   public static final String STOP_TASK_NAME = "appengineStop";
 
-  private static final String STAGED_APP_DIR_NAME = "staged-app";
+  public static final String STAGED_APP_DIR_NAME = "staged-app";
+  public static final String DEV_APP_SERVER_OUTPUT_DIR_NAME = "dev-appserver-out";
 
   public static final String STAGE_EXTENSION = "stage";
   public static final String RUN_EXTENSION = "run";
@@ -215,6 +216,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                       public void execute(Project project) {
                         startTask.setRunConfig(runExtension);
                         startTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                        startTask.setDevAppServerLoggingDir(
+                            new File(project.getBuildDir(), DEV_APP_SERVER_OUTPUT_DIR_NAME));
                       }
                     });
               }

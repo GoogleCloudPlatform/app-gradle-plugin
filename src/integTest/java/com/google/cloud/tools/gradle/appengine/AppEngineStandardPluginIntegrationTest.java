@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.internal.process.ProcessRunnerException;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
+import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -85,7 +86,10 @@ public class AppEngineStandardPluginIntegrationTest {
           .withArguments("appengineStart")
           .build();
 
-      File expectedLogFileDir = new File(testProjectDir.getRoot(), "/build/tmp/appengineStart");
+      File expectedLogFileDir =
+          new File(
+              testProjectDir.getRoot(),
+              "/build/" + AppEngineStandardPlugin.DEV_APP_SERVER_OUTPUT_DIR_NAME);
       DirectoryScanner ds = new DirectoryScanner();
       ds.setIncludes(new String[] {"dev_appserver*.out"});
       ds.setBasedir(expectedLogFileDir);
@@ -102,6 +106,8 @@ public class AppEngineStandardPluginIntegrationTest {
       AssertConnection.assertResponse(
           "http://localhost:8080", 200, "Hello from the App Engine Standard project.");
 
+    } finally {
+      // we want to keep the state clean, so stop the server whether the test fails or not
       GradleRunner.create()
           .withProjectDir(testProjectDir.getRoot())
           .withPluginClasspath()
@@ -112,13 +118,6 @@ public class AppEngineStandardPluginIntegrationTest {
       Thread.sleep(8000);
 
       AssertConnection.assertUnreachable("http://localhost:8080");
-    } finally {
-      // just in case the test fails, make sure we stop the dev appserver
-      GradleRunner.create()
-          .withProjectDir(testProjectDir.getRoot())
-          .withPluginClasspath()
-          .withArguments("appengineStop")
-          .build();
     }
   }
 

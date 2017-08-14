@@ -58,8 +58,7 @@ public class DevAppServerStartTask extends DefaultTask {
 
     // Add a listener to write to a file for non-blocking starts, this really only works
     // when the gradle daemon is running (which is default for newer versions of gradle)
-    File logFile =
-        new File(devAppServerLoggingDir, "dev_appserver.out");
+    File logFile = new File(devAppServerLoggingDir, "dev_appserver.out");
     FileOutputLineListener logFileWriter = new FileOutputLineListener(logFile);
 
     CloudSdk sdk =

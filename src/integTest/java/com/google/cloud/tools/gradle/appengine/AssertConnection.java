@@ -53,7 +53,7 @@ public class AssertConnection {
             (HttpURLConnection) new URL("http://localhost:8080").openConnection();
         urlConnection.getResponseCode();
       } catch (ConnectException ce) {
-        return;  // ConnectException is what we want
+        return; // ConnectException is what we want
       }
       Thread.sleep(500);
     }

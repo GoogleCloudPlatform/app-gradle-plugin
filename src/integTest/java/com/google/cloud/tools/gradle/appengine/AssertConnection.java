@@ -43,16 +43,20 @@ public class AssertConnection {
   }
 
   /** Connect and assert that the target is unreachable. */
-  public static void assertUnreachable(String url) throws IOException {
-    try {
-      HttpURLConnection urlConnection =
-          (HttpURLConnection) new URL("http://localhost:8080").openConnection();
-      urlConnection.getResponseCode();
-      Assert.fail("ConnectException expected");
-    } catch (IOException e) {
-      if (!(e instanceof ConnectException)) {
-        throw e;
+  public static void assertUnreachable(String url, long timeoutInMillis)
+      throws IOException, InterruptedException {
+
+    long startTime = System.currentTimeMillis();
+    while (System.currentTimeMillis() - startTime < timeoutInMillis) {
+      try {
+        HttpURLConnection urlConnection =
+            (HttpURLConnection) new URL("http://localhost:8080").openConnection();
+        urlConnection.getResponseCode();
+      } catch (ConnectException ce) {
+        return;  // ConnectException is what we want
       }
+      Thread.sleep(500);
     }
+    Assert.fail("ConnectException expected");
   }
 }

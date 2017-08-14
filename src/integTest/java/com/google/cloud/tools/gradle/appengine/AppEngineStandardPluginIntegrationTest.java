@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import org.apache.commons.io.FileUtils;
-import org.apache.tools.ant.DirectoryScanner;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.hamcrest.CoreMatchers;
@@ -38,17 +37,19 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 /** End to end tests for standard projects. */
 @RunWith(Parameterized.class)
 public class AppEngineStandardPluginIntegrationTest {
 
   /** Parameterize the project source for the test. */
-  @Parameterized.Parameters
+  @Parameters
   public static Object[] data() {
-    return new Object[] {
-      "src/integTest/resources/projects/standard-project",
-      "src/integTest/resources/projects/standard-project-java8"
+    return new Object[][] {
+      {"src/integTest/resources/projects/standard-project", "Dev App Server is now running"},
+      {"src/integTest/resources/projects/standard-project-java8", "INFO:oejs.Server:main: Started"}
     };
   }
 
@@ -56,11 +57,11 @@ public class AppEngineStandardPluginIntegrationTest {
 
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder();
 
-  private final String testProjectSrcDirectory;
+  @Parameter(0)
+  public String testProjectSrcDirectory;
 
-  public AppEngineStandardPluginIntegrationTest(String testProjectSrcDirectory) {
-    this.testProjectSrcDirectory = testProjectSrcDirectory;
-  }
+  @Parameter(1)
+  public String devAppServerStartedString;
 
   @Before
   public void setUp() throws IOException {
@@ -79,46 +80,32 @@ public class AppEngineStandardPluginIntegrationTest {
    */
   @Test
   public void testDevAppServer_async() throws InterruptedException, IOException {
-    try {
-      GradleRunner.create()
-          .withProjectDir(testProjectDir.getRoot())
-          .withPluginClasspath()
-          .withArguments("appengineStart")
-          .build();
+    GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineStart")
+        .build();
 
-      File expectedLogFileDir =
-          new File(
-              testProjectDir.getRoot(),
-              "/build/" + AppEngineStandardPlugin.DEV_APP_SERVER_OUTPUT_DIR_NAME);
-      DirectoryScanner ds = new DirectoryScanner();
-      ds.setIncludes(new String[] {"dev_appserver*.out"});
-      ds.setBasedir(expectedLogFileDir);
-      ds.scan();
-      String[] devAppserverLogFiles = ds.getIncludedFiles();
-      Assert.assertEquals(1, devAppserverLogFiles.length);
-      String devAppServerOutput =
-          FileUtils.readFileToString(new File(expectedLogFileDir, devAppserverLogFiles[0]));
-      System.out.println(devAppServerOutput);
-      Assert.assertTrue(
-          devAppServerOutput.contains("Dev App Server is now running")
-              || devAppServerOutput.contains("INFO:oejs.Server:main: Started"));
+    File expectedLogFileDir =
+        new File(
+            testProjectDir.getRoot(),
+            "/build/" + AppEngineStandardPlugin.DEV_APP_SERVER_OUTPUT_DIR_NAME);
 
-      AssertConnection.assertResponse(
-          "http://localhost:8080", 200, "Hello from the App Engine Standard project.");
+    Assert.assertEquals(1, expectedLogFileDir.listFiles().length);
+    File devAppserverLogFile = new File(expectedLogFileDir, "dev_appserver.out");
+    String devAppServerOutput = FileUtils.readFileToString(devAppserverLogFile);
+    Assert.assertTrue(devAppServerOutput.contains(devAppServerStartedString));
 
-    } finally {
-      // we want to keep the state clean, so stop the server whether the test fails or not
-      GradleRunner.create()
-          .withProjectDir(testProjectDir.getRoot())
-          .withPluginClasspath()
-          .withArguments("appengineStop")
-          .build();
+    AssertConnection.assertResponse(
+        "http://localhost:8080", 200, "Hello from the App Engine Standard project.");
 
-      // give the server a couple seconds to come down
-      Thread.sleep(8000);
+    GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments("appengineStop")
+        .build();
 
-      AssertConnection.assertUnreachable("http://localhost:8080");
-    }
+    AssertConnection.assertUnreachable("http://localhost:8080", 8000);
   }
 
   @Test

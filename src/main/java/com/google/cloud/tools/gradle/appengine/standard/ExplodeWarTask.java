@@ -18,49 +18,15 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import java.io.File;
-import org.gradle.api.Action;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.file.CopySpec;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.Sync;
 
 /** Expand a war. */
-public class ExplodeWarTask extends DefaultTask {
-
-  private File warFile;
-  private File explodedAppDirectory;
-
-  @InputFile
-  public File getWarFile() {
-    return warFile;
-  }
-
-  @OutputDirectory
-  public File getExplodedAppDirectory() {
-    return explodedAppDirectory;
-  }
-
+public class ExplodeWarTask extends Sync {
   public void setWarFile(File warFile) {
-    this.warFile = warFile;
+    from(getProject().zipTree(warFile));
   }
 
   public void setExplodedAppDirectory(File explodedAppDirectory) {
-    this.explodedAppDirectory = explodedAppDirectory;
-  }
-
-  /** Task entrypoint : expand the war. */
-  @TaskAction
-  public void explodeApp() {
-    getProject().delete(explodedAppDirectory);
-    getProject()
-        .copy(
-            new Action<CopySpec>() {
-              @Override
-              public void execute(CopySpec copySpec) {
-                copySpec.from(getProject().zipTree(warFile));
-                copySpec.into(explodedAppDirectory);
-              }
-            });
+    into(explodedAppDirectory);
   }
 }

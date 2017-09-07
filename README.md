@@ -1,5 +1,6 @@
 ![project status image](https://img.shields.io/badge/stability-stable-brightgreen.svg)
 [![build status image](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin.svg?branch=master)](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/appengine-gradle-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/appengine-gradle-plugin)
 # Google App Engine Gradle plugin
 
 This Gradle plugin provides tasks to build and deploy Google App Engine applications.

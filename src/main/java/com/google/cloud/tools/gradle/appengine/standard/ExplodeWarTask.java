@@ -18,15 +18,31 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import java.io.File;
+import org.gradle.api.Action;
 import org.gradle.api.tasks.Sync;
+import org.gradle.api.tasks.util.PatternFilterable;
 
 /** Expand a war. */
 public class ExplodeWarTask extends Sync {
+
+  private File explodedAppDirectory;
+
   public void setWarFile(File warFile) {
     from(getProject().zipTree(warFile));
   }
 
   public void setExplodedAppDirectory(File explodedAppDirectory) {
+    this.explodedAppDirectory = explodedAppDirectory;
     into(explodedAppDirectory);
+    preserve(new Action<PatternFilterable>() {
+      @Override
+      public void execute(PatternFilterable patternFilterable) {
+        patternFilterable.include("WEB-INF/appengine-generated/datastore-indexes-auto.xml");
+      }
+    });
+  }
+
+  public File getExplodedAppDirectory() {
+    return explodedAppDirectory;
   }
 }

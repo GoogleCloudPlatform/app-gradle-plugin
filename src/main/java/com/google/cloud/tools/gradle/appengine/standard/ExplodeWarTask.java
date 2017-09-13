@@ -31,15 +31,20 @@ public class ExplodeWarTask extends Sync {
     from(getProject().zipTree(warFile));
   }
 
+  /**
+   * Sets the output directory of Sync Task and preserves the setting so it can be recovered later
+   * via getter.
+   */
   public void setExplodedAppDirectory(File explodedAppDirectory) {
     this.explodedAppDirectory = explodedAppDirectory;
     into(explodedAppDirectory);
-    preserve(new Action<PatternFilterable>() {
-      @Override
-      public void execute(PatternFilterable patternFilterable) {
-        patternFilterable.include("WEB-INF/appengine-generated/datastore-indexes-auto.xml");
-      }
-    });
+    preserve(
+        new Action<PatternFilterable>() {
+          @Override
+          public void execute(PatternFilterable patternFilterable) {
+            patternFilterable.include("WEB-INF/appengine-generated/datastore-indexes-auto.xml");
+          }
+        });
   }
 
   public File getExplodedAppDirectory() {

@@ -29,8 +29,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class ExplodeWarTaskTest {
 
-  @Rule
-  public final TemporaryFolder testProjectDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   @Test
   public void testSyncTask() throws IOException {
@@ -40,7 +39,12 @@ public class ExplodeWarTaskTest {
             .addAppEngineWebXml()
             .applyGradleRunner("explodeWar");
 
-    Path explodedApp = testProjectDir.getRoot().toPath().resolve("build").resolve("exploded-" + testProjectDir.getRoot().getName());
+    Path explodedApp =
+        testProjectDir
+            .getRoot()
+            .toPath()
+            .resolve("build")
+            .resolve("exploded-" + testProjectDir.getRoot().getName());
     Path appengineGenerated = explodedApp.resolve("WEB-INF").resolve("appengine-generated");
     Path junkXml = appengineGenerated.resolve("junk.xml");
     Path datastoreIndexesAutoXml = appengineGenerated.resolve("datastore-indexes-auto.xml");

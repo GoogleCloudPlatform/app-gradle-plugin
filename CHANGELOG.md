@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## 1.3.3
+
+### Changed
+* Preserve datastore-indexes-auto.xml across non-clean rebuilds ([#165](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/165))
+
 ## 1.3.2
 
 ### Added

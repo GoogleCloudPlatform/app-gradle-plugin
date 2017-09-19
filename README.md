@@ -17,7 +17,7 @@ App Engine Flexible Environment:
 
 # Requirements
 
-[Gradle](http://gradle.org) is required to build and run the plugin.
+[Gradle](http://gradle.org) **4.0** or higher is required to build and run the plugin.
 
 You must have [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
 

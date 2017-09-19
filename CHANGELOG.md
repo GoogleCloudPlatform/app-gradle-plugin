@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 * Log Dev App Server output to file ([#156](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/156))
 
 ### Changed
+* Gradle 4.0 is required.
 * Preserve datastore-indexes-auto.xml across non-clean rebuilds ([#165](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/165))
 * Use sync instead of copy on the explodeWar task ([#162](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/162))
 

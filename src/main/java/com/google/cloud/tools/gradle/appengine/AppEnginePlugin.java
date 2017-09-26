@@ -34,7 +34,7 @@ import org.gradle.util.GradleVersion;
  */
 public class AppEnginePlugin implements Plugin<Project> {
 
-  static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.3");
+  static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
   @Override
   public void apply(Project project) {

@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.IOException;
-
 import org.gradle.api.Project;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.UnexpectedBuildFailure;
@@ -41,16 +40,24 @@ public class AppEnginePluginTest {
 
   @Test
   public void testCheckGradleVersion_pass() {
-    new TestProject(testProjectRoot.getRoot()).applyGradleRunnerWithVersion(AppEnginePlugin.GRADLE_MIN_VERSION.getVersion());
+    new TestProject(testProjectRoot.getRoot())
+        .applyGradleRunnerWithVersion(AppEnginePlugin.GRADLE_MIN_VERSION.getVersion());
     // pass
   }
 
   @Test
   public void testCheckGradleVersion_fail() throws IOException {
     try {
-      new TestProject(testProjectRoot.getRoot()).addAutoDetectingBuildFile().applyGradleRunnerWithVersion("2.8");
+      new TestProject(testProjectRoot.getRoot())
+          .addAutoDetectingBuildFile()
+          .applyGradleRunnerWithVersion("2.8");
     } catch (UnexpectedBuildFailure ex) {
-      assertThat(ex.getMessage(), containsString("Detected Gradle 2.8, but the appengine-gradle-plugin requires " + AppEnginePlugin.GRADLE_MIN_VERSION + " or higher."));
+      assertThat(
+          ex.getMessage(),
+          containsString(
+              "Detected Gradle 2.8, but the appengine-gradle-plugin requires "
+                  + AppEnginePlugin.GRADLE_MIN_VERSION
+                  + " or higher."));
     }
   }
 

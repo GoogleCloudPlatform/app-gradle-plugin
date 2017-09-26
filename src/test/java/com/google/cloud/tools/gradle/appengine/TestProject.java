@@ -95,6 +95,15 @@ public class TestProject {
         .build();
   }
 
+  /** Run the gradle runner (build) with a specific gradle version and return the build result. */
+  public BuildResult applyGradleRunnerWithVersion(String version) {
+    return GradleRunner.create()
+        .withProjectDir(projectRoot)
+        .withPluginClasspath()
+        .withGradleVersion(version)
+        .build();
+  }
+
   /** Run the project builder and return an evaluated project. */
   public Project applyStandardProjectBuilder() throws IOException {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineStandardPlugin.class);

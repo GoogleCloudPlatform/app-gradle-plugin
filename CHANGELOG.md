@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## 1.3.4
+
+### Added
+* Check minimum gradle version ([#169](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/169))
+
+### Fixed
+* Gradle 3.4.1 is required.
+
 ## 1.3.3
 
 ### Added

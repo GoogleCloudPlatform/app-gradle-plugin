@@ -17,6 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.flexible;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.*;
+
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
@@ -40,9 +43,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
-
 /** Test App Engine Flexible Plugin configuration. */
 public class AppEngineFlexiblePluginTest {
 
@@ -54,7 +54,8 @@ public class AppEngineFlexiblePluginTest {
 
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
-    createTestProject().applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
+    createTestProject()
+        .applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
     // pass
   }
 

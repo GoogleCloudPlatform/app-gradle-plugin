@@ -103,7 +103,7 @@ public class TestProject {
         .withGradleVersion(version)
         .build();
   }
-  
+
   /** Run the project builder and return an evaluated project. */
   public Project applyStandardProjectBuilder() throws IOException {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineStandardPlugin.class);

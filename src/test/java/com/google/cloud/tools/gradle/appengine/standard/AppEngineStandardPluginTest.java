@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
-import com.google.cloud.tools.gradle.appengine.AppEnginePlugin;
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
@@ -55,7 +54,8 @@ public class AppEngineStandardPluginTest {
 
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
-    createTestProject().applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
+    createTestProject()
+        .applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
     // pass
   }
 

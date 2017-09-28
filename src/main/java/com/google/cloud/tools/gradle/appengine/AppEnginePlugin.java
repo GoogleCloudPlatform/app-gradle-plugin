@@ -21,10 +21,12 @@ import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.plugins.WarPluginConvention;
+import org.gradle.util.GradleVersion;
 
 /**
  * This is a getting-started plugin that auto detects the user's configuration and assigns it a
@@ -32,8 +34,11 @@ import org.gradle.api.plugins.WarPluginConvention;
  */
 public class AppEnginePlugin implements Plugin<Project> {
 
+  static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
+
   @Override
   public void apply(Project project) {
+    checkGradleVersion(project);
 
     if (isAppEngineStandard(project)) {
       project.getPluginManager().apply(AppEngineStandardPlugin.class);
@@ -60,5 +65,16 @@ public class AppEnginePlugin implements Plugin<Project> {
     }
 
     return false;
+  }
+
+  private void checkGradleVersion(Project project) {
+    if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
+      throw new GradleException(
+          "Detected "
+              + GradleVersion.current()
+              + ", but the appengine-gradle-plugin requires "
+              + GRADLE_MIN_VERSION
+              + " or higher.");
+    }
   }
 }

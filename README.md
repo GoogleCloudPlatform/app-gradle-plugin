@@ -21,7 +21,7 @@ App Engine Flexible Environment:
 
 | appengine-gradle-plugin | gradle version |
 |-------------------------|----------------|
-| 1.3.3 +                 | 4.0 or newer   |
+| 1.3.3 +                 | 3.4.1 or newer |
 | 1.0.0 - 1.3.2           | 3.0 or newer   |
 
 You must have [Google Cloud SDK](https://cloud.google.com/sdk/) installed.

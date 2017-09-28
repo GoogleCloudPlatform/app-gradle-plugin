@@ -17,17 +17,17 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import org.gradle.api.Action;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.gradle.api.*;
 import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.util.GradleVersion;
 
 /**
  * Core plugin for App Engine, contains common tasks like deploy and show configuration Also
  * instantiates the "tools" extension to specify the cloud sdk path.
  */
 public class AppEngineCorePlugin implements Plugin<Project> {
+
+  public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
   // this is just a placeholder to be replaced by the standard/flex group
   public static final String APP_ENGINE_TASK_GROUP = "App Engine core tasks";
@@ -52,6 +52,8 @@ public class AppEngineCorePlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
+    checkGradleVersion(project);
+
     this.project = project;
     createExtensions();
 
@@ -262,5 +264,16 @@ public class AppEngineCorePlugin implements Plugin<Project> {
                 }
               }
             });
+  }
+
+  private void checkGradleVersion(Project project) {
+    if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
+      throw new GradleException(
+          "Detected "
+              + GradleVersion.current()
+              + ", but the appengine-gradle-plugin requires "
+              + GRADLE_MIN_VERSION
+              + " or higher.");
+    }
   }
 }

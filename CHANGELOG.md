@@ -12,9 +12,13 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 * Check minimum gradle version ([#169](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/169))
+* New `<additionalArguments>` parameter to pass additional arguments to Dev App Server ([#179](../../pulls/179)),
+relevant pull request in App Engine Plugins Core:
+[appengine-plugins-core/433](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/433)
 
 ### Fixed
 * Gradle 3.4.1 is required.
+* Upgrade App Engine Plugins Core dependency to 0.3.9 ([#179](../../pulls/179))
 
 ## 1.3.3
 

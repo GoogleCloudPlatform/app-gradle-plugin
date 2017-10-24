@@ -18,12 +18,11 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableList;
 import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
 
@@ -328,6 +327,7 @@ public class RunExtension implements RunConfiguration {
   }
 
   public void setAdditionalArguments(List<String> additionalArguments) {
-    this.additionalArguments = additionalArguments != null ? ImmutableList.copyOf(additionalArguments) : null;
+    this.additionalArguments =
+        additionalArguments != null ? ImmutableList.copyOf(additionalArguments) : null;
   }
 }

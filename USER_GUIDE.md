@@ -109,6 +109,7 @@ Valid for versions "1" and "2-alpha"
 | `startSuccessTimeout` | Amount of time in seconds to wait for the Dev App Server to start in the background. |
 | `serverVersion`       | Server versions to use, options are "1" or "2-alpha" |
 | `services`            | List of services to run |
+| `additionalArguments` | Additional arguments to pass to the Dev App Server process |
 
 Only valid for version "2-alpha"
 

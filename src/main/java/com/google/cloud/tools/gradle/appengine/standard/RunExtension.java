@@ -18,6 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class RunExtension implements RunConfiguration {
   private Boolean clearDatastore;
   private File datastorePath;
   private Map<String, String> environment;
+  private List<String> additionalArguments;
 
   /**
    * Constructor.
@@ -317,5 +319,15 @@ public class RunExtension implements RunConfiguration {
 
   public void setEnvironment(Map<String, String> environment) {
     this.environment = environment;
+  }
+
+  @Override
+  public List<String> getAdditionalArguments() {
+    return additionalArguments;
+  }
+
+  public void setAdditionalArguments(List<String> additionalArguments) {
+    this.additionalArguments =
+        additionalArguments != null ? ImmutableList.copyOf(additionalArguments) : null;
   }
 }

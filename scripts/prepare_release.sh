@@ -43,7 +43,7 @@ fi
 git checkout -b release_v${VERSION}
 
 # Changes the version for release and creates the commits/tags.
-./gradlew release
+echo | ./gradlew release
 
 # Pushes the release branch to Github.
 git push --tags --set-upstream origin ${VERSION}

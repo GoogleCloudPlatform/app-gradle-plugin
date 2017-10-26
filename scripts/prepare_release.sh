@@ -46,7 +46,7 @@ git checkout -b release_v${VERSION}
 echo | ./gradlew release
 
 # Pushes the release branch to Github.
-git push --tags --set-upstream origin release_v${VERSION}
+git push --set-upstream origin release_v${VERSION}
 
 # File a PR on Github for the new branch. Have someone LGTM it, which gives you permission to continue.
 EchoGreen 'File a PR for the new release branch:'

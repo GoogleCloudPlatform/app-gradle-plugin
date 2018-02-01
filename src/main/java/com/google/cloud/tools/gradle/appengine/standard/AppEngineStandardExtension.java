@@ -20,11 +20,9 @@ package com.google.cloud.tools.gradle.appengine.standard;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
-import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
-import org.gradle.internal.impldep.aQute.bnd.build.Run;
 
 public class AppEngineStandardExtension implements AppEngineCoreExtensionProperties {
   private ToolsExtension tools;
@@ -33,8 +31,8 @@ public class AppEngineStandardExtension implements AppEngineCoreExtensionPropert
   private RunExtension run;
 
   /**
-   * Create nested configuration blocks as Extensions. Gradle 4.5 has an ObjectFactory class to
-   * deal with this, transition to that when upgrading gradle version.
+   * Create nested configuration blocks as Extensions. Gradle 4.5 has an ObjectFactory class to deal
+   * with this, transition to that when upgrading gradle version.
    */
   public void createSubExtensions(Project project) {
     tools = ((ExtensionAware) this).getExtensions().create("tools", ToolsExtension.class, project);

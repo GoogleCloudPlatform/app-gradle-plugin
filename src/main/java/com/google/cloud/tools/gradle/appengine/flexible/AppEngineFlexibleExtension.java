@@ -29,9 +29,7 @@ public class AppEngineFlexibleExtension implements AppEngineCoreExtensionPropert
   private DeployExtension deploy;
   private StageFlexibleExtension stage;
 
-  /**
-   * Create nested configuration blocks as Extensions.
-   */
+  /** Create nested configuration blocks as Extensions. */
   public void createSubExtensions(Project project) {
     tools = ((ExtensionAware) this).getExtensions().create("tools", ToolsExtension.class, project);
     deploy =

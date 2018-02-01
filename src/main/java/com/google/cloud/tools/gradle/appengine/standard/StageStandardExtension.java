@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.deploy.StageStandardConfiguration;
 import java.io.File;
+import javax.inject.Inject;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
@@ -44,6 +45,7 @@ public class StageStandardExtension implements StageStandardConfiguration {
   private String runtime;
 
   /** Constuctor. */
+  @Inject
   public StageStandardExtension(Project project) {
     this.project = project;
   }

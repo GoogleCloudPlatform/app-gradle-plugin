@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
@@ -50,10 +50,8 @@ public class SourceContextPlugin implements Plugin<Project> {
 
   private void createExtension() {
     // obtain extensions defined by core plugin.
-    ExtensionAware appengine =
-        new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    final ToolsExtension tools =
-        new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    ExtensionAware appengine = new ExtensionUtil(project).get("appengine");
+    final ToolsExtension tools = ((AppEngineCoreExtensionProperties) appengine).getTools();
 
     // create source context extension and set defaults
     extension =

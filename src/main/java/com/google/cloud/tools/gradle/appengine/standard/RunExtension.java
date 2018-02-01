@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
 
@@ -65,6 +66,7 @@ public class RunExtension implements RunConfiguration {
    *
    * @param project The gradle project.
    */
+  @Inject
   public RunExtension(Project project) {
     this.project = project;
   }

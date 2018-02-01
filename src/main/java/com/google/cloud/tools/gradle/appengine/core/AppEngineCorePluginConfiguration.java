@@ -19,17 +19,14 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
-import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.util.GradleVersion;
 
 /**
  * Core plugin for App Engine, contains common tasks like deploy and show configuration Also
  * instantiates the "tools" extension to specify the cloud sdk path.
  */
-public class AppEngineCorePlugin implements Plugin<Project> {
+public class AppEngineCorePluginConfiguration {
 
   public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
@@ -45,21 +42,25 @@ public class AppEngineCorePlugin implements Plugin<Project> {
   public static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
 
   public static final String APPENGINE_EXTENSION = "appengine";
-  public static final String DEPLOY_EXTENSION = "deploy";
-  public static final String TOOLS_EXTENSION = "tools";
 
   private Project project;
-  private AppEngineExtension extension;
   private DeployExtension deployExtension;
   private ToolsExtension toolsExtension;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private String taskGroup;
 
-  @Override
-  public void apply(Project project) {
+  /** Configure core tasks for appengine flexible and standard project plugins. */
+  public void configureCoreProperties(
+      Project project,
+      AppEngineCoreExtensionProperties appEngineCoreExtensionProperties,
+      String taskGroup) {
     checkGradleVersion(project);
 
     this.project = project;
-    createExtensions();
+    this.taskGroup = taskGroup;
+    this.toolsExtension = appEngineCoreExtensionProperties.getTools();
+    this.deployExtension = appEngineCoreExtensionProperties.getDeploy();
+    configureCloudSdkBuilderFactory();
 
     createDeployTask();
     createDeployCronTask();
@@ -70,17 +71,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
     createShowConfigurationTask();
   }
 
-  private void createExtensions() {
-    extension = project.getExtensions().create(APPENGINE_EXTENSION, AppEngineExtension.class);
-    deployExtension =
-        ((ExtensionAware) extension)
-            .getExtensions()
-            .create(DEPLOY_EXTENSION, DeployExtension.class, project);
-    toolsExtension =
-        ((ExtensionAware) extension)
-            .getExtensions()
-            .create(TOOLS_EXTENSION, ToolsExtension.class, project);
-
+  private void configureCloudSdkBuilderFactory() {
     project.afterEvaluate(
         new Action<Project>() {
           @Override
@@ -100,7 +91,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<DeployTask>() {
               @Override
               public void execute(final DeployTask deployTask) {
-                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setGroup(taskGroup);
                 deployTask.setDescription("Deploy an App Engine application");
 
                 project.afterEvaluate(
@@ -124,7 +115,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<DeployCronTask>() {
               @Override
               public void execute(final DeployCronTask deployTask) {
-                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setGroup(taskGroup);
                 deployTask.setDescription("Deploy Cron configuration");
 
                 project.afterEvaluate(
@@ -148,7 +139,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<DeployDispatchTask>() {
               @Override
               public void execute(final DeployDispatchTask deployTask) {
-                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setGroup(taskGroup);
                 deployTask.setDescription("Deploy Dispatch configuration");
 
                 project.afterEvaluate(
@@ -172,7 +163,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<DeployDosTask>() {
               @Override
               public void execute(final DeployDosTask deployTask) {
-                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setGroup(taskGroup);
                 deployTask.setDescription("Deploy Dos configuration");
 
                 project.afterEvaluate(
@@ -196,7 +187,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<DeployIndexTask>() {
               @Override
               public void execute(final DeployIndexTask deployTask) {
-                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setGroup(taskGroup);
                 deployTask.setDescription("Deploy Index configuration");
 
                 project.afterEvaluate(
@@ -220,7 +211,7 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<DeployQueueTask>() {
               @Override
               public void execute(final DeployQueueTask deployTask) {
-                deployTask.setGroup(APP_ENGINE_TASK_GROUP);
+                deployTask.setGroup(taskGroup);
                 deployTask.setDescription("Deploy Queue configuration");
 
                 project.afterEvaluate(
@@ -244,28 +235,11 @@ public class AppEngineCorePlugin implements Plugin<Project> {
             new Action<ShowConfigurationTask>() {
               @Override
               public void execute(final ShowConfigurationTask showConfigurationTask) {
-                showConfigurationTask.setGroup(APP_ENGINE_TASK_GROUP);
+                showConfigurationTask.setGroup(taskGroup);
                 showConfigurationTask.setDescription(
                     "Show current App Engine plugin configuration");
 
                 showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
-              }
-            });
-  }
-
-  /** Override the default task group of tasks from this plugin. */
-  public static void overrideCoreTasksGroup(Project project, final String overrideGroup) {
-    project
-        .getTasks()
-        .all(
-            new Action<Task>() {
-              @Override
-              public void execute(Task task) {
-                String oldGroup = task.getGroup();
-                if (oldGroup != null
-                    && oldGroup.equals(AppEngineCorePlugin.APP_ENGINE_TASK_GROUP)) {
-                  task.setGroup(overrideGroup);
-                }
               }
             });
   }

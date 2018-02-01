@@ -17,16 +17,14 @@
 
 package com.google.cloud.tools.gradle.appengine.flexible;
 
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
-import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
-import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.Jar;
@@ -42,27 +40,27 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   public static final String STAGE_EXTENSION = "stage";
 
   private Project project;
+  private AppEngineFlexibleExtension appengineExtension;
   private StageFlexibleExtension stageExtension;
 
   @Override
   public void apply(Project project) {
     this.project = project;
-    project.getPluginManager().apply(AppEngineCorePlugin.class);
+    appengineExtension =
+        project.getExtensions().create("appengine", AppEngineFlexibleExtension.class);
+    appengineExtension.createSubExtensions(project);
+
+    new AppEngineCorePluginConfiguration()
+        .configureCoreProperties(project, appengineExtension, APP_ENGINE_FLEXIBLE_TASK_GROUP);
 
     configureExtensions();
     createStageTask();
-
-    AppEngineCorePlugin.overrideCoreTasksGroup(project, APP_ENGINE_FLEXIBLE_TASK_GROUP);
   }
 
   private void configureExtensions() {
-    // obtain extensions defined by core plugin.
-    ExtensionAware appengine =
-        new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
 
     // create the flexible stage extension and set defaults.
-    stageExtension =
-        appengine.getExtensions().create(STAGE_EXTENSION, StageFlexibleExtension.class, project);
+    stageExtension = appengineExtension.getStage();
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
     stageExtension.setAppEngineDirectory(new File(project.getProjectDir(), "src/main/appengine"));
@@ -73,7 +71,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     }
 
     // obtain deploy extension set defaults
-    DeployExtension deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    DeployExtension deploy = appengineExtension.getDeploy();
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
     // grab default project configuration from staging default
     deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
@@ -122,6 +120,9 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
                         });
                   }
                 });
-    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_TASK_NAME).dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME)
+        .dependsOn(stageTask);
   }
 }

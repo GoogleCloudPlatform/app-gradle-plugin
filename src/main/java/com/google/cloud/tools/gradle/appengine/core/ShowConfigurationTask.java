@@ -36,6 +36,7 @@ import org.gradle.api.tasks.TaskAction;
 public class ShowConfigurationTask extends DefaultTask {
 
   private String extensionId;
+  private String allowedNestedPackageSearchPath;
 
   @Input
   public String getExtensionId() {

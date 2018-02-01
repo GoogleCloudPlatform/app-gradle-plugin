@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Google Inc. All Right Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import java.io.File;
-import javax.inject.Inject;
-import org.gradle.api.Project;
+public interface AppEngineCoreExtensionProperties {
+  ToolsExtension getTools();
 
-/** Extension element to define the location of cloud sdk tooling. */
-public class ToolsExtension {
-
-  private final Project project;
-
-  private File cloudSdkHome;
-
-  @Inject
-  public ToolsExtension(Project project) {
-    this.project = project;
-  }
-
-  public File getCloudSdkHome() {
-    return cloudSdkHome;
-  }
-
-  public void setCloudSdkHome(Object cloudSdkHome) {
-    this.cloudSdkHome = project.file(cloudSdkHome);
-  }
+  DeployExtension getDeploy();
 }

@@ -24,9 +24,8 @@ import static org.junit.Assert.assertThat;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
-import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,6 @@ import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.specs.Spec;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.UnexpectedBuildFailure;
@@ -55,7 +53,8 @@ public class AppEngineStandardPluginTest {
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
     createTestProject()
-        .applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
+        .applyGradleRunnerWithGradleVersion(
+            AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION.getVersion());
     // pass
   }
 
@@ -68,7 +67,7 @@ public class AppEngineStandardPluginTest {
           ex.getMessage(),
           containsString(
               "Detected Gradle 2.8, but the appengine-gradle-plugin requires "
-                  + AppEngineCorePlugin.GRADLE_MIN_VERSION
+                  + AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION
                   + " or higher."));
     }
   }
@@ -236,13 +235,10 @@ public class AppEngineStandardPluginTest {
             .addAppEngineWebXml()
             .applyStandardProjectBuilder();
 
-    final ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    final DeployExtension deployExt =
-        new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    final StageStandardExtension stageExt =
-        new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    final RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
+    final RunExtension run = ext.getRun();
+    final DeployExtension deployExt = ext.getDeploy();
+    final StageStandardExtension stageExt = ext.getStage();
 
     assertEquals(
         new File(p.getBuildDir(), "exploded-" + p.getName()), stageExt.getSourceDirectory());

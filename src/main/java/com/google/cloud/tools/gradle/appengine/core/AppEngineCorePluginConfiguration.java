@@ -30,9 +30,6 @@ public class AppEngineCorePluginConfiguration {
 
   public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
-  // this is just a placeholder to be replaced by the standard/flex group
-  public static final String APP_ENGINE_TASK_GROUP = "App Engine core tasks";
-
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";
   public static final String DEPLOY_CRON_TASK_NAME = "appengineDeployCron";
   public static final String DEPLOY_DISPATCH_TASK_NAME = "appengineDeployDispatch";

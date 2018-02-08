@@ -25,24 +25,27 @@ import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 
 public class AppEngineStandardExtension implements AppEngineCoreExtensionProperties {
+  private static final String TOOLS_EXT = "tools";
+  private static final String DEPLOY_EXT = "deploy";
+  private static final String STAGE_EXT = "stage";
+  private static final String RUN_EXT = "run";
+
   private ToolsExtension tools;
   private DeployExtension deploy;
   private StageStandardExtension stage;
   private RunExtension run;
 
-  /**
-   * Create nested configuration blocks as Extensions. Gradle 4.5 has an ObjectFactory class to deal
-   * with this, transition to that when upgrading gradle version.
-   */
+  /** Create nested configuration blocks as Extensions. */
   public void createSubExtensions(Project project) {
-    tools = ((ExtensionAware) this).getExtensions().create("tools", ToolsExtension.class, project);
+    tools =
+        ((ExtensionAware) this).getExtensions().create(TOOLS_EXT, ToolsExtension.class, project);
     deploy =
-        ((ExtensionAware) this).getExtensions().create("deploy", DeployExtension.class, project);
+        ((ExtensionAware) this).getExtensions().create(DEPLOY_EXT, DeployExtension.class, project);
     stage =
         ((ExtensionAware) this)
             .getExtensions()
-            .create("stage", StageStandardExtension.class, project);
-    run = ((ExtensionAware) this).getExtensions().create("run", RunExtension.class, project);
+            .create(STAGE_EXT, StageStandardExtension.class, project);
+    run = ((ExtensionAware) this).getExtensions().create(RUN_EXT, RunExtension.class, project);
   }
 
   public void tools(Action<? super ToolsExtension> action) {

@@ -22,7 +22,6 @@ import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationCon
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import org.gradle.api.Project;
 
 /** Extension element to define Deployable configurations for App Engine. */
@@ -42,7 +41,6 @@ public class DeployExtension
   private String version;
   private File appEngineDirectory;
 
-  @Inject
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
   }

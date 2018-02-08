@@ -37,7 +37,6 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   private static final String STAGE_TASK_NAME = "appengineStage";
 
   private static final String STAGED_APP_DIR_NAME = "staged-app";
-  public static final String STAGE_EXTENSION = "stage";
 
   private Project project;
   private AppEngineFlexibleExtension appengineExtension;

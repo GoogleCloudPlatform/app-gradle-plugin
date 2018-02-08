@@ -18,7 +18,6 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import java.io.File;
-import javax.inject.Inject;
 import org.gradle.api.Project;
 
 /** Extension element to define the location of cloud sdk tooling. */
@@ -28,7 +27,6 @@ public class ToolsExtension {
 
   private File cloudSdkHome;
 
-  @Inject
   public ToolsExtension(Project project) {
     this.project = project;
   }

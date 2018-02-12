@@ -219,7 +219,7 @@ To enable hot reload of classes:
       }
     }
     ```
-2. While your app is running, just run `explodeApp` to copy the changes into the exploded app directly and reflect your changes into the running application.
+2. While your app is running, just run `explodeWar` to copy the changes into the exploded app directly and reflect your changes into the running application.
 
 If you wish to try gradle's experimental `--continuous` for automatic change application, see [#174](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/174).
 

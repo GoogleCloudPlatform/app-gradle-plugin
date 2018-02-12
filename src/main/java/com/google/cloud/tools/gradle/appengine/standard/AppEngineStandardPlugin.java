@@ -17,17 +17,15 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
-import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
-import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.War;
 
@@ -49,6 +47,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
   private Project project;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private AppEngineStandardExtension appengineExtension;
   private RunExtension runExtension;
   private StageStandardExtension stageExtension;
   private File explodedWarDir;
@@ -56,7 +55,12 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     this.project = project;
-    project.getPluginManager().apply(AppEngineCorePlugin.class);
+    appengineExtension =
+        project.getExtensions().create("appengine", AppEngineStandardExtension.class);
+    appengineExtension.createSubExtensions(project);
+
+    new AppEngineCorePluginConfiguration()
+        .configureCoreProperties(project, appengineExtension, APP_ENGINE_STANDARD_TASK_GROUP);
 
     explodedWarDir = new File(project.getBuildDir(), "exploded-" + project.getName());
 
@@ -65,36 +69,29 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     createExplodedWarTask();
     createStageTask();
     createRunTasks();
-
-    AppEngineCorePlugin.overrideCoreTasksGroup(project, APP_ENGINE_STANDARD_TASK_GROUP);
   }
 
   private void configureExtensions() {
-    // obtain extensions defined by core plugin.
-    ExtensionAware appengine =
-        new ExtensionUtil(project).get(AppEngineCorePlugin.APPENGINE_EXTENSION);
 
     // create the run extension and set defaults.
-    runExtension = appengine.getExtensions().create(RUN_EXTENSION, RunExtension.class, project);
+    runExtension = appengineExtension.getRun();
     runExtension.setStartSuccessTimeout(20);
     runExtension.setServices(explodedWarDir);
     runExtension.setServerVersion("1");
 
     // create the stage extension and set defaults.
-    stageExtension =
-        appengine.getExtensions().create(STAGE_EXTENSION, StageStandardExtension.class, project);
+    stageExtension = appengineExtension.getStage();
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
     stageExtension.setSourceDirectory(explodedWarDir);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
 
     // obtain deploy extension and set defaults
-    DeployExtension deploy = new ExtensionUtil(appengine).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
+    DeployExtension deploy = appengineExtension.getDeploy();
     deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
     deploy.setAppEngineDirectory(new File(defaultStagedAppDir, "WEB-INF/appengine-generated"));
 
     // tools extension required to initialize cloudSdkBuilderFactory
-    final ToolsExtension tools =
-        new ExtensionUtil(appengine).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    final ToolsExtension tools = appengineExtension.getTools();
     project.afterEvaluate(
         new Action<Project>() {
           @Override
@@ -161,15 +158,30 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                 });
 
     // All deployment tasks depend on the stage task.
-    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_TASK_NAME).dependsOn(stageTask);
-    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_CRON_TASK_NAME).dependsOn(stageTask);
     project
         .getTasks()
-        .getByName(AppEngineCorePlugin.DEPLOY_DISPATCH_TASK_NAME)
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME)
         .dependsOn(stageTask);
-    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_DOS_TASK_NAME).dependsOn(stageTask);
-    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_INDEX_TASK_NAME).dependsOn(stageTask);
-    project.getTasks().getByName(AppEngineCorePlugin.DEPLOY_QUEUE_TASK_NAME).dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_CRON_TASK_NAME)
+        .dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_DISPATCH_TASK_NAME)
+        .dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_DOS_TASK_NAME)
+        .dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_INDEX_TASK_NAME)
+        .dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_QUEUE_TASK_NAME)
+        .dependsOn(stageTask);
   }
 
   private void createRunTasks() {

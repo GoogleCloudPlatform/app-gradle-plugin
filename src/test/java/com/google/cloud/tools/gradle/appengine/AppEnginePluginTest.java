@@ -23,7 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.IOException;
@@ -42,7 +42,8 @@ public class AppEnginePluginTest {
   @Test
   public void testCheckGradleVersion_pass() {
     new TestProject(testProjectRoot.getRoot())
-        .applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
+        .applyGradleRunnerWithGradleVersion(
+            AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION.getVersion());
     // pass
   }
 
@@ -57,7 +58,7 @@ public class AppEnginePluginTest {
           ex.getMessage(),
           containsString(
               "Detected Gradle 2.8, but the appengine-gradle-plugin requires "
-                  + AppEngineCorePlugin.GRADLE_MIN_VERSION
+                  + AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION
                   + " or higher."));
     }
   }

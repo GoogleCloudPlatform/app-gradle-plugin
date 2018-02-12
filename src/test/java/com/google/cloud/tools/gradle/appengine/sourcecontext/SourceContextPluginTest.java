@@ -18,7 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
@@ -102,7 +102,8 @@ public class SourceContextPluginTest {
     ((ProjectInternal) project).evaluate();
 
     ExtensionAware ext =
-        (ExtensionAware) project.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
+        (ExtensionAware)
+            project.getExtensions().getByName(AppEngineCorePluginConfiguration.APPENGINE_EXTENSION);
     GenRepoInfoFileExtension genRepoInfoExt =
         new ExtensionUtil(ext).get(SourceContextPlugin.SOURCE_CONTEXT_EXTENSION);
     Assert.assertEquals(

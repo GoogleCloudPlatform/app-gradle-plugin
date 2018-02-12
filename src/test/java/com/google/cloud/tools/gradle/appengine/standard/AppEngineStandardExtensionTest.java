@@ -17,10 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
-import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
@@ -30,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
-import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.internal.impldep.org.testng.Assert;
@@ -72,9 +69,8 @@ public class AppEngineStandardExtensionTest {
   public void testReadEnvironment() throws IOException {
     Project p = setUpTestProject("environment-params");
 
-    ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
+    RunExtension run = ext.getRun();
 
     Assert.assertEquals(run.getEnvironment(), ImmutableMap.of("key1", "value1", "key2", "value2"));
   }
@@ -83,13 +79,11 @@ public class AppEngineStandardExtensionTest {
   public void testFileAsString() throws IOException {
     Project p = setUpTestProject("file-as-string");
 
-    ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    StageStandardExtension stage =
-        new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
-    ToolsExtension tools = new ExtensionUtil(ext).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
+    DeployExtension deploy = ext.getDeploy();
+    StageStandardExtension stage = ext.getStage();
+    RunExtension run = ext.getRun();
+    ToolsExtension tools = ext.getTools();
 
     Assert.assertEquals(deploy.getDeployables().size(), 1);
     Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
@@ -105,10 +99,9 @@ public class AppEngineStandardExtensionTest {
   public void testFilesAsString() throws IOException {
     Project p = setUpTestProject("files-as-string");
 
-    ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
+    RunExtension run = ext.getRun();
+    DeployExtension deploy = ext.getDeploy();
 
     Assert.assertEquals(deploy.getDeployables().size(), 2);
     Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());
@@ -122,13 +115,11 @@ public class AppEngineStandardExtensionTest {
   public void testFileAsFile() throws IOException {
     Project p = setUpTestProject("file-as-file");
 
-    ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    StageStandardExtension stage =
-        new ExtensionUtil(ext).get(AppEngineStandardPlugin.STAGE_EXTENSION);
-    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
-    ToolsExtension tools = new ExtensionUtil(ext).get(AppEngineCorePlugin.TOOLS_EXTENSION);
+    AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
+    RunExtension run = ext.getRun();
+    DeployExtension deploy = ext.getDeploy();
+    StageStandardExtension stage = ext.getStage();
+    ToolsExtension tools = ext.getTools();
 
     Assert.assertEquals(deploy.getDeployables().size(), 1);
     Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
@@ -144,10 +135,9 @@ public class AppEngineStandardExtensionTest {
   public void testFilesAsFiles() throws IOException {
     Project p = setUpTestProject("files-as-files");
 
-    ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    DeployExtension deploy = new ExtensionUtil(ext).get(AppEngineCorePlugin.DEPLOY_EXTENSION);
-    RunExtension run = new ExtensionUtil(ext).get(AppEngineStandardPlugin.RUN_EXTENSION);
+    AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
+    RunExtension run = ext.getRun();
+    DeployExtension deploy = ext.getDeploy();
 
     Assert.assertEquals(deploy.getDeployables().size(), 2);
     Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());

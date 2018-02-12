@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Google Inc. All Right Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-/** Base Extension class for all our appengine extensions to include themselves into. */
-public class AppEngineExtension {
-  // dynamically fill this in in AppEngineCorePlugin
+public interface AppEngineCoreExtensionProperties {
+  ToolsExtension getTools();
+
+  DeployExtension getDeploy();
 }

@@ -25,9 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
-import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePlugin;
+import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
-import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
@@ -58,7 +56,8 @@ public class AppEngineFlexiblePluginTest {
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
     createTestProject()
-        .applyGradleRunnerWithGradleVersion(AppEngineCorePlugin.GRADLE_MIN_VERSION.getVersion());
+        .applyGradleRunnerWithGradleVersion(
+            AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION.getVersion());
     // pass
   }
 
@@ -71,7 +70,7 @@ public class AppEngineFlexiblePluginTest {
           ex.getMessage(),
           containsString(
               "Detected Gradle 2.8, but the appengine-gradle-plugin requires "
-                  + AppEngineCorePlugin.GRADLE_MIN_VERSION
+                  + AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION
                   + " or higher."));
     }
   }
@@ -141,9 +140,9 @@ public class AppEngineFlexiblePluginTest {
   public void testDefaultConfiguration() throws IOException {
     Project p = new TestProject(testProjectDir.getRoot()).applyFlexibleWarProjectBuilder();
 
-    ExtensionAware ext = (ExtensionAware) p.getExtensions().getByName("appengine");
-    DeployExtension deployExt = new ExtensionUtil(ext).get("deploy");
-    StageFlexibleExtension stageExt = new ExtensionUtil(ext).get("stage");
+    AppEngineFlexibleExtension ext = p.getExtensions().getByType(AppEngineFlexibleExtension.class);
+    DeployExtension deployExt = ext.getDeploy();
+    StageFlexibleExtension stageExt = ext.getStage();
 
     assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
     assertEquals(
@@ -164,10 +163,8 @@ public class AppEngineFlexiblePluginTest {
     Project p =
         new TestProject(testProjectDir.getRoot()).addDockerDir().applyFlexibleProjectBuilder();
 
-    ExtensionAware ext =
-        (ExtensionAware) p.getExtensions().getByName(AppEngineCorePlugin.APPENGINE_EXTENSION);
-    StageFlexibleExtension stageExt =
-        new ExtensionUtil(ext).get(AppEngineFlexiblePlugin.STAGE_EXTENSION);
+    AppEngineFlexibleExtension ext = p.getExtensions().getByType(AppEngineFlexibleExtension.class);
+    StageFlexibleExtension stageExt = ext.getStage();
 
     assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     assertEquals((((Jar) p.getProperties().get("jar")).getArchivePath()), stageExt.getArtifact());

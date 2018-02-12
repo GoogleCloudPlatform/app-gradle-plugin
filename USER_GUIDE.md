@@ -219,19 +219,9 @@ To enable hot reload of classes:
       }
     }
     ```
-2. You can either use `explodeApp` which clears and rebuilds the output directory OR
-   you can configure a new `reloadApp` task to rebuild into the `exploded-<project>` directory without deleting it.
-    ```groovy
-    task reloadApp(type: Copy) {
-      dependsOn war
+2. While your app is running, just run `explodeApp` to copy the changes into the exploded app directly and reflect your changes into the running application.
 
-      project.afterEvaluate {
-        into project.tasks.explodeWar.explodedAppDirectory
-         with war
-      }
-    }
-    ```
-While your app is running, just run `explodeApp` or `reloadApp` to reflect your changes into the running application.
+If you wish to try gradle's experimental `--continuous` for automatic change application, see [#174](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/174).
 
 ### How do I put datastore somewhere else (so it's not deleted across rebuilds)?
 ```groovy

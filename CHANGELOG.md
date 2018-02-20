@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## 1.3.5
+
+### Added
+* Build Extensions Statically ([#192](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/192))
+
+### Fixed
+* Make extensions accessible to Kotlin users ([#191](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/191))
+
 ## 1.3.4
 
 ### Added

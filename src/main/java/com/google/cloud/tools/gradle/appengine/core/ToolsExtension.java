@@ -25,10 +25,28 @@ public class ToolsExtension {
 
   private final Project project;
 
+  private boolean downloadCloudSdk;
+  private String cloudSdkVersion;
   private File cloudSdkHome;
 
   public ToolsExtension(Project project) {
     this.project = project;
+  }
+
+  public String getCloudSdkVersion() {
+    return cloudSdkVersion;
+  }
+
+  public void setCloudSdkVersion(String cloudSdkVersion) {
+    this.cloudSdkVersion = cloudSdkVersion;
+  }
+
+  public boolean getDownloadCloudSdk() {
+    return downloadCloudSdk;
+  }
+
+  public void setDownloadCloudSdk(boolean downloadCloudSdk) {
+    this.downloadCloudSdk = downloadCloudSdk;
   }
 
   public File getCloudSdkHome() {

@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.core;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.BasePlugin;
 import org.gradle.util.GradleVersion;
 
 /**
@@ -30,6 +31,7 @@ public class AppEngineCorePluginConfiguration {
 
   public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
+  public static final String MANAGED_SDK_TASK_NAME = "managedSdkTask";
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";
   public static final String DEPLOY_CRON_TASK_NAME = "appengineDeployCron";
   public static final String DEPLOY_DISPATCH_TASK_NAME = "appengineDeployDispatch";
@@ -59,6 +61,7 @@ public class AppEngineCorePluginConfiguration {
     this.deployExtension = appEngineCoreExtensionProperties.getDeploy();
     configureCloudSdkBuilderFactory();
 
+    createManagedSdkTask();
     createDeployTask();
     createDeployCronTask();
     createDeployDispatchTask();
@@ -77,6 +80,32 @@ public class AppEngineCorePluginConfiguration {
             cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
           }
         });
+  }
+
+  private void createManagedSdkTask() {
+    ManagedSdkTask managedSdkTask =
+        project
+            .getTasks()
+            .create(
+                MANAGED_SDK_TASK_NAME,
+                ManagedSdkTask.class,
+                new Action<ManagedSdkTask>() {
+                  @Override
+                  public void execute(final ManagedSdkTask managedSdkTask) {
+                    managedSdkTask.setGroup(taskGroup);
+                    managedSdkTask.setDescription("Download the Cloud SDK");
+
+                    project.afterEvaluate(
+                        new Action<Project>() {
+                          @Override
+                          public void execute(Project p) {
+                            managedSdkTask.setToolsConfig(toolsExtension);
+                          }
+                        });
+                  }
+                });
+
+    project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(managedSdkTask);
   }
 
   private void createDeployTask() {

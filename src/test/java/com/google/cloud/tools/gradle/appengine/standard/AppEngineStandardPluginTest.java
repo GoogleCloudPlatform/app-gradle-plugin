@@ -83,6 +83,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStage",
             ":appengineDeploy");
@@ -102,6 +103,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStage",
             ":appengineDeployCron");
@@ -121,6 +123,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStage",
             ":appengineDeployDispatch");
@@ -140,6 +143,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStage",
             ":appengineDeployDos");
@@ -159,6 +163,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStage",
             ":appengineDeployIndex");
@@ -178,6 +183,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStage",
             ":appengineDeployQueue");
@@ -196,6 +202,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineRun");
 
@@ -213,6 +220,7 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble",
             ":appengineStart");
 

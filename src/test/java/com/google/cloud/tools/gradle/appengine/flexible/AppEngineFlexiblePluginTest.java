@@ -81,6 +81,7 @@ public class AppEngineFlexiblePluginTest {
 
     final List<String> expected =
         ImmutableList.of(
+            ":managedSdkTask",
             ":compileJava",
             ":processResources",
             ":classes",

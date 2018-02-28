@@ -81,6 +81,7 @@ public class SourceContextPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
+            ":managedSdkTask",
             ":assemble");
 
     Assert.assertEquals(expected, BuildResultFilter.extractTasks(buildResult));

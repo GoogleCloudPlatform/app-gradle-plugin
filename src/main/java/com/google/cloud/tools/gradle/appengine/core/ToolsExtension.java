@@ -25,9 +25,9 @@ public class ToolsExtension {
 
   private final Project project;
 
-  private boolean downloadCloudSdk;
-  private String cloudSdkVersion;
   private File cloudSdkHome;
+  private String cloudSdkVersion;
+  private boolean downloadCloudSdk;
 
   public ToolsExtension(Project project) {
     this.project = project;

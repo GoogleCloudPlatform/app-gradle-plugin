@@ -17,15 +17,15 @@ public class ManagedSdkTask extends DefaultTask {
   public void managedSdkAction() {
     getProject().getLogger().lifecycle("Running managedSdkTask.");
 
-    String sdkVersion = toolsExtension.getCloudSdkVersion();
-    File sdkHome = toolsExtension.getCloudSdkHome();
-    boolean download = toolsExtension.getDownloadCloudSdk();
-
     getProject().getLogger().lifecycle("Cloud SDK Version: " + toolsExtension.getCloudSdkVersion());
     getProject()
         .getLogger()
         .lifecycle("Download Cloud SDK: " + toolsExtension.getDownloadCloudSdk());
     getProject().getLogger().lifecycle("Cloud SDK Home: " + toolsExtension.getCloudSdkHome());
+
+    String sdkVersion = toolsExtension.getCloudSdkVersion();
+    File sdkHome = toolsExtension.getCloudSdkHome();
+    boolean download = toolsExtension.getDownloadCloudSdk();
 
     if (download) {
       if (sdkVersion == null) {
@@ -36,20 +36,15 @@ public class ManagedSdkTask extends DefaultTask {
         // TODO: Download sdk at specified version
       }
     } else {
-      if (!Strings.isNullOrEmpty(sdkVersion)) {
-        if (sdkHome == null) {
-          // SDK home not specified; try to find installation
-          // TODO: Try to find installation
-        }
+      if (sdkHome == null) {
+        // SDK home not specified; try to find installation
+        // TODO: Find installation
+      }
 
+      if (!Strings.isNullOrEmpty(sdkVersion)) {
         // Version specified, so validate installation
         // TODO: Validate installation
       } else {
-        if (sdkHome == null) {
-          // SDK home not specified; try to find installation
-          // TODO: Try to find installation
-        }
-
         // No validation required
       }
     }

@@ -31,7 +31,6 @@ public class AppEngineCorePluginConfiguration {
 
   public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
-  public static final String MANAGED_SDK_TASK_NAME = "managedSdkTask";
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";
   public static final String DEPLOY_CRON_TASK_NAME = "appengineDeployCron";
   public static final String DEPLOY_DISPATCH_TASK_NAME = "appengineDeployDispatch";
@@ -39,6 +38,7 @@ public class AppEngineCorePluginConfiguration {
   public static final String DEPLOY_INDEX_TASK_NAME = "appengineDeployIndex";
   public static final String DEPLOY_QUEUE_TASK_NAME = "appengineDeployQueue";
   public static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
+  public static final String MANAGED_SDK_TASK_NAME = "managedSdkTask";
 
   public static final String APPENGINE_EXTENSION = "appengine";
 

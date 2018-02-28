@@ -59,7 +59,7 @@ public class AppEngineCorePluginConfiguration {
     this.deployExtension = appEngineCoreExtensionProperties.getDeploy();
     configureCloudSdkBuilderFactory();
 
-    createManagedSdkTask();
+    createDownloadCloudSdkTask();
     createDeployTask();
     createDeployCronTask();
     createDeployDispatchTask();
@@ -77,7 +77,7 @@ public class AppEngineCorePluginConfiguration {
         });
   }
 
-  private void createManagedSdkTask() {
+  private void createDownloadCloudSdkTask() {
     project
         .getTasks()
         .create(
@@ -90,6 +90,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   p -> {
                     downloadCloudSdkTask.setToolsConfig(toolsExtension);
+                    downloadCloudSdkTask.setCloudSdkBuilderFactor(cloudSdkBuilderFactory);
                     p.getTasks()
                         .matching(task -> task.getName().startsWith("appengine"))
                         .forEach(task -> task.dependsOn(downloadCloudSdkTask));

@@ -28,9 +28,13 @@ import org.gradle.api.logging.Logger;
 /** Factory for generating Cloud Sdk Builder with all common configuration. */
 public class CloudSdkBuilderFactory {
 
-  private final File cloudSdkHome;
+  private File cloudSdkHome;
 
   public CloudSdkBuilderFactory(File cloudSdkHome) {
+    this.cloudSdkHome = cloudSdkHome;
+  }
+
+  public void setCloudSdkHome(File cloudSdkHome) {
     this.cloudSdkHome = cloudSdkHome;
   }
 

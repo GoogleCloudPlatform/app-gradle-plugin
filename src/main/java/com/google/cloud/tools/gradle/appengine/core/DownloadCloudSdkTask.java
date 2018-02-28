@@ -20,42 +20,61 @@ package com.google.cloud.tools.gradle.appengine.core;
 import com.google.common.base.Strings;
 import java.io.File;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 public class DownloadCloudSdkTask extends DefaultTask {
 
+  private SdkDownloader downloader;
+
+  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private ToolsExtension toolsExtension;
 
   public void setToolsConfig(ToolsExtension toolsExtension) {
     this.toolsExtension = toolsExtension;
   }
 
+  public void setCloudSdkBuilderFactor(CloudSdkBuilderFactory cloudSdkBuilderFactor) {
+    this.cloudSdkBuilderFactory = cloudSdkBuilderFactor;
+  }
+
   /** Task entrypoint : Download/update/verify Cloud SDK installation. */
   @TaskAction
   public void downloadCloudSdkAction() {
-    getProject().getLogger().lifecycle("Running managedSdkTask.");
-
-    getProject().getLogger().lifecycle("Cloud SDK Version: " + toolsExtension.getCloudSdkVersion());
-    getProject().getLogger().lifecycle("Cloud SDK Home: " + toolsExtension.getCloudSdkHome());
-
     String sdkVersion = toolsExtension.getCloudSdkVersion();
     File sdkHome = toolsExtension.getCloudSdkHome();
 
     if (sdkHome == null) {
-      if (Strings.isNullOrEmpty(sdkVersion)) {
+      if (Strings.isNullOrEmpty(sdkVersion) || sdkVersion.equals(downloader.getLatestVersion())) {
         // Wants to download, but version isn't specified; assume latest version
-        // TODO: Download sdk at latest version
-      } else {
-        // Wants to download specific version
-        // TODO: Download sdk at specified version
+        sdkVersion = "LATEST";
       }
+      sdkHome = downloader.downloadSdk(sdkVersion);
     } else {
       if (!Strings.isNullOrEmpty(sdkVersion)) {
-        // SDK home not specified; try to find installation
-        // TODO: Validate installation
-      } else {
-        // No validation required
+        // Sdk home and version specified; validate installation
+        if (!downloader.sdkIsValid(sdkVersion, sdkHome)) {
+          throw new GradleException(
+              "Specified Cloud SDK version and actual version of the SDK installed in the "
+                  + "specified directory do not match. You must either specify the correct "
+                  + "cloudSdkHome and cloudSdkVersion, or you can remove the cloudSdkHome field "
+                  + "to download the version you want.");
+        }
       }
     }
+
+    cloudSdkBuilderFactory.setCloudSdkHome(sdkHome);
+  }
+
+  private File getDefaultInstallDirectory(String version) {
+    if (Strings.isNullOrEmpty(version)) {
+      version = "LATEST";
+    }
+
+    return new File(
+        System.getProperty("user.home")
+            + "/.cache/google-cloud-tools-java/managed-cloud-sdk/"
+            + version
+            + "/");
   }
 }

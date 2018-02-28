@@ -17,7 +17,6 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.util.GradleVersion;
@@ -72,12 +71,9 @@ public class AppEngineCorePluginConfiguration {
 
   private void configureCloudSdkBuilderFactory() {
     project.afterEvaluate(
-        new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            // create the sdk builder factory after we know the location of the sdk
-            cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
-          }
+        project -> {
+          // create the sdk builder factory after we know the location of the sdk
+          cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
         });
   }
 
@@ -107,21 +103,15 @@ public class AppEngineCorePluginConfiguration {
         .create(
             DEPLOY_TASK_NAME,
             DeployTask.class,
-            new Action<DeployTask>() {
-              @Override
-              public void execute(final DeployTask deployTask) {
-                deployTask.setGroup(taskGroup);
-                deployTask.setDescription("Deploy an App Engine application");
+            deployTask -> {
+              deployTask.setGroup(taskGroup);
+              deployTask.setDescription("Deploy an App Engine application");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        deployTask.setDeployConfig(deployExtension);
-                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
   }
 
@@ -131,21 +121,15 @@ public class AppEngineCorePluginConfiguration {
         .create(
             DEPLOY_CRON_TASK_NAME,
             DeployCronTask.class,
-            new Action<DeployCronTask>() {
-              @Override
-              public void execute(final DeployCronTask deployTask) {
-                deployTask.setGroup(taskGroup);
-                deployTask.setDescription("Deploy Cron configuration");
+            deployTask -> {
+              deployTask.setGroup(taskGroup);
+              deployTask.setDescription("Deploy Cron configuration");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        deployTask.setDeployConfig(deployExtension);
-                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
   }
 
@@ -155,21 +139,15 @@ public class AppEngineCorePluginConfiguration {
         .create(
             DEPLOY_DISPATCH_TASK_NAME,
             DeployDispatchTask.class,
-            new Action<DeployDispatchTask>() {
-              @Override
-              public void execute(final DeployDispatchTask deployTask) {
-                deployTask.setGroup(taskGroup);
-                deployTask.setDescription("Deploy Dispatch configuration");
+            deployTask -> {
+              deployTask.setGroup(taskGroup);
+              deployTask.setDescription("Deploy Dispatch configuration");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        deployTask.setDeployConfig(deployExtension);
-                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
   }
 
@@ -179,21 +157,15 @@ public class AppEngineCorePluginConfiguration {
         .create(
             DEPLOY_DOS_TASK_NAME,
             DeployDosTask.class,
-            new Action<DeployDosTask>() {
-              @Override
-              public void execute(final DeployDosTask deployTask) {
-                deployTask.setGroup(taskGroup);
-                deployTask.setDescription("Deploy Dos configuration");
+            deployTask -> {
+              deployTask.setGroup(taskGroup);
+              deployTask.setDescription("Deploy Dos configuration");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        deployTask.setDeployConfig(deployExtension);
-                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
   }
 
@@ -203,21 +175,15 @@ public class AppEngineCorePluginConfiguration {
         .create(
             DEPLOY_INDEX_TASK_NAME,
             DeployIndexTask.class,
-            new Action<DeployIndexTask>() {
-              @Override
-              public void execute(final DeployIndexTask deployTask) {
-                deployTask.setGroup(taskGroup);
-                deployTask.setDescription("Deploy Index configuration");
+            deployTask -> {
+              deployTask.setGroup(taskGroup);
+              deployTask.setDescription("Deploy Index configuration");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        deployTask.setDeployConfig(deployExtension);
-                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
   }
 
@@ -227,21 +193,15 @@ public class AppEngineCorePluginConfiguration {
         .create(
             DEPLOY_QUEUE_TASK_NAME,
             DeployQueueTask.class,
-            new Action<DeployQueueTask>() {
-              @Override
-              public void execute(final DeployQueueTask deployTask) {
-                deployTask.setGroup(taskGroup);
-                deployTask.setDescription("Deploy Queue configuration");
+            deployTask -> {
+              deployTask.setGroup(taskGroup);
+              deployTask.setDescription("Deploy Queue configuration");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        deployTask.setDeployConfig(deployExtension);
-                        deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
   }
 
@@ -251,15 +211,11 @@ public class AppEngineCorePluginConfiguration {
         .create(
             SHOW_CONFIG_TASK_NAME,
             ShowConfigurationTask.class,
-            new Action<ShowConfigurationTask>() {
-              @Override
-              public void execute(final ShowConfigurationTask showConfigurationTask) {
-                showConfigurationTask.setGroup(taskGroup);
-                showConfigurationTask.setDescription(
-                    "Show current App Engine plugin configuration");
+            showConfigurationTask -> {
+              showConfigurationTask.setGroup(taskGroup);
+              showConfigurationTask.setDescription("Show current App Engine plugin configuration");
 
-                showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
-              }
+              showConfigurationTask.setExtensionId(APPENGINE_EXTENSION);
             });
   }
 

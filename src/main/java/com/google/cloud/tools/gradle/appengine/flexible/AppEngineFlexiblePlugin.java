@@ -20,7 +20,6 @@ package com.google.cloud.tools.gradle.appengine.flexible;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import java.io.File;
-import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -76,20 +75,17 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
 
     project.afterEvaluate(
-        new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            // we can only set the default location of "archive" after project evaluation (callback)
-            if (stageExtension.getArtifact() == null) {
-              if (project.getPlugins().hasPlugin(WarPlugin.class)) {
-                War war = (War) project.getProperties().get("war");
-                stageExtension.setArtifact(war.getArchivePath());
-              } else if (project.getPlugins().hasPlugin(JavaPlugin.class)) {
-                Jar jar = (Jar) project.getProperties().get("jar");
-                stageExtension.setArtifact(jar.getArchivePath());
-              } else {
-                throw new GradleException("Could not find JAR or WAR configuration");
-              }
+        project -> {
+          // we can only set the default location of "archive" after project evaluation (callback)
+          if (stageExtension.getArtifact() == null) {
+            if (project.getPlugins().hasPlugin(WarPlugin.class)) {
+              War war = (War) project.getProperties().get("war");
+              stageExtension.setArtifact(war.getArchivePath());
+            } else if (project.getPlugins().hasPlugin(JavaPlugin.class)) {
+              Jar jar = (Jar) project.getProperties().get("jar");
+              stageExtension.setArtifact(jar.getArchivePath());
+            } else {
+              throw new GradleException("Could not find JAR or WAR configuration");
             }
           }
         });
@@ -102,22 +98,13 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
             .create(
                 STAGE_TASK_NAME,
                 StageFlexibleTask.class,
-                new Action<StageFlexibleTask>() {
-                  @Override
-                  public void execute(final StageFlexibleTask stageTask) {
-                    stageTask.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
-                    stageTask.setDescription(
-                        "Stage an App Engine flexible environment application for deployment");
-                    stageTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+                stageTask1 -> {
+                  stageTask1.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
+                  stageTask1.setDescription(
+                      "Stage an App Engine flexible environment application for deployment");
+                  stageTask1.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
 
-                    project.afterEvaluate(
-                        new Action<Project>() {
-                          @Override
-                          public void execute(Project project) {
-                            stageTask.setStagingConfig(stageExtension);
-                          }
-                        });
-                  }
+                  project.afterEvaluate(project -> stageTask1.setStagingConfig(stageExtension));
                 });
     project
         .getTasks()

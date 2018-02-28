@@ -17,11 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import java.util.List;
 import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.BuildTask;
 
 /** ToolsExtension to filter gradle test kit runner results. */
 public class BuildResultFilter {
@@ -30,13 +28,7 @@ public class BuildResultFilter {
   public static List<String> extractTasks(BuildResult buildResult) {
 
     return FluentIterable.from(buildResult.getTasks())
-        .transform(
-            new Function<BuildTask, String>() {
-              @Override
-              public String apply(BuildTask buildTask) {
-                return buildTask.getPath();
-              }
-            })
+        .transform(buildTask -> buildTask.getPath())
         .toList();
   }
 }

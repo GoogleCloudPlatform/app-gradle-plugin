@@ -22,10 +22,8 @@ import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import java.io.File;
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.CopySpec;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.bundling.Jar;
@@ -63,12 +61,7 @@ public class SourceContextPlugin implements Plugin<Project> {
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(
-        new Action<Project>() {
-          @Override
-          public void execute(Project project) {
-            cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome());
-          }
-        });
+        project -> cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome()));
   }
 
   private void createSourceContextTask() {
@@ -77,20 +70,14 @@ public class SourceContextPlugin implements Plugin<Project> {
         .create(
             "_createSourceContext",
             GenRepoInfoFileTask.class,
-            new Action<GenRepoInfoFileTask>() {
-              @Override
-              public void execute(final GenRepoInfoFileTask genRepoInfoFile) {
-                genRepoInfoFile.setDescription("_internal");
+            genRepoInfoFile -> {
+              genRepoInfoFile.setDescription("_internal");
 
-                project.afterEvaluate(
-                    new Action<Project>() {
-                      @Override
-                      public void execute(Project project) {
-                        genRepoInfoFile.setConfiguration(extension);
-                        genRepoInfoFile.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                      }
-                    });
-              }
+              project.afterEvaluate(
+                  project -> {
+                    genRepoInfoFile.setConfiguration(extension);
+                    genRepoInfoFile.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
             });
     configureArchiveTask(project.getTasks().withType(War.class).findByName("war"));
     configureArchiveTask(project.getTasks().withType(Jar.class).findByName("jar"));
@@ -102,13 +89,6 @@ public class SourceContextPlugin implements Plugin<Project> {
       return;
     }
     archiveTask.dependsOn("_createSourceContext");
-    archiveTask.from(
-        extension.getOutputDirectory(),
-        new Action<CopySpec>() {
-          @Override
-          public void execute(CopySpec copySpec) {
-            copySpec.into("WEB-INF/classes");
-          }
-        });
+    archiveTask.from(extension.getOutputDirectory(), copySpec -> copySpec.into("WEB-INF/classes"));
   }
 }

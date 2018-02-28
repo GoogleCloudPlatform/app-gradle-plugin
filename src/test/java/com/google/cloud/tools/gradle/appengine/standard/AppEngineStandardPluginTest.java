@@ -31,10 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.specs.Spec;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.UnexpectedBuildFailure;
 import org.junit.Rule;
@@ -272,20 +269,10 @@ public class AppEngineStandardPluginTest {
             .applyStandardProjectBuilder();
 
     p.getTasks()
-        .matching(
-            new Spec<Task>() {
-              @Override
-              public boolean isSatisfiedBy(Task task) {
-                return task.getName().startsWith("appengine");
-              }
-            })
+        .matching(task -> task.getName().startsWith("appengine"))
         .all(
-            new Action<Task>() {
-              @Override
-              public void execute(Task task) {
+            task ->
                 assertEquals(
-                    AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP, task.getGroup());
-              }
-            });
+                    AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP, task.getGroup()));
   }
 }

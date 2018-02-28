@@ -13,6 +13,6 @@ The gcp gradle plugin is an open source project, we appreciate your help!
    use your corporate email address here, not your personal address.
 3. Fork the repository into your own Github account.
 4. Please include unit tests for all new code.
-5. Make sure all existing tests pass. (gradlew test)
+5. Check style and make sure all existing tests pass. (`./gradlew build`)
 6. Associate the change with an existing issue or file a [new issue](../../issues)
 7. Create a pull request!

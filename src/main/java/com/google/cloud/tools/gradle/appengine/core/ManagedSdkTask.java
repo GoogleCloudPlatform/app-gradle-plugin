@@ -13,6 +13,7 @@ public class ManagedSdkTask extends DefaultTask {
     this.toolsExtension = toolsExtension;
   }
 
+  /** Task entrypoint : Download/update/verify Cloud SDK installation. */
   @TaskAction
   public void managedSdkAction() {
     getProject().getLogger().lifecycle("Running managedSdkTask.");

@@ -22,7 +22,7 @@ import java.io.File;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-public class ManagedSdkTask extends DefaultTask {
+public class DownloadCloudSdkTask extends DefaultTask {
 
   private ToolsExtension toolsExtension;
 
@@ -32,21 +32,17 @@ public class ManagedSdkTask extends DefaultTask {
 
   /** Task entrypoint : Download/update/verify Cloud SDK installation. */
   @TaskAction
-  public void managedSdkAction() {
+  public void downloadCloudSdkAction() {
     getProject().getLogger().lifecycle("Running managedSdkTask.");
 
     getProject().getLogger().lifecycle("Cloud SDK Version: " + toolsExtension.getCloudSdkVersion());
-    getProject()
-        .getLogger()
-        .lifecycle("Download Cloud SDK: " + toolsExtension.getDownloadCloudSdk());
     getProject().getLogger().lifecycle("Cloud SDK Home: " + toolsExtension.getCloudSdkHome());
 
     String sdkVersion = toolsExtension.getCloudSdkVersion();
     File sdkHome = toolsExtension.getCloudSdkHome();
-    boolean download = toolsExtension.getDownloadCloudSdk();
 
-    if (download) {
-      if (sdkVersion == null) {
+    if (sdkHome == null) {
+      if (Strings.isNullOrEmpty(sdkVersion)) {
         // Wants to download, but version isn't specified; assume latest version
         // TODO: Download sdk at latest version
       } else {
@@ -54,13 +50,8 @@ public class ManagedSdkTask extends DefaultTask {
         // TODO: Download sdk at specified version
       }
     } else {
-      if (sdkHome == null) {
-        // SDK home not specified; try to find installation
-        // TODO: Find installation
-      }
-
       if (!Strings.isNullOrEmpty(sdkVersion)) {
-        // Version specified, so validate installation
+        // SDK home not specified; try to find installation
         // TODO: Validate installation
       } else {
         // No validation required

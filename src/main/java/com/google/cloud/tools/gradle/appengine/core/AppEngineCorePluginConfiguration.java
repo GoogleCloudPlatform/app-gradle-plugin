@@ -37,7 +37,7 @@ public class AppEngineCorePluginConfiguration {
   public static final String DEPLOY_INDEX_TASK_NAME = "appengineDeployIndex";
   public static final String DEPLOY_QUEUE_TASK_NAME = "appengineDeployQueue";
   public static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
-  public static final String MANAGED_SDK_TASK_NAME = "managedSdkTask";
+  public static final String DOWNLOAD_CLOUD_SDK_TASK_NAME = "downloadCloudSdk";
 
   public static final String APPENGINE_EXTENSION = "appengine";
 
@@ -85,18 +85,18 @@ public class AppEngineCorePluginConfiguration {
     project
         .getTasks()
         .create(
-            MANAGED_SDK_TASK_NAME,
-            ManagedSdkTask.class,
-            managedSdkTask1 -> {
-              managedSdkTask1.setGroup(taskGroup);
-              managedSdkTask1.setDescription("Download the Cloud SDK");
+            DOWNLOAD_CLOUD_SDK_TASK_NAME,
+            DownloadCloudSdkTask.class,
+            downloadCloudSdkTask -> {
+              downloadCloudSdkTask.setGroup(taskGroup);
+              downloadCloudSdkTask.setDescription("Download the Cloud SDK");
 
               project.afterEvaluate(
                   p -> {
-                    managedSdkTask1.setToolsConfig(toolsExtension);
+                    downloadCloudSdkTask.setToolsConfig(toolsExtension);
                     p.getTasks()
                         .matching(task -> task.getName().startsWith("appengine"))
-                        .forEach(task -> task.dependsOn(managedSdkTask1));
+                        .forEach(task -> task.dependsOn(downloadCloudSdkTask));
                   });
             });
   }

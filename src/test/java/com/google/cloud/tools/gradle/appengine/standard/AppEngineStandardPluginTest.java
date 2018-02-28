@@ -84,7 +84,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStage",
             ":appengineDeploy");
 
@@ -104,7 +104,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStage",
             ":appengineDeployCron");
 
@@ -124,7 +124,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStage",
             ":appengineDeployDispatch");
 
@@ -144,7 +144,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStage",
             ":appengineDeployDos");
 
@@ -164,7 +164,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStage",
             ":appengineDeployIndex");
 
@@ -184,7 +184,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStage",
             ":appengineDeployQueue");
 
@@ -203,7 +203,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineRun");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -221,7 +221,7 @@ public class AppEngineStandardPluginTest {
             ":war",
             ":explodeWar",
             ":assemble",
-            ":managedSdkTask",
+            ":downloadCloudSdk",
             ":appengineStart");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -231,7 +231,7 @@ public class AppEngineStandardPluginTest {
   public void testStop_taskTree() throws IOException {
     BuildResult buildResult = createTestProject().applyGradleRunner("appengineStop", "--dry-run");
 
-    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineStop");
+    final List<String> expected = ImmutableList.of(":downloadCloudSdk", ":appengineStop");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }

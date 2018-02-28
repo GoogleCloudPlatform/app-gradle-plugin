@@ -83,8 +83,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeploy");
 
@@ -103,8 +103,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeployCron");
 
@@ -123,8 +123,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeployDispatch");
 
@@ -143,8 +143,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeployDos");
 
@@ -163,8 +163,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeployIndex");
 
@@ -183,8 +183,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeployQueue");
 
@@ -202,8 +202,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineRun");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -220,8 +220,8 @@ public class AppEngineStandardPluginTest {
             ":classes",
             ":war",
             ":explodeWar",
-            ":managedSdkTask",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStart");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -231,7 +231,7 @@ public class AppEngineStandardPluginTest {
   public void testStop_taskTree() throws IOException {
     BuildResult buildResult = createTestProject().applyGradleRunner("appengineStop", "--dry-run");
 
-    final List<String> expected = Collections.singletonList(":appengineStop");
+    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineStop");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }

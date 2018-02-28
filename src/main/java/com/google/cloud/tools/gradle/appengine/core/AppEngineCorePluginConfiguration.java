@@ -20,7 +20,6 @@ package com.google.cloud.tools.gradle.appengine.core;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.BasePlugin;
 import org.gradle.util.GradleVersion;
 
 /**
@@ -83,29 +82,23 @@ public class AppEngineCorePluginConfiguration {
   }
 
   private void createManagedSdkTask() {
-    ManagedSdkTask managedSdkTask =
-        project
-            .getTasks()
-            .create(
-                MANAGED_SDK_TASK_NAME,
-                ManagedSdkTask.class,
-                new Action<ManagedSdkTask>() {
-                  @Override
-                  public void execute(final ManagedSdkTask managedSdkTask) {
-                    managedSdkTask.setGroup(taskGroup);
-                    managedSdkTask.setDescription("Download the Cloud SDK");
+    project
+        .getTasks()
+        .create(
+            MANAGED_SDK_TASK_NAME,
+            ManagedSdkTask.class,
+            managedSdkTask1 -> {
+              managedSdkTask1.setGroup(taskGroup);
+              managedSdkTask1.setDescription("Download the Cloud SDK");
 
-                    project.afterEvaluate(
-                        new Action<Project>() {
-                          @Override
-                          public void execute(Project p) {
-                            managedSdkTask.setToolsConfig(toolsExtension);
-                          }
-                        });
-                  }
-                });
-
-    project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(managedSdkTask);
+              project.afterEvaluate(
+                  p -> {
+                    managedSdkTask1.setToolsConfig(toolsExtension);
+                    p.getTasks()
+                        .matching(task -> task.getName().startsWith("appengine"))
+                        .forEach(task -> task.dependsOn(managedSdkTask1));
+                  });
+            });
   }
 
   private void createDeployTask() {

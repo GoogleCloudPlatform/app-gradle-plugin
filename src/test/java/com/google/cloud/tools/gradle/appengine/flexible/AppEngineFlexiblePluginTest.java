@@ -81,12 +81,12 @@ public class AppEngineFlexiblePluginTest {
 
     final List<String> expected =
         ImmutableList.of(
-            ":managedSdkTask",
             ":compileJava",
             ":processResources",
             ":classes",
             ":war",
             ":assemble",
+            ":managedSdkTask",
             ":appengineStage",
             ":appengineDeploy");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
@@ -97,7 +97,7 @@ public class AppEngineFlexiblePluginTest {
     BuildResult buildResult =
         createTestProject().applyGradleRunner("appengineDeployCron", "--dry-run");
 
-    final List<String> expected = ImmutableList.of(":appengineDeployCron");
+    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineDeployCron");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
@@ -106,7 +106,7 @@ public class AppEngineFlexiblePluginTest {
     BuildResult buildResult =
         createTestProject().applyGradleRunner("appengineDeployDispatch", "--dry-run");
 
-    final List<String> expected = ImmutableList.of(":appengineDeployDispatch");
+    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineDeployDispatch");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
@@ -115,7 +115,7 @@ public class AppEngineFlexiblePluginTest {
     BuildResult buildResult =
         createTestProject().applyGradleRunner("appengineDeployDos", "--dry-run");
 
-    final List<String> expected = ImmutableList.of(":appengineDeployDos");
+    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineDeployDos");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
@@ -124,7 +124,7 @@ public class AppEngineFlexiblePluginTest {
     BuildResult buildResult =
         createTestProject().applyGradleRunner("appengineDeployIndex", "--dry-run");
 
-    final List<String> expected = ImmutableList.of(":appengineDeployIndex");
+    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineDeployIndex");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 
@@ -133,7 +133,7 @@ public class AppEngineFlexiblePluginTest {
     BuildResult buildResult =
         createTestProject().applyGradleRunner("appengineDeployQueue", "--dry-run");
 
-    final List<String> expected = ImmutableList.of(":appengineDeployQueue");
+    final List<String> expected = ImmutableList.of(":managedSdkTask", ":appengineDeployQueue");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }
 

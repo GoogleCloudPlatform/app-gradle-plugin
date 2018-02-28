@@ -39,15 +39,15 @@ apply from: 'scripts/integTest.gradle'
 apply from: 'scripts/google-java-format.gradle'
 apply from: 'scripts/checkstyle.gradle'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 group = 'com.google.cloud.tools'
 
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.3.9'
+  compile 'com.google.cloud.tools:appengine-plugins-core:0.5.0'
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'junit:junit:4.12'

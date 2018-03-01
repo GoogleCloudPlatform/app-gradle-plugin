@@ -19,7 +19,7 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import java.io.File;
 
-interface SdkDownloader {
+interface CloudSdkDownloader {
 
   File downloadSdk(String version);
 

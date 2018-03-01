@@ -25,7 +25,7 @@ import org.gradle.api.tasks.TaskAction;
 
 public class DownloadCloudSdkTask extends DefaultTask {
 
-  private SdkDownloader downloader;
+  private CloudSdkDownloader downloader;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private ToolsExtension toolsExtension;
 
@@ -33,11 +33,11 @@ public class DownloadCloudSdkTask extends DefaultTask {
     this.toolsExtension = toolsExtension;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactor) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactor;
+  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
+    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
-  public void setSdkDownloader(SdkDownloader downloader) {
+  public void setSdkDownloader(CloudSdkDownloader downloader) {
     this.downloader = downloader;
   }
 
@@ -66,6 +66,6 @@ public class DownloadCloudSdkTask extends DefaultTask {
       }
     }
 
-    this.cloudSdkBuilderFactory.setCloudSdkHome(sdkHome);
+    cloudSdkBuilderFactory.setCloudSdkHome(sdkHome);
   }
 }

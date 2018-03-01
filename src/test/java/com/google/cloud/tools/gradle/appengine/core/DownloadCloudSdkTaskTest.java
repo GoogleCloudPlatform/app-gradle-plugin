@@ -41,7 +41,7 @@ public class DownloadCloudSdkTaskTest {
 
   @Mock private ToolsExtension toolsExtension;
   @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  @Mock private SdkDownloader sdkDownloader;
+  @Mock private CloudSdkDownloader sdkDownloader;
 
   @Rule public ExpectedException exception = ExpectedException.none();
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Google Inc. All Right Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +54,7 @@ public class DownloadCloudSdkTaskTest {
     Project tempProject = ProjectBuilder.builder().build();
     downloadCloudSdkTask =
         tempProject.getTasks().create("tempDownloadTask", DownloadCloudSdkTask.class);
-    downloadCloudSdkTask.setCloudSdkBuilderFactor(cloudSdkBuilderFactory);
+    downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
     downloadCloudSdkTask.setToolsExtension(toolsExtension);
     downloadCloudSdkTask.setSdkDownloader(sdkDownloader);
   }
@@ -67,13 +66,11 @@ public class DownloadCloudSdkTaskTest {
     when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
     when(toolsExtension.getCloudSdkHome()).thenReturn(home);
 
-    // Assume SDK installation is valid
-    when(sdkDownloader.sdkIsValid(version, home)).thenReturn(true);
+    when(sdkDownloader.isSdkValid(version, home)).thenReturn(true);
 
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(sdkDownloader, never()).downloadSdk(version);
-    verify(sdkDownloader, times(1)).sdkIsValid(version, home);
-    verify(cloudSdkBuilderFactory, times(1)).setCloudSdkHome(home);
+    verify(cloudSdkBuilderFactory).setCloudSdkHome(home);
   }
 
   @Test
@@ -83,10 +80,8 @@ public class DownloadCloudSdkTaskTest {
     when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
     when(toolsExtension.getCloudSdkHome()).thenReturn(home);
 
-    // Assume SDK installation is invalid
-    when(sdkDownloader.sdkIsValid(version, home)).thenReturn(false);
+    when(sdkDownloader.isSdkValid(version, home)).thenReturn(false);
 
-    // Expect validation to fail
     exception.expect(GradleException.class);
     exception.expectMessage(
         "Specified Cloud SDK version and actual version of the SDK installed in the "
@@ -96,7 +91,7 @@ public class DownloadCloudSdkTaskTest {
 
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(sdkDownloader, never()).downloadSdk(version);
-    verify(sdkDownloader, times(1)).sdkIsValid(version, home);
+    verify(cloudSdkBuilderFactory, never()).setCloudSdkHome(home);
   }
 
   @Test
@@ -108,8 +103,7 @@ public class DownloadCloudSdkTaskTest {
 
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(sdkDownloader, never()).downloadSdk(version);
-    verify(sdkDownloader, never()).sdkIsValid(version, home);
-    verify(cloudSdkBuilderFactory, times(1)).setCloudSdkHome(home);
+    verify(cloudSdkBuilderFactory).setCloudSdkHome(home);
   }
 
   @Test
@@ -123,9 +117,8 @@ public class DownloadCloudSdkTaskTest {
     when(sdkDownloader.downloadSdk(version)).thenReturn(tempDir);
 
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader, times(1)).downloadSdk(version);
-    verify(sdkDownloader, never()).sdkIsValid(version, home);
-    verify(cloudSdkBuilderFactory, times(1)).setCloudSdkHome(tempDir);
+    verify(sdkDownloader).downloadSdk(version);
+    verify(cloudSdkBuilderFactory).setCloudSdkHome(tempDir);
   }
 
   @Test
@@ -139,9 +132,8 @@ public class DownloadCloudSdkTaskTest {
     when(sdkDownloader.downloadSdk("LATEST")).thenReturn(tempDir);
 
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader, times(1)).downloadSdk("LATEST");
-    verify(sdkDownloader, never()).sdkIsValid(version, home);
-    verify(cloudSdkBuilderFactory, times(1)).setCloudSdkHome(tempDir);
+    verify(sdkDownloader).downloadSdk("LATEST");
+    verify(cloudSdkBuilderFactory).setCloudSdkHome(tempDir);
   }
 
   private File getTempHomeDirectory(String version) {

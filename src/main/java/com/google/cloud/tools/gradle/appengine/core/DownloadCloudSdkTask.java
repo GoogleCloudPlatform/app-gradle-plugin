@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Google Inc. All Right Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
     this.toolsExtension = toolsExtension;
   }
 
-  public void setCloudSdkBuilderFactor(CloudSdkBuilderFactory cloudSdkBuilderFactor) {
+  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactor) {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactor;
   }
 
@@ -56,7 +56,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
     } else {
       if (!Strings.isNullOrEmpty(sdkVersion)) {
         // Sdk home and version specified; validate installation
-        if (!downloader.sdkIsValid(sdkVersion, sdkHome)) {
+        if (!downloader.isSdkValid(sdkVersion, sdkHome)) {
           throw new GradleException(
               "Specified Cloud SDK version and actual version of the SDK installed in the "
                   + "specified directory do not match. You must either specify the correct "
@@ -66,6 +66,6 @@ public class DownloadCloudSdkTask extends DefaultTask {
       }
     }
 
-    cloudSdkBuilderFactory.setCloudSdkHome(sdkHome);
+    this.cloudSdkBuilderFactory.setCloudSdkHome(sdkHome);
   }
 }

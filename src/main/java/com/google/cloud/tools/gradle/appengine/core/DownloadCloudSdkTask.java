@@ -26,16 +26,19 @@ import org.gradle.api.tasks.TaskAction;
 public class DownloadCloudSdkTask extends DefaultTask {
 
   private SdkDownloader downloader;
-
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private ToolsExtension toolsExtension;
 
-  public void setToolsConfig(ToolsExtension toolsExtension) {
+  public void setToolsExtension(ToolsExtension toolsExtension) {
     this.toolsExtension = toolsExtension;
   }
 
   public void setCloudSdkBuilderFactor(CloudSdkBuilderFactory cloudSdkBuilderFactor) {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactor;
+  }
+
+  public void setSdkDownloader(SdkDownloader downloader) {
+    this.downloader = downloader;
   }
 
   /** Task entrypoint : Download/update/verify Cloud SDK installation. */
@@ -45,7 +48,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
     File sdkHome = toolsExtension.getCloudSdkHome();
 
     if (sdkHome == null) {
-      if (Strings.isNullOrEmpty(sdkVersion) || sdkVersion.equals(downloader.getLatestVersion())) {
+      if (Strings.isNullOrEmpty(sdkVersion)) {
         // Wants to download, but version isn't specified; assume latest version
         sdkVersion = "LATEST";
       }
@@ -64,17 +67,5 @@ public class DownloadCloudSdkTask extends DefaultTask {
     }
 
     cloudSdkBuilderFactory.setCloudSdkHome(sdkHome);
-  }
-
-  private File getDefaultInstallDirectory(String version) {
-    if (Strings.isNullOrEmpty(version)) {
-      version = "LATEST";
-    }
-
-    return new File(
-        System.getProperty("user.home")
-            + "/.cache/google-cloud-tools-java/managed-cloud-sdk/"
-            + version
-            + "/");
   }
 }

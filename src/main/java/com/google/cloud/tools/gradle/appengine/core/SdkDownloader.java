@@ -23,7 +23,5 @@ public interface SdkDownloader {
 
   File downloadSdk(String version);
 
-  String getLatestVersion();
-
   boolean sdkIsValid(String version, File home);
 }

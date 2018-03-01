@@ -89,7 +89,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    downloadCloudSdkTask.setToolsConfig(toolsExtension);
+                    downloadCloudSdkTask.setToolsExtension(toolsExtension);
                     downloadCloudSdkTask.setCloudSdkBuilderFactor(cloudSdkBuilderFactory);
                     p.getTasks()
                         .matching(task -> task.getName().startsWith("appengine"))

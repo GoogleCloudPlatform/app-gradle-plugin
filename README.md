@@ -59,21 +59,24 @@ buildscript {
 You can now run commands like `./gradlew appengineDeploy` in the root folder of your Java application.
 
 # Supported tasks
-- appengineStage
-- appengineDeploy
-- appengineDeployCron
-- appengineDeployDispatch
-- appengineDeployDos
-- appengineDeployIndex
-- appengineDeployQueue
+| Goal                       | Description
+|----------------------------|---
+| appengineShowConfiguration | Shows the current App Engine plugin configuration properties.
+| appengineStage             | Generates an application directory for deployment.
+| appengineDeploy            | Stages and deploys an application to App Engine.
+| appengineDeployCron        | Deploys cron configuration (cron.yaml).
+| appengineDeployDispatch    | Deploys dispatch configuration (dispatch.yaml).
+| appengineDeployDos         | Deploys dos configuration (dos.yaml).
+| appengineDeployIndex       | Deploys datastore index configuration (index.yaml).
+| appengineDeployQueue       | Deploys queue configuration (queue.yaml).
 
 Dev App Server goals for standard environment apps only:
-- appengineRun
-- appengineStart 
-- appengineStop
 
-Show the current App Engine plugin configuration properties:
-- appengineShowConfiguration
+| Goal           | Description
+|----------------|---
+| appengineRun   | Runs the App Engine local development server.
+| appengineStart | Runs the App Engine local development server in the background.
+| appengineStop  | Stops a running App Engine web development server.
 
 Task documentation is available by running:
 

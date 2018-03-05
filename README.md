@@ -59,7 +59,7 @@ buildscript {
 You can now run commands like `./gradlew appengineDeploy` in the root folder of your Java application.
 
 # Supported tasks
-| Goal                       | Description
+| Task                       | Description
 |----------------------------|---
 | appengineShowConfiguration | Shows the current App Engine plugin configuration properties.
 | appengineStage             | Generates an application directory for deployment.
@@ -72,7 +72,7 @@ You can now run commands like `./gradlew appengineDeploy` in the root folder of 
 
 Dev App Server goals for standard environment apps only:
 
-| Goal           | Description
+| Task           | Description
 |----------------|---
 | appengineRun   | Runs the App Engine local development server.
 | appengineStart | Runs the App Engine local development server in the background.

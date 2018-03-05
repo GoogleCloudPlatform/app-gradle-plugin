@@ -52,10 +52,12 @@ public class DownloadCloudSdkTask extends DefaultTask {
         // Wants to download, but version isn't specified; assume latest version
         sdkVersion = "LATEST";
       }
+
       sdkHome = downloader.downloadSdk(sdkVersion);
     } else {
       if (!Strings.isNullOrEmpty(sdkVersion)) {
         // Sdk home and version specified; validate installation
+        getLogger().lifecycle("\tdownloadCloudSdk: Validating Cloud SDK installation.");
         if (!downloader.isSdkValid(sdkVersion, sdkHome)) {
           throw new GradleException(
               "Specified Cloud SDK version and actual version of the SDK installed in the "

@@ -91,6 +91,8 @@ public class AppEngineCorePluginConfiguration {
                   p -> {
                     downloadCloudSdkTask.setToolsExtension(toolsExtension);
                     downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    downloadCloudSdkTask.setSdkDownloader(
+                        new CloudSdkDownloader(project.getLogger()));
                     p.getTasks()
                         .matching(task -> task.getName().startsWith("appengine"))
                         .forEach(task -> task.dependsOn(downloadCloudSdkTask));

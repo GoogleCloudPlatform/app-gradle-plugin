@@ -17,20 +17,21 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
+import com.google.cloud.tools.managedcloudsdk.components.SdkComponent;
+import com.google.cloud.tools.managedcloudsdk.components.SdkComponentInstaller;
+import com.google.cloud.tools.managedcloudsdk.install.SdkInstaller;
+import com.google.cloud.tools.managedcloudsdk.update.SdkUpdater;
 import java.io.File;
-import java.io.IOException;
-import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -41,9 +42,13 @@ public class DownloadCloudSdkTaskTest {
 
   @Mock private ToolsExtension toolsExtension;
   @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  @Mock private CloudSdkDownloader sdkDownloader;
+  @Mock private ManagedCloudSdk managedCloudSdk;
+  @Mock private ManagedCloudSdkFactory managedCloudSdkFactory;
 
-  @Rule public ExpectedException exception = ExpectedException.none();
+  @Mock private SdkInstaller installer;
+  @Mock private SdkComponentInstaller componentInstaller;
+  @Mock private SdkUpdater updater;
+
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private DownloadCloudSdkTask downloadCloudSdkTask;
@@ -56,96 +61,50 @@ public class DownloadCloudSdkTaskTest {
         tempProject.getTasks().create("tempDownloadTask", DownloadCloudSdkTask.class);
     downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
     downloadCloudSdkTask.setToolsExtension(toolsExtension);
-    downloadCloudSdkTask.setSdkDownloader(sdkDownloader);
+    downloadCloudSdkTask.setManagedCloudSdkFactory(managedCloudSdkFactory);
+
+    when(managedCloudSdk.newInstaller()).thenReturn(installer);
+    when(managedCloudSdk.newComponentInstaller()).thenReturn(componentInstaller);
+    when(managedCloudSdk.newUpdater()).thenReturn(updater);
+    when(managedCloudSdk.getSdkHome()).thenReturn(new File("").toPath());
   }
 
   @Test
-  public void testDownloadCloudSdkAction_validateTrue() {
+  public void testDownloadCloudSdkAction_install() throws Exception {
     String version = "LATEST";
-    File home = getTempHomeDirectory("LATEST");
     when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(toolsExtension.getCloudSdkHome()).thenReturn(home);
+    when(managedCloudSdkFactory.newManagedSdk(version)).thenReturn(managedCloudSdk);
 
-    when(sdkDownloader.isSdkValid(version, home)).thenReturn(true);
-
+    when(managedCloudSdk.isInstalled()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader, never()).downloadSdk(version);
-    verify(cloudSdkBuilderFactory).setCloudSdkHome(home);
+    verify(managedCloudSdk).newInstaller();
   }
 
   @Test
-  public void testDownloadCloudSdkAction_validateFalse() {
+  public void testDownloadCloudSdkAction_installComponent() throws Exception {
     String version = "LATEST";
-    File home = getTempHomeDirectory("100.100.100");
     when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(toolsExtension.getCloudSdkHome()).thenReturn(home);
+    when(managedCloudSdkFactory.newManagedSdk(version)).thenReturn(managedCloudSdk);
 
-    when(sdkDownloader.isSdkValid(version, home)).thenReturn(false);
-
-    exception.expect(GradleException.class);
-    exception.expectMessage(
-        "Specified Cloud SDK version and actual version of the SDK installed in the "
-            + "specified directory do not match. You must either specify the correct "
-            + "cloudSdkHome and cloudSdkVersion, or you can remove the cloudSdkHome field "
-            + "to download the version you want.");
-
+    when(managedCloudSdk.isInstalled()).thenReturn(true);
+    when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader, never()).downloadSdk(version);
-    verify(cloudSdkBuilderFactory, never()).setCloudSdkHome(home);
+    verify(managedCloudSdk, times(0)).newInstaller();
+    verify(managedCloudSdk).newComponentInstaller();
   }
 
   @Test
-  public void testDownloadCloudSdkAction_noValidation() {
-    String version = null;
-    File home = getTempHomeDirectory("LATEST");
+  public void testDownloadCloudSdkAction_update() throws Exception {
+    String version = "LATEST";
     when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(toolsExtension.getCloudSdkHome()).thenReturn(home);
+    when(managedCloudSdkFactory.newManagedSdk(version)).thenReturn(managedCloudSdk);
 
+    when(managedCloudSdk.isInstalled()).thenReturn(true);
+    when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(true);
+    when(managedCloudSdk.isUpToDate()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader, never()).downloadSdk(version);
-    verify(cloudSdkBuilderFactory).setCloudSdkHome(home);
-  }
-
-  @Test
-  public void testDownloadCloudSdkAction_downloadVersion() {
-    String version = "100.100.100";
-    File home = null;
-    when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(toolsExtension.getCloudSdkHome()).thenReturn(home);
-
-    File tempDir = getTempHomeDirectory(version);
-    when(sdkDownloader.downloadSdk(version)).thenReturn(tempDir);
-
-    downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader).downloadSdk(version);
-    verify(cloudSdkBuilderFactory).setCloudSdkHome(tempDir);
-  }
-
-  @Test
-  public void testDownloadCloudSdkAction_downloadLatest() {
-    String version = null;
-    File home = null;
-    when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(toolsExtension.getCloudSdkHome()).thenReturn(home);
-
-    File tempDir = getTempHomeDirectory("LATEST");
-    when(sdkDownloader.downloadSdk("LATEST")).thenReturn(tempDir);
-
-    downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(sdkDownloader).downloadSdk("LATEST");
-    verify(cloudSdkBuilderFactory).setCloudSdkHome(tempDir);
-  }
-
-  private File getTempHomeDirectory(String version) {
-    try {
-      return temporaryFolder.newFolder(version);
-    } catch (IOException ex) {
-      Assert.fail(
-          "Failed to create temp Cloud SDK download directory at "
-              + version
-              + ": "
-              + ex.getMessage());
-      return null;
-    }
+    verify(managedCloudSdk, times(0)).newInstaller();
+    verify(managedCloudSdk, times(0)).newComponentInstaller();
+    verify(managedCloudSdk).newUpdater();
   }
 }

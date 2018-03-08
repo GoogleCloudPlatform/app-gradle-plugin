@@ -50,8 +50,6 @@ public class CheckCloudSdkTask extends DefaultTask {
     }
 
     String version = toolsExtension.getCloudSdkVersion();
-
-    cloudSdkBuilderFactory.setCloudSdkHome(home);
     CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder().build();
     if (!version.equals("LATEST") && !version.equals(cloudSdk.getVersion().toString())) {
       throw new GradleException(

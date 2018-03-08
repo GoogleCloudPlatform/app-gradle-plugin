@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Google Inc. All Right Reserved.
+ * Copyright 2018 Google LLC. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_sdkInstallationExceptions() throws IOException {
+  public void testCheckCloudSdkAction_sdkInstallationException() throws IOException {
     when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
     when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
 
@@ -104,23 +104,35 @@ public class CheckCloudSdkTaskTest {
       checkCloudSdkTask.checkCloudSdkAction();
       Assert.fail();
     } catch (TaskExecutionException ex) {
-      // Pass
+      Assert.assertEquals(ex.getCause().getClass(), CloudSdkNotFoundException.class);
     }
+  }
+
+  @Test
+  public void testCheckCloudSdkAction_outOfDateException() throws IOException {
+    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
+    when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
 
     doThrow(CloudSdkOutOfDateException.class).when(sdk).validateCloudSdk();
     try {
       checkCloudSdkTask.checkCloudSdkAction();
       Assert.fail();
     } catch (TaskExecutionException ex) {
-      // Pass
+      Assert.assertEquals(ex.getCause().getClass(), CloudSdkOutOfDateException.class);
     }
+  }
+
+  @Test
+  public void testCheckCloudSdkAction_versionFileException() throws IOException {
+    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
+    when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
 
     doThrow(CloudSdkVersionFileException.class).when(sdk).validateCloudSdk();
     try {
       checkCloudSdkTask.checkCloudSdkAction();
       Assert.fail();
     } catch (TaskExecutionException ex) {
-      // Pass
+      Assert.assertEquals(ex.getCause().getClass(), CloudSdkVersionFileException.class);
     }
   }
 
@@ -136,7 +148,8 @@ public class CheckCloudSdkTaskTest {
       checkCloudSdkTask.checkCloudSdkAction();
       Assert.fail();
     } catch (TaskExecutionException ex) {
-      // Pass
+      Assert.assertEquals(
+          ex.getCause().getClass(), AppEngineJavaComponentsNotInstalledException.class);
     }
   }
 }

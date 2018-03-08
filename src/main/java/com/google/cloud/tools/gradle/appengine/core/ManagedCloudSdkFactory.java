@@ -25,12 +25,14 @@ import com.google.common.base.Strings;
 
 public class ManagedCloudSdkFactory {
 
-  /**
-   * Build a new ManagedCloudSdk from a given version.
-   *
-   * @param version The version string.
-   */
-  public ManagedCloudSdk newManagedSdk(String version)
+  private String version;
+
+  public ManagedCloudSdkFactory(String version) {
+    this.version = version;
+  }
+
+  /** Build a new ManagedCloudSdk from a given version. */
+  public ManagedCloudSdk newManagedSdk()
       throws UnsupportedOsException, BadCloudSdkVersionException {
     if (Strings.isNullOrEmpty(version) || version.equals(Version.LATEST.getVersion())) {
       return ManagedCloudSdk.newManagedSdk();

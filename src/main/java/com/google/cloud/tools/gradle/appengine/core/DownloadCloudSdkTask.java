@@ -17,13 +17,21 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
 import com.google.cloud.tools.managedcloudsdk.ConsoleListener;
 import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
+import com.google.cloud.tools.managedcloudsdk.ManagedSdkVerificationException;
+import com.google.cloud.tools.managedcloudsdk.ManagedSdkVersionMismatchException;
 import com.google.cloud.tools.managedcloudsdk.ProgressListener;
+import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
+import com.google.cloud.tools.managedcloudsdk.command.CommandExecutionException;
+import com.google.cloud.tools.managedcloudsdk.command.CommandExitException;
 import com.google.cloud.tools.managedcloudsdk.components.SdkComponent;
 import com.google.cloud.tools.managedcloudsdk.components.SdkComponentInstaller;
 import com.google.cloud.tools.managedcloudsdk.install.SdkInstaller;
+import com.google.cloud.tools.managedcloudsdk.install.SdkInstallerException;
 import com.google.cloud.tools.managedcloudsdk.update.SdkUpdater;
+import java.io.IOException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
@@ -31,12 +39,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
 
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private ManagedCloudSdkFactory managedCloudSdkFactory;
-  private ToolsExtension toolsExtension;
   private ManagedCloudSdk managedCloudSdk;
-
-  public void setToolsExtension(ToolsExtension toolsExtension) {
-    this.toolsExtension = toolsExtension;
-  }
 
   public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
@@ -48,9 +51,11 @@ public class DownloadCloudSdkTask extends DefaultTask {
 
   /** Task entrypoint : Download/update/verify Cloud SDK installation. */
   @TaskAction
-  public void downloadCloudSdkAction() throws Exception {
-    String sdkVersion = toolsExtension.getCloudSdkVersion();
-    managedCloudSdk = managedCloudSdkFactory.newManagedSdk(sdkVersion);
+  public void downloadCloudSdkAction()
+      throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
+          ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
+          SdkInstallerException, CommandExitException, IOException {
+    managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
 
     ProgressListener progressListener =
         new ProgressListener() {

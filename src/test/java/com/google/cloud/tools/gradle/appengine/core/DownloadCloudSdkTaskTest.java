@@ -17,16 +17,24 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
 import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
+import com.google.cloud.tools.managedcloudsdk.ManagedSdkVerificationException;
+import com.google.cloud.tools.managedcloudsdk.ManagedSdkVersionMismatchException;
+import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
+import com.google.cloud.tools.managedcloudsdk.command.CommandExecutionException;
+import com.google.cloud.tools.managedcloudsdk.command.CommandExitException;
 import com.google.cloud.tools.managedcloudsdk.components.SdkComponent;
 import com.google.cloud.tools.managedcloudsdk.components.SdkComponentInstaller;
 import com.google.cloud.tools.managedcloudsdk.install.SdkInstaller;
+import com.google.cloud.tools.managedcloudsdk.install.SdkInstallerException;
 import com.google.cloud.tools.managedcloudsdk.update.SdkUpdater;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
@@ -40,7 +48,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DownloadCloudSdkTaskTest {
 
-  @Mock private ToolsExtension toolsExtension;
   @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   @Mock private ManagedCloudSdk managedCloudSdk;
   @Mock private ManagedCloudSdkFactory managedCloudSdkFactory;
@@ -60,51 +67,50 @@ public class DownloadCloudSdkTaskTest {
     downloadCloudSdkTask =
         tempProject.getTasks().create("tempDownloadTask", DownloadCloudSdkTask.class);
     downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-    downloadCloudSdkTask.setToolsExtension(toolsExtension);
     downloadCloudSdkTask.setManagedCloudSdkFactory(managedCloudSdkFactory);
 
     when(managedCloudSdk.newInstaller()).thenReturn(installer);
     when(managedCloudSdk.newComponentInstaller()).thenReturn(componentInstaller);
     when(managedCloudSdk.newUpdater()).thenReturn(updater);
-    when(managedCloudSdk.getSdkHome()).thenReturn(new File("").toPath());
+    when(managedCloudSdk.getSdkHome()).thenReturn(Paths.get(""));
   }
 
   @Test
-  public void testDownloadCloudSdkAction_install() throws Exception {
-    String version = "LATEST";
-    when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(managedCloudSdkFactory.newManagedSdk(version)).thenReturn(managedCloudSdk);
-
+  public void testDownloadCloudSdkAction_install()
+      throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
+          ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
+          SdkInstallerException, IOException, CommandExitException {
+    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(managedCloudSdk).newInstaller();
   }
 
   @Test
-  public void testDownloadCloudSdkAction_installComponent() throws Exception {
-    String version = "LATEST";
-    when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(managedCloudSdkFactory.newManagedSdk(version)).thenReturn(managedCloudSdk);
-
+  public void testDownloadCloudSdkAction_installComponent()
+      throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
+          ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
+          SdkInstallerException, IOException, CommandExitException {
+    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(managedCloudSdk, times(0)).newInstaller();
+    verify(managedCloudSdk, never()).newInstaller();
     verify(managedCloudSdk).newComponentInstaller();
   }
 
   @Test
-  public void testDownloadCloudSdkAction_update() throws Exception {
-    String version = "LATEST";
-    when(toolsExtension.getCloudSdkVersion()).thenReturn(version);
-    when(managedCloudSdkFactory.newManagedSdk(version)).thenReturn(managedCloudSdk);
-
+  public void testDownloadCloudSdkAction_update()
+      throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
+          ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
+          SdkInstallerException, IOException, CommandExitException {
+    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(true);
     when(managedCloudSdk.isUpToDate()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
-    verify(managedCloudSdk, times(0)).newInstaller();
-    verify(managedCloudSdk, times(0)).newComponentInstaller();
+    verify(managedCloudSdk, never()).newInstaller();
+    verify(managedCloudSdk, never()).newComponentInstaller();
     verify(managedCloudSdk).newUpdater();
   }
 }

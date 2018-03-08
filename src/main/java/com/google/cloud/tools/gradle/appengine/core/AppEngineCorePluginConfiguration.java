@@ -75,7 +75,7 @@ public class AppEngineCorePluginConfiguration {
         project -> {
           // create the sdk builder factory after we know the location of the sdk
           cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
-          managedCloudSdkFactory = new ManagedCloudSdkFactory();
+          managedCloudSdkFactory = new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion());
         });
   }
 
@@ -91,7 +91,6 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    downloadCloudSdkTask.setToolsExtension(toolsExtension);
                     downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
                     downloadCloudSdkTask.setManagedCloudSdkFactory(managedCloudSdkFactory);
 

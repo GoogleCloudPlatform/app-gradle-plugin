@@ -39,6 +39,8 @@ public class DownloadCloudSdkTask extends DefaultTask {
 
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private ManagedCloudSdkFactory managedCloudSdkFactory;
+  private ProgressListener progressListener;
+  private ConsoleListener consoleListener;
 
   public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
@@ -48,6 +50,14 @@ public class DownloadCloudSdkTask extends DefaultTask {
     this.managedCloudSdkFactory = managedCloudSdkFactory;
   }
 
+  public void setProgressListener(ProgressListener progressListener) {
+    this.progressListener = progressListener;
+  }
+
+  public void setConsoleListener(ConsoleListener consoleListener) {
+    this.consoleListener = consoleListener;
+  }
+
   /** Task entrypoint : Download/update/verify Cloud SDK installation. */
   @TaskAction
   public void downloadCloudSdkAction()
@@ -55,55 +65,6 @@ public class DownloadCloudSdkTask extends DefaultTask {
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, CommandExitException, IOException {
     ManagedCloudSdk managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
-
-    ProgressListener progressListener =
-        new ProgressListener() {
-          @Override
-          public void start(String message, long totalWork) {
-            getLogger().lifecycle(message);
-          }
-
-          @Override
-          public void update(long workDone) {
-            // TODO: Show progress
-          }
-
-          @Override
-          public void update(String message) {
-            getLogger().lifecycle(message);
-          }
-
-          @Override
-          public void done() {}
-
-          @Override
-          public ProgressListener newChild(long allocation) {
-            return new ProgressListener() {
-              @Override
-              public void start(String message, long totalWork) {}
-
-              @Override
-              public void update(long workDone) {}
-
-              @Override
-              public void update(String message) {}
-
-              @Override
-              public void done() {}
-
-              @Override
-              public ProgressListener newChild(long allocation) {
-                return null;
-              }
-            };
-          }
-        };
-
-    ConsoleListener consoleListener =
-        new ConsoleListener() {
-          @Override
-          public void console(String rawString) {}
-        };
 
     // Install sdk if not installed
     if (!managedCloudSdk.isInstalled()) {

@@ -18,35 +18,22 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.managedcloudsdk.ProgressListener;
-import org.gradle.api.logging.Logger;
 
 class DownloadCloudSdkTaskProgressListener implements ProgressListener {
-
-  private Logger logger;
-
-  public DownloadCloudSdkTaskProgressListener(Logger logger) {
-    this.logger = logger;
-  }
+  @Override
+  public void start(String message, long totalWork) { }
 
   @Override
-  public void start(String message, long totalWork) {
-    logger.lifecycle(message);
-  }
+  public void update(long workDone) { }
 
   @Override
-  public void update(long workDone) {
-  }
-
-  @Override
-  public void update(String message) {
-    logger.lifecycle(message);
-  }
+  public void update(String message) { }
 
   @Override
   public void done() {}
 
   @Override
   public ProgressListener newChild(long allocation) {
-    return new DownloadCloudSdkTaskProgressListener(this.logger);
+    return new DownloadCloudSdkTaskProgressListener();
   }
 }

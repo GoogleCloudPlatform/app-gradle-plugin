@@ -62,7 +62,7 @@ public class DownloadCloudSdkTaskTest {
 
   /** Setup DownloadCloudSdkTaskTest. */
   @Before
-  public void setup() {
+  public void setup() throws UnsupportedOsException, BadCloudSdkVersionException {
     Project tempProject = ProjectBuilder.builder().build();
     downloadCloudSdkTask =
         tempProject.getTasks().create("tempDownloadTask", DownloadCloudSdkTask.class);
@@ -73,6 +73,8 @@ public class DownloadCloudSdkTaskTest {
     when(managedCloudSdk.newComponentInstaller()).thenReturn(componentInstaller);
     when(managedCloudSdk.newUpdater()).thenReturn(updater);
     when(managedCloudSdk.getSdkHome()).thenReturn(Paths.get(""));
+
+    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
   }
 
   @Test
@@ -80,7 +82,6 @@ public class DownloadCloudSdkTaskTest {
       throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, IOException, CommandExitException {
-    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(managedCloudSdk).newInstaller();
@@ -91,7 +92,6 @@ public class DownloadCloudSdkTaskTest {
       throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, IOException, CommandExitException {
-    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
@@ -104,7 +104,6 @@ public class DownloadCloudSdkTaskTest {
       throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, IOException, CommandExitException {
-    when(managedCloudSdkFactory.newManagedSdk()).thenReturn(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(true);
     when(managedCloudSdk.isUpToDate()).thenReturn(false);

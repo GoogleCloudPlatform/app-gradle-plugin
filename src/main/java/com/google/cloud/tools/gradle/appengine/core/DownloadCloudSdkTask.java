@@ -39,7 +39,6 @@ public class DownloadCloudSdkTask extends DefaultTask {
 
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private ManagedCloudSdkFactory managedCloudSdkFactory;
-  private ManagedCloudSdk managedCloudSdk;
 
   public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
@@ -55,7 +54,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
       throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, CommandExitException, IOException {
-    managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
+    ManagedCloudSdk managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
 
     ProgressListener progressListener =
         new ProgressListener() {

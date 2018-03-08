@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.appengine.cloudsdk.AppEngineJavaComponentsNotInstalledException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
@@ -43,8 +44,6 @@ public class CheckCloudSdkTask extends DefaultTask {
   /** Task entrypoint : Download/update/verify Cloud SDK installation. */
   @TaskAction
   public void checkCloudSdkAction() {
-    getLogger().lifecycle("Check Cloud SDK");
-
     File home = toolsExtension.getCloudSdkHome();
     if (home == null) {
       throw new GradleException("SDK home directory must be specified for validation.");
@@ -52,10 +51,11 @@ public class CheckCloudSdkTask extends DefaultTask {
 
     String version = toolsExtension.getCloudSdkVersion();
 
-    CloudSdk cloudSdk = new CloudSdk.Builder().sdkPath(home.toPath()).build();
+    cloudSdkBuilderFactory.setCloudSdkHome(home);
+    CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder().build();
     if (!version.equals("LATEST") && !version.equals(cloudSdk.getVersion().toString())) {
       throw new GradleException(
-          "Cloud SDK validate: Specified version ("
+          "Specified Cloud SDK version ("
               + version
               + ") does not match installed version ("
               + cloudSdk.getVersion()
@@ -64,12 +64,12 @@ public class CheckCloudSdkTask extends DefaultTask {
 
     try {
       cloudSdk.validateCloudSdk();
+      cloudSdk.validateAppEngineJavaComponents();
     } catch (CloudSdkNotFoundException
         | CloudSdkOutOfDateException
-        | CloudSdkVersionFileException ex) {
+        | CloudSdkVersionFileException
+        | AppEngineJavaComponentsNotInstalledException ex) {
       throw new TaskExecutionException(this, ex);
     }
-
-    cloudSdkBuilderFactory.setCloudSdkHome(home);
   }
 }

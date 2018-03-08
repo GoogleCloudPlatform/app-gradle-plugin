@@ -21,5 +21,7 @@ import com.google.cloud.tools.managedcloudsdk.ConsoleListener;
 
 public class DownloadCloudSdkTaskConsoleListener implements ConsoleListener {
   @Override
-  public void console(String rawString) {}
+  public void console(String rawString) {
+    System.out.print(rawString);
+  }
 }

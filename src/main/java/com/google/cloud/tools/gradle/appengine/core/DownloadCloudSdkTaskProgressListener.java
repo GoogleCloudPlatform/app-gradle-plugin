@@ -35,7 +35,6 @@ class DownloadCloudSdkTaskProgressListener implements ProgressListener {
 
   @Override
   public void update(long workDone) {
-    // TODO: Show progress
   }
 
   @Override
@@ -48,23 +47,6 @@ class DownloadCloudSdkTaskProgressListener implements ProgressListener {
 
   @Override
   public ProgressListener newChild(long allocation) {
-    return new ProgressListener() {
-      @Override
-      public void start(String message, long totalWork) {}
-
-      @Override
-      public void update(long workDone) {}
-
-      @Override
-      public void update(String message) {}
-
-      @Override
-      public void done() {}
-
-      @Override
-      public ProgressListener newChild(long allocation) {
-        return null;
-      }
-    };
+    return new DownloadCloudSdkTaskProgressListener(this.logger);
   }
 }

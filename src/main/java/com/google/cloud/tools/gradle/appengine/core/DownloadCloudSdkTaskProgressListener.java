@@ -21,13 +21,13 @@ import com.google.cloud.tools.managedcloudsdk.ProgressListener;
 
 class DownloadCloudSdkTaskProgressListener implements ProgressListener {
   @Override
-  public void start(String message, long totalWork) { }
+  public void start(String message, long totalWork) {}
 
   @Override
-  public void update(long workDone) { }
+  public void update(long workDone) {}
 
   @Override
-  public void update(String message) { }
+  public void update(String message) {}
 
   @Override
   public void done() {}

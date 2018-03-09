@@ -19,7 +19,7 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.managedcloudsdk.ProgressListener;
 
-class DownloadCloudSdkTaskProgressListener implements ProgressListener {
+class NopProgressListener implements ProgressListener {
   @Override
   public void start(String message, long totalWork) {}
 
@@ -34,6 +34,6 @@ class DownloadCloudSdkTaskProgressListener implements ProgressListener {
 
   @Override
   public ProgressListener newChild(long allocation) {
-    return new DownloadCloudSdkTaskProgressListener();
+    return new NopProgressListener();
   }
 }

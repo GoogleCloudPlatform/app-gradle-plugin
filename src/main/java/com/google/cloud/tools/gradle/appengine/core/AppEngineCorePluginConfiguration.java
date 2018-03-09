@@ -93,10 +93,6 @@ public class AppEngineCorePluginConfiguration {
                   p -> {
                     downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
                     downloadCloudSdkTask.setManagedCloudSdkFactory(managedCloudSdkFactory);
-                    downloadCloudSdkTask.setProgressListener(
-                        new DownloadCloudSdkTaskProgressListener());
-                    downloadCloudSdkTask.setConsoleListener(
-                        new DownloadCloudSdkTaskConsoleListener());
 
                     if (toolsExtension.getCloudSdkHome() == null) {
                       p.getTasks()

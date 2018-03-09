@@ -41,7 +41,7 @@ public class CheckCloudSdkTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
-  /** Task entrypoint : Download/update/verify Cloud SDK installation. */
+  /** Task entrypoint : Verify Cloud SDK installation. */
   @TaskAction
   public void checkCloudSdkAction() {
     File home = toolsExtension.getCloudSdkHome();

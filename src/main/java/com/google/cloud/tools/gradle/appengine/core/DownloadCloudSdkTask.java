@@ -48,7 +48,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
     this.managedCloudSdkFactory = managedCloudSdkFactory;
   }
 
-  /** Task entrypoint : Download/update/verify Cloud SDK installation. */
+  /** Task entrypoint : Download/update Cloud SDK. */
   @TaskAction
   public void downloadCloudSdkAction()
       throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,

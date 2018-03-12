@@ -22,6 +22,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
+import com.google.common.base.Strings;
 import java.io.File;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -50,6 +51,10 @@ public class CheckCloudSdkTask extends DefaultTask {
     }
 
     String version = toolsExtension.getCloudSdkVersion();
+    if (Strings.isNullOrEmpty(version)) {
+      throw new GradleException("SDK version must be specified for validation.");
+    }
+
     CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder().build();
     if (!version.equals(cloudSdk.getVersion().toString())) {
       throw new GradleException(

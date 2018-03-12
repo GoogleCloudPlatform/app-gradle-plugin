@@ -78,6 +78,19 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
+  public void testCheckCloudSdkAction_nullVersion() throws IOException {
+    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
+    when(toolsExtension.getCloudSdkVersion()).thenReturn(null);
+
+    try {
+      checkCloudSdkTask.checkCloudSdkAction();
+      Assert.fail();
+    } catch (GradleException ex) {
+      Assert.assertEquals("SDK version must be specified for validation.", ex.getMessage());
+    }
+  }
+
+  @Test
   public void testCheckCloudSdkAction_versionMismatch() throws IOException {
     when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
 

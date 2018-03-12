@@ -34,13 +34,6 @@ public class ManagedCloudSdkFactoryTest {
   }
 
   @Test
-  public void testNewManagedSdk_latest()
-      throws UnsupportedOsException, BadCloudSdkVersionException {
-    ManagedCloudSdk sdk = new ManagedCloudSdkFactory("LATEST").newManagedSdk();
-    Assert.assertEquals(ManagedCloudSdk.newManagedSdk().getSdkHome(), sdk.getSdkHome());
-  }
-
-  @Test
   public void testNewManagedSdk_specific()
       throws UnsupportedOsException, BadCloudSdkVersionException {
     ManagedCloudSdk sdk = new ManagedCloudSdkFactory("191.0.0").newManagedSdk();

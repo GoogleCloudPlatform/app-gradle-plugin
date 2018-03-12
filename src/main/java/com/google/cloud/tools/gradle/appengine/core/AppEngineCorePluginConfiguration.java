@@ -37,6 +37,7 @@ public class AppEngineCorePluginConfiguration {
   public static final String DEPLOY_QUEUE_TASK_NAME = "appengineDeployQueue";
   public static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
   public static final String DOWNLOAD_CLOUD_SDK_TASK_NAME = "downloadCloudSdk";
+  public static final String CHECK_CLOUD_SDK_TASK_NAME = "checkCloudSdk";
 
   public static final String APPENGINE_EXTENSION = "appengine";
 
@@ -61,6 +62,7 @@ public class AppEngineCorePluginConfiguration {
     configureFactories();
 
     createDownloadCloudSdkTask();
+    createCheckCloudSdkTask();
     createDeployTask();
     createDeployCronTask();
     createDeployDispatchTask();
@@ -98,6 +100,31 @@ public class AppEngineCorePluginConfiguration {
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(downloadCloudSdkTask));
+                    }
+                  });
+            });
+  }
+
+  private void createCheckCloudSdkTask() {
+    project
+        .getTasks()
+        .create(
+            CHECK_CLOUD_SDK_TASK_NAME,
+            CheckCloudSdkTask.class,
+            checkCloudSdkTask -> {
+              checkCloudSdkTask.setGroup(taskGroup);
+              checkCloudSdkTask.setDescription("Validates the Cloud SDK");
+
+              project.afterEvaluate(
+                  p -> {
+                    checkCloudSdkTask.setToolsExtension(toolsExtension);
+                    checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+
+                    if (toolsExtension.getCloudSdkHome() != null
+                        && toolsExtension.getCloudSdkVersion() != null) {
+                      p.getTasks()
+                          .matching(task -> task.getName().startsWith("appengine"))
+                          .forEach(task -> task.dependsOn(checkCloudSdkTask));
                     }
                   });
             });

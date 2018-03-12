@@ -49,9 +49,21 @@ public class TestProject {
     return this;
   }
 
+  /** Add a standard appengine-gradle-plugin build file that specifies sdk home and version. */
+  public TestProject addStandardBuildFileWithHome() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-standard-home.gradle");
+    return this;
+  }
+
   /** Add a flexible appengine-gradle-plugin build file. */
   public TestProject addFlexibleBuildFile() throws IOException {
     addBuildFile("projects/AppEnginePluginTest/build-flexible.gradle");
+    return this;
+  }
+
+  /** Add a flexible appengine-gradle-plugin build file that specifies sdk home and version. */
+  public TestProject addFlexibleBuildFileWithHome() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-flexible-home.gradle");
     return this;
   }
 

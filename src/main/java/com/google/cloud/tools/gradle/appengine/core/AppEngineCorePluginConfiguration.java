@@ -17,6 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
+import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
+import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.util.GradleVersion;
@@ -45,7 +48,7 @@ public class AppEngineCorePluginConfiguration {
   private DeployExtension deployExtension;
   private ToolsExtension toolsExtension;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  private ManagedCloudSdkFactory managedCloudSdkFactory;
+  private ManagedCloudSdk managedCloudSdk;
   private String taskGroup;
 
   /** Configure core tasks for appengine flexible and standard project plugins. */
@@ -75,9 +78,17 @@ public class AppEngineCorePluginConfiguration {
   private void configureFactories() {
     project.afterEvaluate(
         project -> {
-          // create the sdk builder factory after we know the location of the sdk
-          cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
-          managedCloudSdkFactory = new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion());
+          try {
+            managedCloudSdk =
+                new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion()).newManagedSdk();
+            cloudSdkBuilderFactory =
+                new CloudSdkBuilderFactory(
+                    toolsExtension.getCloudSdkHome() == null
+                        ? managedCloudSdk.getSdkHome().toFile()
+                        : toolsExtension.getCloudSdkHome());
+          } catch (UnsupportedOsException | BadCloudSdkVersionException ex) {
+            throw new GradleException(ex.getMessage());
+          }
         });
   }
 
@@ -93,8 +104,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                    downloadCloudSdkTask.setManagedCloudSdkFactory(managedCloudSdkFactory);
+                    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
 
                     if (toolsExtension.getCloudSdkHome() == null) {
                       p.getTasks()

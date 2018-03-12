@@ -47,6 +47,12 @@ public class AppEngineStandardPluginTest {
     return new TestProject(testProjectDir.getRoot()).addStandardBuildFile().addAppEngineWebXml();
   }
 
+  private TestProject createTestProjectWithHome() throws IOException {
+    return new TestProject(testProjectDir.getRoot())
+        .addStandardBuildFileWithHome()
+        .addAppEngineWebXml();
+  }
+
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
     createTestProject()
@@ -220,6 +226,26 @@ public class AppEngineStandardPluginTest {
             ":assemble",
             ":downloadCloudSdk",
             ":appengineStart");
+
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testCheck_taskTree() throws IOException {
+    BuildResult buildResult =
+        createTestProjectWithHome().applyGradleRunner("appengineDeploy", "--dry-run");
+
+    final List<String> expected =
+        ImmutableList.of(
+            ":compileJava",
+            ":processResources",
+            ":classes",
+            ":war",
+            ":explodeWar",
+            ":assemble",
+            ":checkCloudSdk",
+            ":appengineStage",
+            ":appengineDeploy");
 
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
   }

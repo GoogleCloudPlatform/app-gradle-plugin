@@ -50,6 +50,10 @@ public class AppEngineFlexiblePluginTest {
     return new TestProject(testProjectDir.getRoot()).addFlexibleBuildFile();
   }
 
+  private TestProject createTestProjectWithHome() throws IOException {
+    return new TestProject(testProjectDir.getRoot()).addFlexibleBuildFileWithHome();
+  }
+
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
     createTestProject()
@@ -84,6 +88,24 @@ public class AppEngineFlexiblePluginTest {
             ":war",
             ":assemble",
             ":downloadCloudSdk",
+            ":appengineStage",
+            ":appengineDeploy");
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
+  public void testCheck_taskTree() throws IOException {
+    BuildResult buildResult =
+        createTestProjectWithHome().applyGradleRunner("appengineDeploy", "--dry-run");
+
+    final List<String> expected =
+        ImmutableList.of(
+            ":compileJava",
+            ":processResources",
+            ":classes",
+            ":war",
+            ":assemble",
+            ":checkCloudSdk",
             ":appengineStage",
             ":appengineDeploy");
     assertEquals(expected, BuildResultFilter.extractTasks(buildResult));

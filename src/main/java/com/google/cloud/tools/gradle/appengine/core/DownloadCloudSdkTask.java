@@ -55,7 +55,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, CommandExitException, IOException {
     ProgressListener progressListener = new NopProgressListener();
-    ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener();
+    ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener(getProject());
 
     ManagedCloudSdk managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
 

@@ -54,56 +54,10 @@ public class DownloadCloudSdkTask extends DefaultTask {
       throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
           ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
           SdkInstallerException, CommandExitException, IOException {
+    ProgressListener progressListener = new NopProgressListener();
+    ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener();
+
     ManagedCloudSdk managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
-
-    ProgressListener progressListener =
-        new ProgressListener() {
-          @Override
-          public void start(String message, long totalWork) {
-            getLogger().lifecycle(message);
-          }
-
-          @Override
-          public void update(long workDone) {
-            // TODO: Show progress
-          }
-
-          @Override
-          public void update(String message) {
-            getLogger().lifecycle(message);
-          }
-
-          @Override
-          public void done() {}
-
-          @Override
-          public ProgressListener newChild(long allocation) {
-            return new ProgressListener() {
-              @Override
-              public void start(String message, long totalWork) {}
-
-              @Override
-              public void update(long workDone) {}
-
-              @Override
-              public void update(String message) {}
-
-              @Override
-              public void done() {}
-
-              @Override
-              public ProgressListener newChild(long allocation) {
-                return null;
-              }
-            };
-          }
-        };
-
-    ConsoleListener consoleListener =
-        new ConsoleListener() {
-          @Override
-          public void console(String rawString) {}
-        };
 
     // Install sdk if not installed
     if (!managedCloudSdk.isInstalled()) {

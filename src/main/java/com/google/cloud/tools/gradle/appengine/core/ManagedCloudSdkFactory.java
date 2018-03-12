@@ -34,7 +34,7 @@ public class ManagedCloudSdkFactory {
   /** Build a new ManagedCloudSdk from a given version. */
   public ManagedCloudSdk newManagedSdk()
       throws UnsupportedOsException, BadCloudSdkVersionException {
-    if (Strings.isNullOrEmpty(version) || version.equals(Version.LATEST.getVersion())) {
+    if (Strings.isNullOrEmpty(version)) {
       return ManagedCloudSdk.newManagedSdk();
     } else {
       return ManagedCloudSdk.newManagedSdk(new Version(version));

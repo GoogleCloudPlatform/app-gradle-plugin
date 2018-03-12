@@ -97,7 +97,8 @@ public class CheckCloudSdkTaskTest {
   @Test
   public void testCheckCloudSdkAction_sdkInstallationException() throws IOException {
     when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
+    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(CloudSdkNotFoundException.class).when(sdk).validateCloudSdk();
     try {
@@ -111,7 +112,8 @@ public class CheckCloudSdkTaskTest {
   @Test
   public void testCheckCloudSdkAction_outOfDateException() throws IOException {
     when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
+    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(CloudSdkOutOfDateException.class).when(sdk).validateCloudSdk();
     try {
@@ -125,7 +127,8 @@ public class CheckCloudSdkTaskTest {
   @Test
   public void testCheckCloudSdkAction_versionFileException() throws IOException {
     when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
+    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(CloudSdkVersionFileException.class).when(sdk).validateCloudSdk();
     try {
@@ -139,7 +142,8 @@ public class CheckCloudSdkTaskTest {
   @Test
   public void testCheckCloudSdkAction_appEngineInstallationExceptions() throws IOException {
     when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("LATEST");
+    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(AppEngineJavaComponentsNotInstalledException.class)
         .when(sdk)

@@ -56,7 +56,8 @@ For App Engine standard, the plugin exposes the following tasks :
 
 | Task                         | Description |
 | ---------------------------- | ----------- |
-| `appengineShowConfiguration` | Print out the appengine standard gradle plugin configuration |
+| `appengineCloudSdkLogin`     | Launch the Cloud SDK login webflow and set the global Cloud SDK auth state. |
+| `appengineShowConfiguration` | Print out the appengine standard gradle plugin configuration. |
 
 ### Configuration
 Once you've [initialized](https://cloud.google.com/sdk/docs/initializing) `gcloud` you can run and deploy
@@ -89,9 +90,26 @@ appengine {
 ##### Tools
 The `tools` configuration has the following parameters :
 
-| Parameter      | Description |
-| -------------- | ----------- |
-| `cloudSdkHome` | Location of the cloud sdk, the plugin will try to find a CloudSdkHome is none is specified. |
+| Parameter               | Description |
+| ----------------------- | ----------- |
+| `serviceAccountKeyFile` | A Google project service account key file to run Cloud SDK operations requiring an authenticated user. |
+| `cloudSdkHome`          | Location of the Cloud SDK. |
+| `cloudSdkVersion`       | The desired version of the Cloud SDK (e.g. "192.0.0"). |
+
+The Cloud SDK will be installed/updated/verified depending on which parameters are configured:
+
+| Parameters Specified   | Action |
+| ---------------------- | ------ |
+| None                   | Latest version of Cloud SDK is downloaded and installed. |
+| Both parameters        | Current Cloud SDK installation at `cloudSdkHome` is verified. |
+| `cloudSdkHome` only    | No verification. |
+| `cloudSdkVersion` only | Cloud SDK at specified version is downloaded and installed. |
+
+The Cloud SDK is installed in `$USER_HOME/.cache/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
+on Linux, `$USER_HOME/Library/Application Support/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
+on OSX, and `%LOCALAPPDATA%/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk` on Windows.
+The Cloud SDK installation/verification occurs automatically before running any appengine tasks, but
+it can also be called explicitly by running the tasks `downloadCloudSdk` and `checkCloudSdk`.
 
 ##### Run
 The `run` configuration has the following parameters :
@@ -101,7 +119,6 @@ Valid for versions "1" and "2-alpha"
 
 | Parameter             | Description |
 | --------------------- | ----------- |
-| ~~`appYamls`~~        | Deprecated in favor of `services` |
 | `environment`         | Environment variables to pass to the Dev App Server process |
 | `host`                | Application host address. |
 | `jvmFlags`            | JVM flags to pass to the App Server Java process. |
@@ -160,19 +177,17 @@ Deploy has some Flexible environment only parameters that are not listed here an
 | --------------------- | ----------- |
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
-| `deployables`         | The YAML files for the services or configurations you want to deploy. |
-| `project`             | The Google Cloud Project target for this deployment. |
+| `project`             | The Google Cloud Project target for this deployment. This parameter may also be set to `APPENGINE_CONFIG` to read from `<application>` in `appengine-web.xml` or `GCLOUD_CONFIG` to delegate to gcloud's global state. |
 | `promote`             | Promote the deployed version to receive all traffic. |
 | `server`              | The App Engine server to connect to. Typically, you do not need to change this value. |
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |
-| `version`             | The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you by the Cloud SDK. |
+| `version`             | The version of the app that will be created or replaced by this deployment.  This parameter may also be set to `APPENGINE_CONFIG` to read from `<version>` in `appengine-web.xml` or `GCLOUD_CONFIG` to have gcloud auto generate one during deployment. |
 
 ---
 
 ### How do I deploy my project Configuration Files?
 
-You can now deploy index.yaml/dos.yaml/etc without configuring deployables for
-both flexible and standard environments.
+You can now deploy index.yaml/dos.yaml/etc for both flexible and standard environments.
 
 Use the following tasks :
 * `appengineDeployCron`
@@ -325,10 +340,25 @@ appengine {
 ##### Tools
 The `tools` configuration has the following parameters :
 
-| Parameter      | Description |
-| -------------- | ----------- |
-| `cloudSdkHome` | Location of the cloud sdk, the plugin will try to find a CloudSdkHome is none is specified. |
+| Parameter         | Description |
+| ----------------- | ----------- |
+| `cloudSdkHome`    | Location of the Cloud SDK. |
+| `cloudSdkVersion` | The desired version of the Cloud SDK (e.g. "192.0.0"). |
 
+The Cloud SDK will be installed/updated/verified depending on which parameters are configured:
+
+| Parameters Specified   | Action |
+| ---------------------- | ------ |
+| None                   | Latest version of Cloud SDK is downloaded and installed. |
+| Both parameters        | Current Cloud SDK installation at `cloudSdkHome` is verified. |
+| `cloudSdkHome` only    | No verification. |
+| `cloudSdkVersion` only | Cloud SDK at specified version is downloaded and installed. |
+
+The Cloud SDK is installed in `$USER_HOME/.cache/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
+on Linux, `$USER_HOME/Library/Application Support/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
+on OSX, and `%LOCALAPPDATA%/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk` on Windows.
+The Cloud SDK installation/verification occurs automatically before running any appengine tasks, but
+it can also be called explicitly by running the tasks `downloadCloudSdk` and `checkCloudSdk`.
 
 ##### Stage
 The `stage` configuration has the following parameters :
@@ -347,7 +377,6 @@ The `deploy` configuration has the following parameters :
 | --------------------- | ----------- |
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
-| `deployables`         | The YAML files for the services or configurations you want to deploy. |
 | `imageUrl`            | Deploy with a Docker URL from the Google container registry. |
 | `project`             | The Google Cloud Project target for this deployment. |
 | `promote`             | Promote the deployed version to receive all traffic. |

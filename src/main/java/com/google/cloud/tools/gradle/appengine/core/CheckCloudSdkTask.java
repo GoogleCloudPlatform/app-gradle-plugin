@@ -44,6 +44,8 @@ public class CheckCloudSdkTask extends DefaultTask {
   /** Task entrypoint : Verify Cloud SDK installation. */
   @TaskAction
   public void checkCloudSdkAction() {
+    // These properties are only set by AppEngineCorePluginConfiguration if the correct config
+    // params are set in the tools extension.
     if (Strings.isNullOrEmpty(version) || cloudSdkBuilderFactory == null) {
       throw new GradleException(
           "Cloud SDK home path and version must be configured in order to run this task.");

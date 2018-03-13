@@ -48,6 +48,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
       throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
           InterruptedException, CommandExecutionException, SdkInstallerException,
           CommandExitException, IOException {
+    // managedCloudSdk is set by AppEngineCorePluginConfiguration if the cloud SDK home is empty
     if (managedCloudSdk == null) {
       throw new GradleException("Cloud SDK home path must not be configured to run this task.");
     }

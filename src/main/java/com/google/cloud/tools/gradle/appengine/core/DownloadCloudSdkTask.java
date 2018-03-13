@@ -52,7 +52,7 @@ public class DownloadCloudSdkTask extends DefaultTask {
       throw new GradleException("Cloud SDK home path must not be configured to run this task.");
     }
 
-    ProgressListener progressListener = new NopProgressListener();
+    ProgressListener progressListener = new NoOpProgressListener();
     ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener(getProject());
 
     // Install sdk if not installed

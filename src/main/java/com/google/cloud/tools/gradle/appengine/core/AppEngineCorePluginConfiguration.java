@@ -87,7 +87,7 @@ public class AppEngineCorePluginConfiguration {
                         ? managedCloudSdk.getSdkHome().toFile()
                         : toolsExtension.getCloudSdkHome());
           } catch (UnsupportedOsException | BadCloudSdkVersionException ex) {
-            throw new GradleException(ex.getMessage());
+            throw new GradleException("Configuring... ", ex);
           }
         });
   }

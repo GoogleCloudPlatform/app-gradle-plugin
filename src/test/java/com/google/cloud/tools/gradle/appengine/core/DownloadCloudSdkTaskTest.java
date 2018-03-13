@@ -32,8 +32,10 @@ import com.google.cloud.tools.managedcloudsdk.install.SdkInstaller;
 import com.google.cloud.tools.managedcloudsdk.install.SdkInstallerException;
 import com.google.cloud.tools.managedcloudsdk.update.SdkUpdater;
 import java.io.IOException;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +63,6 @@ public class DownloadCloudSdkTaskTest {
     Project tempProject = ProjectBuilder.builder().build();
     downloadCloudSdkTask =
         tempProject.getTasks().create("tempDownloadTask", DownloadCloudSdkTask.class);
-    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
 
     when(managedCloudSdk.newInstaller()).thenReturn(installer);
     when(managedCloudSdk.newComponentInstaller()).thenReturn(componentInstaller);
@@ -69,10 +70,26 @@ public class DownloadCloudSdkTaskTest {
   }
 
   @Test
+  public void testDownloadCloudSdkAction_badConfigure()
+      throws CommandExecutionException, InterruptedException, SdkInstallerException,
+          ManagedSdkVersionMismatchException, CommandExitException, ManagedSdkVerificationException,
+          IOException {
+    downloadCloudSdkTask.setManagedCloudSdk(null);
+    try {
+      downloadCloudSdkTask.downloadCloudSdkAction();
+      Assert.fail();
+    } catch (GradleException ex) {
+      Assert.assertEquals(
+          "Cloud SDK home path must not be configured to run this task.", ex.getMessage());
+    }
+  }
+
+  @Test
   public void testDownloadCloudSdkAction_install()
       throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
           InterruptedException, CommandExecutionException, SdkInstallerException, IOException,
           CommandExitException {
+    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(managedCloudSdk).newInstaller();
@@ -83,6 +100,7 @@ public class DownloadCloudSdkTaskTest {
       throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
           InterruptedException, CommandExecutionException, SdkInstallerException, IOException,
           CommandExitException {
+    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
@@ -95,6 +113,7 @@ public class DownloadCloudSdkTaskTest {
       throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
           InterruptedException, CommandExecutionException, SdkInstallerException, IOException,
           CommandExitException {
+    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(true);
     when(managedCloudSdk.isUpToDate()).thenReturn(false);

@@ -104,9 +104,8 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
-
                     if (toolsExtension.getCloudSdkHome() == null) {
+                      downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(downloadCloudSdkTask));
@@ -127,11 +126,11 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    checkCloudSdkTask.setToolsExtension(toolsExtension);
-                    checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-
                     if (toolsExtension.getCloudSdkHome() != null
                         && toolsExtension.getCloudSdkVersion() != null) {
+                      checkCloudSdkTask.setVersion(toolsExtension.getCloudSdkVersion());
+                      checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(checkCloudSdkTask));

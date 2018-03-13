@@ -31,6 +31,7 @@ import com.google.cloud.tools.managedcloudsdk.install.SdkInstallerException;
 import com.google.cloud.tools.managedcloudsdk.update.SdkUpdater;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 public class DownloadCloudSdkTask extends DefaultTask {
@@ -47,6 +48,10 @@ public class DownloadCloudSdkTask extends DefaultTask {
       throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
           InterruptedException, CommandExecutionException, SdkInstallerException,
           CommandExitException, IOException {
+    if (managedCloudSdk == null) {
+      throw new GradleException("Cloud SDK home path must not be configured to run this task.");
+    }
+
     ProgressListener progressListener = new NopProgressListener();
     ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener(getProject());
 

@@ -43,7 +43,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CheckCloudSdkTaskTest {
 
-  @Mock private ToolsExtension toolsExtension;
   @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
   @Mock private CloudSdk.Builder builder;
@@ -59,44 +58,28 @@ public class CheckCloudSdkTaskTest {
     Project tempProject = ProjectBuilder.builder().build();
     checkCloudSdkTask = tempProject.getTasks().create("tempCheckCloudSdk", CheckCloudSdkTask.class);
     checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-    checkCloudSdkTask.setToolsExtension(toolsExtension);
 
     when(cloudSdkBuilderFactory.newBuilder()).thenReturn(builder);
     when(builder.build()).thenReturn(sdk);
   }
 
   @Test
-  public void testCheckCloudSdkAction_nullHome() {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(null);
-
-    try {
-      checkCloudSdkTask.checkCloudSdkAction();
-      Assert.fail();
-    } catch (GradleException ex) {
-      Assert.assertEquals("SDK home directory must be specified for validation.", ex.getMessage());
-    }
-  }
-
-  @Test
   public void testCheckCloudSdkAction_nullVersion() throws IOException {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn(null);
-
+    checkCloudSdkTask.setVersion(null);
     try {
       checkCloudSdkTask.checkCloudSdkAction();
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals("SDK version must be specified for validation.", ex.getMessage());
+      Assert.assertEquals(
+          "Cloud SDK home path and version must be configured in order to run this task.",
+          ex.getMessage());
     }
   }
 
   @Test
   public void testCheckCloudSdkAction_versionMismatch() throws IOException {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("191.0.0");
+    checkCloudSdkTask.setVersion("191.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("190.0.0"));
-
     try {
       checkCloudSdkTask.checkCloudSdkAction();
       Assert.fail();
@@ -109,8 +92,7 @@ public class CheckCloudSdkTaskTest {
 
   @Test
   public void testCheckCloudSdkAction_sdkInstallationException() throws IOException {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(CloudSdkNotFoundException.class).when(sdk).validateCloudSdk();
@@ -124,8 +106,7 @@ public class CheckCloudSdkTaskTest {
 
   @Test
   public void testCheckCloudSdkAction_outOfDateException() throws IOException {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(CloudSdkOutOfDateException.class).when(sdk).validateCloudSdk();
@@ -139,8 +120,7 @@ public class CheckCloudSdkTaskTest {
 
   @Test
   public void testCheckCloudSdkAction_versionFileException() throws IOException {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(CloudSdkVersionFileException.class).when(sdk).validateCloudSdk();
@@ -154,8 +134,7 @@ public class CheckCloudSdkTaskTest {
 
   @Test
   public void testCheckCloudSdkAction_appEngineInstallationExceptions() throws IOException {
-    when(toolsExtension.getCloudSdkHome()).thenReturn(temporaryFolder.newFolder());
-    when(toolsExtension.getCloudSdkVersion()).thenReturn("192.0.0");
+    checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
     doThrow(AppEngineJavaComponentsNotInstalledException.class)

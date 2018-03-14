@@ -17,6 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
+import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
+import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.util.GradleVersion;
@@ -45,7 +48,7 @@ public class AppEngineCorePluginConfiguration {
   private DeployExtension deployExtension;
   private ToolsExtension toolsExtension;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  private ManagedCloudSdkFactory managedCloudSdkFactory;
+  private ManagedCloudSdk managedCloudSdk;
   private String taskGroup;
 
   /** Configure core tasks for appengine flexible and standard project plugins. */
@@ -53,7 +56,7 @@ public class AppEngineCorePluginConfiguration {
       Project project,
       AppEngineCoreExtensionProperties appEngineCoreExtensionProperties,
       String taskGroup) {
-    checkGradleVersion(project);
+    checkGradleVersion();
 
     this.project = project;
     this.taskGroup = taskGroup;
@@ -75,9 +78,20 @@ public class AppEngineCorePluginConfiguration {
   private void configureFactories() {
     project.afterEvaluate(
         project -> {
-          // create the sdk builder factory after we know the location of the sdk
-          cloudSdkBuilderFactory = new CloudSdkBuilderFactory(toolsExtension.getCloudSdkHome());
-          managedCloudSdkFactory = new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion());
+          try {
+            if (toolsExtension.getCloudSdkHome() == null) {
+              managedCloudSdk =
+                  new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion()).newManagedSdk();
+            }
+          } catch (UnsupportedOsException | BadCloudSdkVersionException ex) {
+            throw new GradleException("Configuring... ", ex);
+          }
+
+          cloudSdkBuilderFactory =
+              new CloudSdkBuilderFactory(
+                  managedCloudSdk != null
+                      ? managedCloudSdk.getSdkHome().toFile()
+                      : toolsExtension.getCloudSdkHome());
         });
   }
 
@@ -93,10 +107,8 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    downloadCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-                    downloadCloudSdkTask.setManagedCloudSdkFactory(managedCloudSdkFactory);
-
                     if (toolsExtension.getCloudSdkHome() == null) {
+                      downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(downloadCloudSdkTask));
@@ -117,11 +129,10 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    checkCloudSdkTask.setToolsExtension(toolsExtension);
-                    checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-
                     if (toolsExtension.getCloudSdkHome() != null
                         && toolsExtension.getCloudSdkVersion() != null) {
+                      checkCloudSdkTask.setVersion(toolsExtension.getCloudSdkVersion());
+                      checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(checkCloudSdkTask));
@@ -252,7 +263,7 @@ public class AppEngineCorePluginConfiguration {
             });
   }
 
-  private void checkGradleVersion(Project project) {
+  private void checkGradleVersion() {
     if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
       throw new GradleException(
           "Detected "

@@ -17,13 +17,11 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
 import com.google.cloud.tools.managedcloudsdk.ConsoleListener;
 import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
 import com.google.cloud.tools.managedcloudsdk.ManagedSdkVerificationException;
 import com.google.cloud.tools.managedcloudsdk.ManagedSdkVersionMismatchException;
 import com.google.cloud.tools.managedcloudsdk.ProgressListener;
-import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
 import com.google.cloud.tools.managedcloudsdk.command.CommandExecutionException;
 import com.google.cloud.tools.managedcloudsdk.command.CommandExitException;
 import com.google.cloud.tools.managedcloudsdk.components.SdkComponent;
@@ -33,31 +31,30 @@ import com.google.cloud.tools.managedcloudsdk.install.SdkInstallerException;
 import com.google.cloud.tools.managedcloudsdk.update.SdkUpdater;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 public class DownloadCloudSdkTask extends DefaultTask {
 
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  private ManagedCloudSdkFactory managedCloudSdkFactory;
+  private ManagedCloudSdk managedCloudSdk;
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
-  }
-
-  public void setManagedCloudSdkFactory(ManagedCloudSdkFactory managedCloudSdkFactory) {
-    this.managedCloudSdkFactory = managedCloudSdkFactory;
+  public void setManagedCloudSdk(ManagedCloudSdk managedCloudSdk) {
+    this.managedCloudSdk = managedCloudSdk;
   }
 
   /** Task entrypoint : Download/update Cloud SDK. */
   @TaskAction
   public void downloadCloudSdkAction()
-      throws UnsupportedOsException, BadCloudSdkVersionException, ManagedSdkVerificationException,
-          ManagedSdkVersionMismatchException, InterruptedException, CommandExecutionException,
-          SdkInstallerException, CommandExitException, IOException {
-    ProgressListener progressListener = new NopProgressListener();
-    ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener(getProject());
+      throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
+          InterruptedException, CommandExecutionException, SdkInstallerException,
+          CommandExitException, IOException {
+    // managedCloudSdk is set by AppEngineCorePluginConfiguration if the cloud SDK home is empty
+    if (managedCloudSdk == null) {
+      throw new GradleException("Cloud SDK home path must not be configured to run this task.");
+    }
 
-    ManagedCloudSdk managedCloudSdk = managedCloudSdkFactory.newManagedSdk();
+    ProgressListener progressListener = new NoOpProgressListener();
+    ConsoleListener consoleListener = new DownloadCloudSdkTaskConsoleListener(getProject());
 
     // Install sdk if not installed
     if (!managedCloudSdk.isInstalled()) {
@@ -77,7 +74,5 @@ public class DownloadCloudSdkTask extends DefaultTask {
       SdkUpdater updater = managedCloudSdk.newUpdater();
       updater.update(progressListener, consoleListener);
     }
-
-    cloudSdkBuilderFactory.setCloudSdkHome(managedCloudSdk.getSdkHome().toFile());
   }
 }

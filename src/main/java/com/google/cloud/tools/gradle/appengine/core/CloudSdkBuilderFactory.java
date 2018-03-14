@@ -34,10 +34,6 @@ public class CloudSdkBuilderFactory {
     this.cloudSdkHome = cloudSdkHome;
   }
 
-  public void setCloudSdkHome(File cloudSdkHome) {
-    this.cloudSdkHome = cloudSdkHome;
-  }
-
   /** Create a empty builder with auto-configured metrics and failure on non-zero exit. */
   public CloudSdk.Builder newBuilder() {
     return new CloudSdk.Builder()

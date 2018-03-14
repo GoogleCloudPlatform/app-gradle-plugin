@@ -22,7 +22,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
-import java.io.File;
+import com.google.common.base.Strings;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
@@ -31,10 +31,10 @@ import org.gradle.api.tasks.TaskExecutionException;
 public class CheckCloudSdkTask extends DefaultTask {
 
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  private ToolsExtension toolsExtension;
+  private String version;
 
-  public void setToolsExtension(ToolsExtension toolsExtension) {
-    this.toolsExtension = toolsExtension;
+  public void setVersion(String version) {
+    this.version = version;
   }
 
   public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
@@ -44,12 +44,13 @@ public class CheckCloudSdkTask extends DefaultTask {
   /** Task entrypoint : Verify Cloud SDK installation. */
   @TaskAction
   public void checkCloudSdkAction() {
-    File home = toolsExtension.getCloudSdkHome();
-    if (home == null) {
-      throw new GradleException("SDK home directory must be specified for validation.");
+    // These properties are only set by AppEngineCorePluginConfiguration if the correct config
+    // params are set in the tools extension.
+    if (Strings.isNullOrEmpty(version) || cloudSdkBuilderFactory == null) {
+      throw new GradleException(
+          "Cloud SDK home path and version must be configured in order to run this task.");
     }
 
-    String version = toolsExtension.getCloudSdkVersion();
     CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder().build();
     if (!version.equals(cloudSdk.getVersion().toString())) {
       throw new GradleException(

@@ -56,7 +56,7 @@ public class AppEngineCorePluginConfiguration {
       Project project,
       AppEngineCoreExtensionProperties appEngineCoreExtensionProperties,
       String taskGroup) {
-    checkGradleVersion(project);
+    checkGradleVersion();
 
     this.project = project;
     this.taskGroup = taskGroup;
@@ -263,7 +263,7 @@ public class AppEngineCorePluginConfiguration {
             });
   }
 
-  private void checkGradleVersion(Project project) {
+  private void checkGradleVersion() {
     if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
       throw new GradleException(
           "Detected "

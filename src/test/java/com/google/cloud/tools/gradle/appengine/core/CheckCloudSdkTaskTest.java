@@ -26,7 +26,6 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
 import com.google.cloud.tools.appengine.cloudsdk.serialization.CloudSdkVersion;
-import java.io.IOException;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskExecutionException;
@@ -64,7 +63,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_nullVersion() throws IOException {
+  public void testCheckCloudSdkAction_nullVersion() {
     checkCloudSdkTask.setVersion(null);
     try {
       checkCloudSdkTask.checkCloudSdkAction();
@@ -77,7 +76,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_versionMismatch() throws IOException {
+  public void testCheckCloudSdkAction_versionMismatch() {
     checkCloudSdkTask.setVersion("191.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("190.0.0"));
     try {
@@ -91,7 +90,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_sdkInstallationException() throws IOException {
+  public void testCheckCloudSdkAction_sdkInstallationException() {
     checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
@@ -105,7 +104,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_outOfDateException() throws IOException {
+  public void testCheckCloudSdkAction_outOfDateException() {
     checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
@@ -119,7 +118,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_versionFileException() throws IOException {
+  public void testCheckCloudSdkAction_versionFileException() {
     checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 
@@ -133,7 +132,7 @@ public class CheckCloudSdkTaskTest {
   }
 
   @Test
-  public void testCheckCloudSdkAction_appEngineInstallationExceptions() throws IOException {
+  public void testCheckCloudSdkAction_appEngineInstallationExceptions() {
     checkCloudSdkTask.setVersion("192.0.0");
     when(sdk.getVersion()).thenReturn(new CloudSdkVersion("192.0.0"));
 

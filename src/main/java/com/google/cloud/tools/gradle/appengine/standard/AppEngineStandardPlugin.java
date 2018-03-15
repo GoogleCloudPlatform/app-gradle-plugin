@@ -176,7 +176,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             runTask -> {
               runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
               runTask.setDescription("Run an App Engine standard environment application locally");
-              runTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+              runTask.dependsOn(project.getTasks().findByName(BasePlugin.ASSEMBLE_TASK_NAME));
 
               project.afterEvaluate(
                   project -> {
@@ -194,7 +194,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
               startTask.setDescription(
                   "Run an App Engine standard environment application locally in the background");
-              startTask.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+              startTask.dependsOn(project.getTasks().findByName(BasePlugin.ASSEMBLE_TASK_NAME));
 
               project.afterEvaluate(
                   project -> {

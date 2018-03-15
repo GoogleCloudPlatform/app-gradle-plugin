@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
+import org.gradle.api.plugins.BasePlugin;
 
 /** Extension element to define Run configurations for App Engine Standard Environments. */
 public class RunExtension implements RunConfiguration {
@@ -301,6 +302,35 @@ public class RunExtension implements RunConfiguration {
 
   public void setServices(Object services) {
     this.services = new ArrayList<>(project.files(services).getFiles());
+  }
+
+  /**
+   * Returns the appengine service directory for this project and modifies the task dependencies of
+   * run/start to ensure {@code serviceProject} is built first.
+   */
+  public File projectAsService(String serviceProject) {
+    return projectAsService(project.getRootProject().project(serviceProject));
+  }
+
+  /**
+   * Returns the appengine service directory for this project and modifies the task dependencies of
+   * run/start to ensure {@code serviceProject} is built first.
+   */
+  public File projectAsService(Project serviceProject) {
+    if (!serviceProject.equals(project)) {
+      project.evaluationDependsOn(serviceProject.getPath());
+    }
+    project
+        .getTasks()
+        .findByName(AppEngineStandardPlugin.RUN_TASK_NAME)
+        .dependsOn(serviceProject.getTasks().findByPath(BasePlugin.ASSEMBLE_TASK_NAME));
+    project
+        .getTasks()
+        .findByName(AppEngineStandardPlugin.START_TASK_NAME)
+        .dependsOn(serviceProject.getTasks().findByPath(BasePlugin.ASSEMBLE_TASK_NAME));
+    return ((ExplodeWarTask)
+            serviceProject.getTasks().findByName(AppEngineStandardPlugin.EXPLODE_WAR_TASK_NAME))
+        .getExplodedAppDirectory();
   }
 
   @Override

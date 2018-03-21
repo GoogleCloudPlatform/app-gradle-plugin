@@ -37,9 +37,7 @@ import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -52,8 +50,6 @@ public class DownloadCloudSdkTaskTest {
   @Mock private SdkInstaller installer;
   @Mock private SdkComponentInstaller componentInstaller;
   @Mock private SdkUpdater updater;
-
-  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private DownloadCloudSdkTask downloadCloudSdkTask;
 

@@ -32,9 +32,7 @@ import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -46,8 +44,6 @@ public class CheckCloudSdkTaskTest {
 
   @Mock private CloudSdk.Builder builder;
   @Mock private CloudSdk sdk;
-
-  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private CheckCloudSdkTask checkCloudSdkTask;
 

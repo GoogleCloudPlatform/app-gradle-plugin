@@ -18,6 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import java.io.File;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.Sync;
 
 /** Expand a war. */
@@ -41,6 +42,7 @@ public class ExplodeWarTask extends Sync {
             patternFilterable.include("WEB-INF/appengine-generated/datastore-indexes-auto.xml"));
   }
 
+  @OutputDirectory
   public File getExplodedAppDirectory() {
     return explodedAppDirectory;
   }

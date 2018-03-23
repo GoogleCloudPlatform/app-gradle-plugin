@@ -86,17 +86,6 @@ public class RunExtension implements RunConfiguration {
     this.serverVersion = serverVersion;
   }
 
-  /** Deprecated in favor of "services". */
-  @Deprecated
-  public void setAppYamls(Object appYamls) {
-    project
-        .getLogger()
-        .warn(
-            "'appYamls' is deprecated, this parameter will set 'services'."
-                + " Use 'services' in the future.");
-    setServices(appYamls);
-  }
-
   @Override
   public String getHost() {
     return host;

@@ -18,17 +18,13 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.MultiModuleTestProject;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.BasePlugin;
-import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,22 +33,6 @@ import org.junit.rules.TemporaryFolder;
 public class RunExtensionTest {
 
   @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
-
-  @Test
-  @SuppressWarnings("deprecation") // this is intentionally testing deprecated methods
-  public void testSetAppYamls() throws IOException {
-    Project p = ProjectBuilder.builder().build();
-    RunExtension run = p.getExtensions().create("run", RunExtension.class, p);
-
-    // set some default for services
-    run.setServices(ImmutableList.of(tmpDir.getRoot()));
-    Assert.assertEquals(ImmutableList.of(tmpDir.getRoot()), run.getServices());
-
-    File file = new File("/tmp/some/app.yaml");
-    run.setAppYamls(file);
-    // setAppYamls transforms the file list
-    Assert.assertEquals(new ArrayList<>(p.files(file).getFiles()), run.getServices());
-  }
 
   @Test
   public void testProjectAsService_multiModuleBuilds() {

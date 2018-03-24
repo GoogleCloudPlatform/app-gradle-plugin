@@ -19,7 +19,7 @@ appengine {
     deployables = "test"
   }
   run {
-    appYamls = "test"
+    services = "test"
   }
   stage {
     sourceDirectory = "test"

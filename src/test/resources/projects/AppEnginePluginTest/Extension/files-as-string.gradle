@@ -20,6 +20,6 @@ appengine {
     deployables = ["test0", "test1"]
   }
   run {
-    appYamls = ["test0", "test1"]
+    services = ["test0", "test1"]
   }
 }

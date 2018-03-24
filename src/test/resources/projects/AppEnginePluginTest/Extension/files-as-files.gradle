@@ -20,6 +20,6 @@ appengine {
     deployables = [new File("test0"), new File("test1")]
   }
   run {
-    appYamls = files("test0", "test1")
+    services = files("test0", "test1")
   }
 }

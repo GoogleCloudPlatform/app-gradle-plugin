@@ -19,6 +19,7 @@ Task runs automatically when `cloudSdkHome` and `cloudSdkVersion` are both confi
 
 ### Changed
 * Upgrade App Engine Plugins Core dependency to 0.5.0
+* Remove deprecated `appYamls` parameter
 
 ## 1.3.5
 

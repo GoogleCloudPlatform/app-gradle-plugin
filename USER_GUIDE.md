@@ -117,7 +117,6 @@ Valid for versions "1" and "2-alpha"
 
 | Parameter             | Description |
 | --------------------- | ----------- |
-| ~~`appYamls`~~        | Deprecated in favor of `services` |
 | `environment`         | Environment variables to pass to the Dev App Server process |
 | `host`                | Application host address. |
 | `jvmFlags`            | JVM flags to pass to the App Server Java process. |

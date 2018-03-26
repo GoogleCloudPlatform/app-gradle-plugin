@@ -27,6 +27,7 @@ public class ToolsExtension {
 
   private File cloudSdkHome;
   private String cloudSdkVersion;
+  private File cloudSdkServiceAccountFile;
 
   public ToolsExtension(Project project) {
     this.project = project;
@@ -46,5 +47,13 @@ public class ToolsExtension {
 
   public void setCloudSdkHome(Object cloudSdkHome) {
     this.cloudSdkHome = project.file(cloudSdkHome);
+  }
+
+  public File getServiceAccountKeyFile() {
+    return cloudSdkServiceAccountFile;
+  }
+
+  public void setServiceAccountKeyFile(Object cloudSdkServiceAccountFile) {
+    this.cloudSdkServiceAccountFile = project.file(cloudSdkServiceAccountFile);
   }
 }

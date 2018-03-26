@@ -32,6 +32,7 @@ public class AppEngineCorePluginConfiguration {
 
   public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
+  public static final String LOGIN_TASK_NAME = "appengineCloudSdkLogin";
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";
   public static final String DEPLOY_CRON_TASK_NAME = "appengineDeployCron";
   public static final String DEPLOY_DISPATCH_TASK_NAME = "appengineDeployDispatch";
@@ -66,6 +67,7 @@ public class AppEngineCorePluginConfiguration {
 
     createDownloadCloudSdkTask();
     createCheckCloudSdkTask();
+    createLoginTask();
     createDeployTask();
     createDeployCronTask();
     createDeployDispatchTask();
@@ -91,7 +93,8 @@ public class AppEngineCorePluginConfiguration {
               new CloudSdkBuilderFactory(
                   managedCloudSdk != null
                       ? managedCloudSdk.getSdkHome().toFile()
-                      : toolsExtension.getCloudSdkHome());
+                      : toolsExtension.getCloudSdkHome(),
+                  toolsExtension.getServiceAccountKeyFile());
         });
   }
 
@@ -136,6 +139,31 @@ public class AppEngineCorePluginConfiguration {
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(checkCloudSdkTask));
+                    }
+                  });
+            });
+  }
+
+  private void createLoginTask() {
+    project
+        .getTasks()
+        .create(
+            LOGIN_TASK_NAME,
+            CloudSdkLoginTask.class,
+            loginTask -> {
+              loginTask.setGroup(taskGroup);
+              loginTask.setDescription("Login and set the Cloud SDK common configuration user");
+
+              project.afterEvaluate(
+                  project -> {
+                    loginTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    if (toolsExtension.getServiceAccountKeyFile() != null) {
+                      loginTask.doLast(
+                          task ->
+                              project
+                                  .getLogger()
+                                  .warn(
+                                      "WARNING: ServiceAccountKeyFile is configured and will be used instead of Cloud SDK auth state"));
                     }
                   });
             });

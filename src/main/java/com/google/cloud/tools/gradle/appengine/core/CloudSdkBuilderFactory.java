@@ -34,15 +34,6 @@ public class CloudSdkBuilderFactory {
     this.cloudSdkHome = cloudSdkHome;
   }
 
-  /** Create a empty builder with auto-configured metrics and failure on non-zero exit. */
-  public CloudSdk.Builder newBuilder() {
-    return new CloudSdk.Builder()
-        .sdkPath(cloudSdkHome != null ? cloudSdkHome.toPath() : null)
-        .exitListener(new NonZeroExceptionExitListener())
-        .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
-        .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion());
-  }
-
   /**
    * Create a builder with auto-configured metrics, output handlers and failure on non-zero exit.
    */

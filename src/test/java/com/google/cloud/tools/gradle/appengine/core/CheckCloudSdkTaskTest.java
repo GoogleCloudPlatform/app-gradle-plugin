@@ -28,6 +28,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
 import com.google.cloud.tools.appengine.cloudsdk.serialization.CloudSdkVersion;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
@@ -35,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,7 +56,7 @@ public class CheckCloudSdkTaskTest {
     checkCloudSdkTask = tempProject.getTasks().create("tempCheckCloudSdk", CheckCloudSdkTask.class);
     checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
 
-    when(cloudSdkBuilderFactory.newBuilder()).thenReturn(builder);
+    when(cloudSdkBuilderFactory.newBuilder(Mockito.any(Logger.class))).thenReturn(builder);
     when(builder.build()).thenReturn(sdk);
   }
 

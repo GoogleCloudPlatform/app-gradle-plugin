@@ -51,7 +51,7 @@ public class CheckCloudSdkTask extends DefaultTask {
           "Cloud SDK home path and version must be configured in order to run this task.");
     }
 
-    CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder().build();
+    CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     if (!version.equals(cloudSdk.getVersion().toString())) {
       throw new GradleException(
           "Specified Cloud SDK version ("

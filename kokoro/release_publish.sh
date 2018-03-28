@@ -49,7 +49,7 @@ GetSessionID() {
 # Usage: UploadJAR <session ID> <file>
 # Uploads the bundled JAR file to the Nexus Staging Repository.
 UploadJAR() {
-	curl 'https://oss.sonatype.org/service/local/staging/bundle_upload' -H "Cookie: NXSESSIONID=$1" -H 'Content-Type: multipart/form-data' --compressed -F "file=@$2"
+	curl 'https://oss.sonatype.org/service/local/staging/bundle_upload' -H "Cookie: NXSESSIONID=$1" -H 'Content-Type: multipart/form-data' --compressed -F "file=@$2" --fail
 }
 
 # Gets the session ID.

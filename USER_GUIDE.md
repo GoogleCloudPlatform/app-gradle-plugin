@@ -89,25 +89,9 @@ appengine {
 ##### Tools
 The `tools` configuration has the following parameters :
 
-| Parameter         | Description |
-| ----------------- | ----------- |
-| `cloudSdkHome`    | Location of the Cloud SDK. |
-| `cloudSdkVersion` | The desired version of the Cloud SDK (e.g. "192.0.0"). |
-
-The Cloud SDK will be installed/updated/verified depending on which parameters are configured:
-
-| Parameters Specified   | Action | 
-| ---------------------- | ------ |
-| None                   | Latest version of Cloud SDK is downloaded and installed. |
-| Both parameters        | Current Cloud SDK installation at `cloudSdkHome` is verified. |
-| `cloudSdkHome` only    | No verification. |
-| `cloudSdkVersion` only | Cloud SDK at specified version is downloaded and installed. |
-
-The Cloud SDK is installed in `$USER_HOME/.cache/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
-on Linux, `$USER_HOME/Library/Application Support/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
-on OSX, and `%LOCALAPPDATA%/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk` on Windows. 
-The Cloud SDK installation/verification occurs automatically before running any appengine tasks, but 
-it can also be called explicitly by running the tasks `downloadCloudSdk` and `checkCloudSdk`.
+| Parameter      | Description |
+| -------------- | ----------- |
+| `cloudSdkHome` | Location of the cloud sdk, the plugin will try to find a CloudSdkHome is none is specified. |
 
 ##### Run
 The `run` configuration has the following parameters :
@@ -117,6 +101,7 @@ Valid for versions "1" and "2-alpha"
 
 | Parameter             | Description |
 | --------------------- | ----------- |
+| ~~`appYamls`~~        | Deprecated in favor of `services` |
 | `environment`         | Environment variables to pass to the Dev App Server process |
 | `host`                | Application host address. |
 | `jvmFlags`            | JVM flags to pass to the App Server Java process. |
@@ -340,25 +325,10 @@ appengine {
 ##### Tools
 The `tools` configuration has the following parameters :
 
-| Parameter         | Description |
-| ----------------- | ----------- |
-| `cloudSdkHome`    | Location of the Cloud SDK. |
-| `cloudSdkVersion` | The desired version of the Cloud SDK (e.g. "192.0.0"). |
+| Parameter      | Description |
+| -------------- | ----------- |
+| `cloudSdkHome` | Location of the cloud sdk, the plugin will try to find a CloudSdkHome is none is specified. |
 
-The Cloud SDK will be installed/updated/verified depending on which parameters are configured:
-
-| Parameters Specified   | Action | 
-| ---------------------- | ------ |
-| None                   | Latest version of Cloud SDK is downloaded and installed. |
-| Both parameters        | Current Cloud SDK installation at `cloudSdkHome` is verified. |
-| `cloudSdkHome` only    | No verification. |
-| `cloudSdkVersion` only | Cloud SDK at specified version is downloaded and installed. |
-
-The Cloud SDK is installed in `$USER_HOME/.cache/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
-on Linux, `$USER_HOME/Library/Application Support/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
-on OSX, and `%LOCALAPPDATA%/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk` on Windows. 
-The Cloud SDK installation/verification occurs automatically before running any appengine tasks, but 
-it can also be called explicitly by running the tasks `downloadCloudSdk` and `checkCloudSdk`.
 
 ##### Stage
 The `stage` configuration has the following parameters :

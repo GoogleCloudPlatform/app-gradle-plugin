@@ -3,23 +3,19 @@ All notable changes to this project will be documented in this file.
 ## [unreleased]
 
 ### Added
-
-### Changed
-
-### Fixed
-
-## 2.0.0-rc1
-
-### Added
 * New `cloudSdkVersion` parameter to specify desired Cloud SDK version.
 * New `downloadCloudSdk` task installs/updates the Cloud SDK and Java App Engine components ([#205](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/205)). 
 Task runs automatically when `cloudSdkHome` is not configured.
 * New `checkCloudSdk` task validates the Cloud SDK installation ([#212](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/212)). 
 Task runs automatically when `cloudSdkHome` and `cloudSdkVersion` are both configured.
+* New `appengine.tools.serviceAccountKeyFile` configuration parameter, and
+  `appengineCloudSdkLogin` task. ([#235](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/212))
 
 ### Changed
-* Upgrade App Engine Plugins Core dependency to 0.5.0
+* Upgrade App Engine Plugins Core dependency to 0.5.2
 * Remove deprecated `appYamls` parameter
+
+### Fixed
 
 ## 1.3.5
 

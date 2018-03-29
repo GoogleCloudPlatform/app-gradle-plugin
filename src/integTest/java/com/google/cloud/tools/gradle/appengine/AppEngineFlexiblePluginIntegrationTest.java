@@ -18,6 +18,10 @@
 package com.google.cloud.tools.gradle.appengine;
 
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
+import com.google.cloud.tools.appengine.cloudsdk.InvalidJavaSdkException;
 import com.google.cloud.tools.appengine.cloudsdk.internal.process.ProcessRunnerException;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 import java.io.File;
@@ -48,7 +52,9 @@ public class AppEngineFlexiblePluginIntegrationTest {
   }
 
   @Test
-  public void testDeploy() throws ProcessRunnerException {
+  public void testDeploy()
+      throws ProcessRunnerException, CloudSdkNotFoundException, CloudSdkOutOfDateException,
+          CloudSdkVersionFileException, InvalidJavaSdkException {
 
     BuildResult buildResult =
         GradleRunner.create()

@@ -94,7 +94,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     project.afterEvaluate(
         project -> {
           // create the sdk builder factory after we know the location of the sdk
-          cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome());
+          cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome(), null);
         });
   }
 

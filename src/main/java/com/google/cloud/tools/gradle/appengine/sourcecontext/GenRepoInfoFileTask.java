@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
+import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkGenRepoInfoFile;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
@@ -45,7 +46,7 @@ public class GenRepoInfoFileTask extends DefaultTask {
 
   /** Task entrypoint : generate source context file. */
   @TaskAction
-  public void generateRepositoryInfoFile() {
+  public void generateRepositoryInfoFile() throws AppEngineException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     CloudSdkGenRepoInfoFile generator = new CloudSdkGenRepoInfoFile(sdk);
     generator.generate(configuration);

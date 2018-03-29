@@ -22,6 +22,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
+import com.google.cloud.tools.appengine.cloudsdk.InvalidJavaSdkException;
 import com.google.common.base.Strings;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -43,7 +44,7 @@ public class CheckCloudSdkTask extends DefaultTask {
 
   /** Task entrypoint : Verify Cloud SDK installation. */
   @TaskAction
-  public void checkCloudSdkAction() {
+  public void checkCloudSdkAction() throws CloudSdkNotFoundException, CloudSdkVersionFileException {
     // These properties are only set by AppEngineCorePluginConfiguration if the correct config
     // params are set in the tools extension.
     if (Strings.isNullOrEmpty(version) || cloudSdkBuilderFactory == null) {
@@ -67,6 +68,7 @@ public class CheckCloudSdkTask extends DefaultTask {
     } catch (CloudSdkNotFoundException
         | CloudSdkOutOfDateException
         | CloudSdkVersionFileException
+        | InvalidJavaSdkException
         | AppEngineJavaComponentsNotInstalledException ex) {
       throw new TaskExecutionException(this, ex);
     }

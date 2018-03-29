@@ -163,7 +163,8 @@ public class AppEngineCorePluginConfiguration {
                               project
                                   .getLogger()
                                   .warn(
-                                      "WARNING: ServiceAccountKeyFile is configured and will be used instead of Cloud SDK auth state"));
+                                      "WARNING: ServiceAccountKeyFile is configured and will be"
+                                          + " used instead of Cloud SDK auth state"));
                     }
                   });
             });

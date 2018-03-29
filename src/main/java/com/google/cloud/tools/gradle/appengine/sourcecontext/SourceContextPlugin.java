@@ -61,7 +61,8 @@ public class SourceContextPlugin implements Plugin<Project> {
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(
-        project -> cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome()));
+        project ->
+            cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome(), null));
   }
 
   private void createSourceContextTask() {

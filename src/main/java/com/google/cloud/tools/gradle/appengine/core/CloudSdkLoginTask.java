@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google LLC. All Rights Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +15,26 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.sourcecontext;
+package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkGenRepoInfoFile;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAuth;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 
-/** Generate source context information. */
-public class GenRepoInfoFileTask extends DefaultTask {
+public class CloudSdkLoginTask extends DefaultTask {
 
-  private GenRepoInfoFileExtension configuration;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-
-  @Nested
-  public GenRepoInfoFileExtension getConfiguration() {
-    return configuration;
-  }
-
-  public void setConfiguration(GenRepoInfoFileExtension configuration) {
-    this.configuration = configuration;
-  }
 
   public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
-  /** Task entrypoint : generate source context file. */
+  /** Login by delegating to gcloud auth login. */
   @TaskAction
-  public void generateRepositoryInfoFile() throws AppEngineException {
+  public void login() throws AppEngineException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
-    CloudSdkGenRepoInfoFile generator = new CloudSdkGenRepoInfoFile(sdk);
-    generator.generate(configuration);
+    new CloudSdkAuth(sdk).login();
   }
 }

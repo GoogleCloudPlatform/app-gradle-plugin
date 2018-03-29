@@ -77,6 +77,16 @@ public class AppEngineFlexiblePluginTest {
   }
 
   @Test
+  public void testLogin_taskTree() throws IOException {
+    BuildResult buildResult =
+        createTestProject().applyGradleRunner("appengineCloudSdkLogin", "--dry-run");
+
+    final List<String> expected = ImmutableList.of(":downloadCloudSdk", ":appengineCloudSdkLogin");
+
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
   public void testDeploy_taskTree() throws IOException {
     BuildResult buildResult = createTestProject().applyGradleRunner("appengineDeploy", "--dry-run");
 

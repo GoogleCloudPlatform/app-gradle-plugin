@@ -22,6 +22,7 @@ import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitLis
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
 import com.google.cloud.tools.gradle.appengine.util.io.GradleLoggerOutputListener;
 import java.io.File;
+import org.gradle.api.Nullable;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 
@@ -29,18 +30,11 @@ import org.gradle.api.logging.Logger;
 public class CloudSdkBuilderFactory {
 
   private File cloudSdkHome;
+  private File credentialFile;
 
-  public CloudSdkBuilderFactory(File cloudSdkHome) {
+  public CloudSdkBuilderFactory(File cloudSdkHome, @Nullable File credentialFile) {
     this.cloudSdkHome = cloudSdkHome;
-  }
-
-  /** Create a empty builder with auto-configured metrics and failure on non-zero exit. */
-  public CloudSdk.Builder newBuilder() {
-    return new CloudSdk.Builder()
-        .sdkPath(cloudSdkHome != null ? cloudSdkHome.toPath() : null)
-        .exitListener(new NonZeroExceptionExitListener())
-        .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
-        .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion());
+    this.credentialFile = credentialFile;
   }
 
   /**
@@ -55,6 +49,7 @@ public class CloudSdkBuilderFactory {
         .appCommandMetricsEnvironment(getClass().getPackage().getImplementationTitle())
         .appCommandMetricsEnvironmentVersion(getClass().getPackage().getImplementationVersion())
         .addStdOutLineListener(listener)
-        .addStdErrLineListener(listener);
+        .addStdErrLineListener(listener)
+        .appCommandCredentialFile(credentialFile);
   }
 }

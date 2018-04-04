@@ -36,6 +36,7 @@ public class DeployAllTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
     if (!deployConfig.getDeployables().isEmpty()) {

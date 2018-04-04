@@ -56,16 +56,16 @@ public class DeployAllTaskTest {
 
   private DeployAllTask deployAllTask;
 
+  /** Setup DeployAllTaskTest. */
   @Before
   public void setup() throws IOException, AppEngineException {
-    Project tempProject = ProjectBuilder.builder().build();
-    deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
     List<File> deployables = new ArrayList<>();
-    File stageDir = tempFolder.newFolder("staging");
-
     when(deployConfig.getDeployables()).thenReturn(deployables);
+    File stageDir = tempFolder.newFolder("staging");
     when(deployConfig.getAppEngineDirectory()).thenReturn(stageDir);
 
+    Project tempProject = ProjectBuilder.builder().build();
+    deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
     deployAllTask.setDeployConfig(deployConfig);
     deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
 
@@ -82,13 +82,13 @@ public class DeployAllTaskTest {
   @Test
   public void testDeployAllAction() throws AppEngineException, IOException {
     // Make YAMLS
-    File appYaml = tempFolder.newFile("staging/app.yaml");
-    File cronYaml = tempFolder.newFile("staging/cron.yaml");
-    File dispatchYaml = tempFolder.newFile("staging/dispatch.yaml");
-    File dosYaml = tempFolder.newFile("staging/dos.yaml");
-    File indexYaml = tempFolder.newFile("staging/index.yaml");
-    File queueYaml = tempFolder.newFile("staging/queue.yaml");
-    File invalidYaml = tempFolder.newFile("staging/invalid.yaml");
+    final File appYaml = tempFolder.newFile("staging/app.yaml");
+    final File cronYaml = tempFolder.newFile("staging/cron.yaml");
+    final File dispatchYaml = tempFolder.newFile("staging/dispatch.yaml");
+    final File dosYaml = tempFolder.newFile("staging/dos.yaml");
+    final File indexYaml = tempFolder.newFile("staging/index.yaml");
+    final File queueYaml = tempFolder.newFile("staging/queue.yaml");
+    final File invalidYaml = tempFolder.newFile("staging/invalid.yaml");
 
     deployAllTask.deployAllAction();
 

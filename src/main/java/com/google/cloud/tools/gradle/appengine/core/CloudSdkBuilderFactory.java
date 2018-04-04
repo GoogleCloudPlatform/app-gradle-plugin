@@ -55,7 +55,7 @@ public class CloudSdkBuilderFactory {
         .appCommandCredentialFile(credentialFile);
   }
 
-  /** Create a CloudSdkAppEngineDeployment */
+  /** Create a CloudSdkAppEngineDeployment. */
   public AppEngineDeployment newAppEngineDeployment(CloudSdk sdk) {
     return new CloudSdkAppEngineDeployment(sdk);
   }

@@ -39,6 +39,7 @@ public class AppEngineCorePluginConfiguration {
   public static final String DEPLOY_DOS_TASK_NAME = "appengineDeployDos";
   public static final String DEPLOY_INDEX_TASK_NAME = "appengineDeployIndex";
   public static final String DEPLOY_QUEUE_TASK_NAME = "appengineDeployQueue";
+  public static final String DEPLOY_ALL_TASK_NAME = "appengineDeployAll";
   public static final String SHOW_CONFIG_TASK_NAME = "appengineShowConfiguration";
   public static final String DOWNLOAD_CLOUD_SDK_TASK_NAME = "downloadCloudSdk";
   public static final String CHECK_CLOUD_SDK_TASK_NAME = "checkCloudSdk";
@@ -74,6 +75,7 @@ public class AppEngineCorePluginConfiguration {
     createDeployDosTask();
     createDeployIndexTask();
     createDeployQueueTask();
+    createDeployAllTask();
     createShowConfigurationTask();
   }
 
@@ -274,6 +276,25 @@ public class AppEngineCorePluginConfiguration {
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
                     deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                  });
+            });
+  }
+
+  private void createDeployAllTask() {
+    project
+        .getTasks()
+        .create(
+            DEPLOY_ALL_TASK_NAME,
+            DeployAllTask.class,
+            deployAllTask -> {
+              deployAllTask.setGroup(taskGroup);
+              deployAllTask.setDescription(
+                  "Deploy an App Engine application and all of its config files");
+
+              project.afterEvaluate(
+                  project -> {
+                    deployAllTask.setDeployConfig(deployExtension);
+                    deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
                   });
             });
   }

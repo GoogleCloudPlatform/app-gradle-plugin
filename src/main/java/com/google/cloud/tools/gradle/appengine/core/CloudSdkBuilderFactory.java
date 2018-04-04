@@ -17,7 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
 import com.google.cloud.tools.gradle.appengine.util.io.GradleLoggerOutputListener;
@@ -51,5 +53,10 @@ public class CloudSdkBuilderFactory {
         .addStdOutLineListener(listener)
         .addStdErrLineListener(listener)
         .appCommandCredentialFile(credentialFile);
+  }
+
+  /** Create a CloudSdkAppEngineDeployment */
+  public AppEngineDeployment newAppEngineDeployment(CloudSdk sdk) {
+    return new CloudSdkAppEngineDeployment(sdk);
   }
 }

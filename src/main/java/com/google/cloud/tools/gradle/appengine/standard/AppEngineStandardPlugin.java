@@ -165,6 +165,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         .getTasks()
         .getByName(AppEngineCorePluginConfiguration.DEPLOY_QUEUE_TASK_NAME)
         .dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME)
+        .dependsOn(stageTask);
   }
 
   private void createRunTasks() {

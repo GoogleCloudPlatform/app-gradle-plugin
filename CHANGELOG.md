@@ -10,6 +10,7 @@ Task runs automatically when `cloudSdkHome` is not configured.
 Task runs automatically when `cloudSdkHome` and `cloudSdkVersion` are both configured.
 * New `appengine.tools.serviceAccountKeyFile` configuration parameter, and
   `appengineCloudSdkLogin` task. ([#235](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/212))
+* New `appengineDeployAll` task to deploy application with all valid yaml configs simultaneously. ([#239](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/239))
 
 ### Changed
 * Upgrade App Engine Plugins Core dependency to 0.5.2

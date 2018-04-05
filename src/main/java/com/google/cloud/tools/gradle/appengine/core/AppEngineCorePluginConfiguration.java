@@ -293,7 +293,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    deployAllTask.setDeployConfig(deployExtension);
+                    deployAllTask.setDeployConfig(new DeployExtension(deployExtension));
                     deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
                   });
             });

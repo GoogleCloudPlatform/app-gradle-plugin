@@ -45,6 +45,20 @@ public class DeployExtension
     this.gradleProject = gradleProject;
   }
 
+  /** Copy constructor for DeployExtension. */
+  public DeployExtension(DeployExtension deployExtension) {
+    this.gradleProject = deployExtension.gradleProject;
+    this.bucket = deployExtension.bucket;
+    this.deployables = new ArrayList<>(deployExtension.deployables);
+    this.imageUrl = deployExtension.imageUrl;
+    this.project = deployExtension.project;
+    this.promote = deployExtension.promote;
+    this.server = deployExtension.server;
+    this.stopPreviousVersion = deployExtension.stopPreviousVersion;
+    this.version = deployExtension.version;
+    this.appEngineDirectory = deployExtension.appEngineDirectory;
+  }
+
   @Override
   public String getBucket() {
     return bucket;

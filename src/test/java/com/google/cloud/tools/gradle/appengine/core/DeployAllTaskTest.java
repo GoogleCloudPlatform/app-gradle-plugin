@@ -25,8 +25,6 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk.Builder;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,31 +54,30 @@ public class DeployAllTaskTest {
 
   private DeployAllTask deployAllTask;
 
+  private File stageDir;
+
   /** Setup DeployAllTaskTest. */
   @Before
   public void setup() throws IOException, AppEngineException {
+    stageDir = tempFolder.newFolder("staging");
     List<File> deployables = new ArrayList<>();
     when(deployConfig.getDeployables()).thenReturn(deployables);
-    File stageDir = tempFolder.newFolder("staging");
-    when(deployConfig.getAppEngineDirectory()).thenReturn(stageDir);
 
     Project tempProject = ProjectBuilder.builder().build();
     deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
     deployAllTask.setDeployConfig(deployConfig);
     deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+    deployAllTask.setStageDirectory(stageDir);
 
     when(cloudSdkBuilderFactory.newBuilder(deployAllTask.getLogger())).thenReturn(builder);
     when(builder.build()).thenReturn(cloudSdk);
     when(cloudSdkBuilderFactory.newAppEngineDeployment(cloudSdk)).thenReturn(deploy);
-
-    // Create appengine-web.xml to mark it as standard environment
-    File appengineWebXml = new File(tempFolder.newFolder("source", "WEB-INF"), "appengine-web.xml");
-    appengineWebXml.createNewFile();
-    Files.write("<appengine-web-app></appengine-web-app>", appengineWebXml, Charsets.UTF_8);
   }
 
   @Test
-  public void testDeployAllAction() throws AppEngineException, IOException {
+  public void testDeployAllAction_standard() throws AppEngineException, IOException {
+    when(deployConfig.getAppEngineDirectory()).thenReturn(stageDir);
+
     // Make YAMLS
     final File appYaml = tempFolder.newFile("staging/app.yaml");
     final File cronYaml = tempFolder.newFile("staging/cron.yaml");
@@ -103,7 +100,53 @@ public class DeployAllTaskTest {
   }
 
   @Test
-  public void testDeployAllAction_validFileNotInDir() throws AppEngineException, IOException {
+  public void testDeployAllAction_flexible() throws AppEngineException, IOException {
+    File appengineDir = tempFolder.newFolder("appengine");
+    when(deployConfig.getAppEngineDirectory()).thenReturn(appengineDir);
+
+    // Make YAMLS
+    final File appYaml = tempFolder.newFile("staging/app.yaml");
+    final File cronYaml = tempFolder.newFile("appengine/cron.yaml");
+    final File dispatchYaml = tempFolder.newFile("appengine/dispatch.yaml");
+    final File dosYaml = tempFolder.newFile("appengine/dos.yaml");
+    final File indexYaml = tempFolder.newFile("appengine/index.yaml");
+    final File queueYaml = tempFolder.newFile("appengine/queue.yaml");
+    final File invalidYaml = tempFolder.newFile("appengine/invalid.yaml");
+
+    deployAllTask.deployAllAction();
+
+    assertTrue(deployConfig.getDeployables().contains(appYaml));
+    assertTrue(deployConfig.getDeployables().contains(cronYaml));
+    assertTrue(deployConfig.getDeployables().contains(dispatchYaml));
+    assertTrue(deployConfig.getDeployables().contains(dosYaml));
+    assertTrue(deployConfig.getDeployables().contains(indexYaml));
+    assertTrue(deployConfig.getDeployables().contains(queueYaml));
+    assertFalse(deployConfig.getDeployables().contains(invalidYaml));
+    verify(deploy).deploy(deployConfig);
+  }
+
+  @Test
+  public void testDeployAllAction_validFileNotInDirStandard()
+      throws AppEngineException, IOException {
+    when(deployConfig.getAppEngineDirectory()).thenReturn(stageDir);
+
+    // Make YAMLS
+    File appYaml = tempFolder.newFile("staging/app.yaml");
+    File validInDifferentDirYaml = tempFolder.newFile("queue.yaml");
+
+    deployAllTask.deployAllAction();
+
+    assertTrue(deployConfig.getDeployables().contains(appYaml));
+    assertFalse(deployConfig.getDeployables().contains(validInDifferentDirYaml));
+    verify(deploy).deploy(deployConfig);
+  }
+
+  @Test
+  public void testDeployAllAction_validFileNotInDirFlexible()
+      throws AppEngineException, IOException {
+    File appengineDir = tempFolder.newFolder("appengine");
+    when(deployConfig.getAppEngineDirectory()).thenReturn(appengineDir);
+
     // Make YAMLS
     File appYaml = tempFolder.newFile("staging/app.yaml");
     File validInDifferentDirYaml = tempFolder.newFile("queue.yaml");

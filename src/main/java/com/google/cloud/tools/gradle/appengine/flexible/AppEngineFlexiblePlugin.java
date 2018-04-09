@@ -18,6 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.flexible;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
+import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import java.io.File;
 import org.gradle.api.GradleException;
@@ -68,12 +69,6 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       stageExtension.setDockerDirectory(dockerOptionalDir);
     }
 
-    // obtain deploy extension set defaults
-    DeployExtension deploy = appengineExtension.getDeploy();
-    deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
-    // grab default project configuration from staging default
-    deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
-
     project.afterEvaluate(
         project -> {
           // we can only set the default location of "archive" after project evaluation (callback)
@@ -88,6 +83,24 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
               throw new GradleException("Could not find JAR or WAR configuration");
             }
           }
+
+          // obtain deploy extension set defaults
+          DeployExtension deploy = appengineExtension.getDeploy();
+          if (deploy.getDeployables() == null) {
+            deploy.setDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
+          }
+          // grab default project configuration from staging default
+          if (deploy.getAppEngineDirectory() == null) {
+            deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
+          }
+
+          DeployAllTask deployAllTask =
+              (DeployAllTask)
+                  project
+                      .getTasks()
+                      .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME);
+          deployAllTask.setStageDirectory(stageExtension.getStagingDirectory());
+          deployAllTask.setDeployConfig(new DeployExtension(deploy));
         });
   }
 
@@ -109,6 +122,10 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
     project
         .getTasks()
         .getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME)
+        .dependsOn(stageTask);
+    project
+        .getTasks()
+        .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME)
         .dependsOn(stageTask);
   }
 }

@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import java.io.File;
@@ -84,17 +85,30 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     stageExtension.setSourceDirectory(explodedWarDir);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
 
-    // obtain deploy extension and set defaults
-    DeployExtension deploy = appengineExtension.getDeploy();
-    deploy.setDeployables(new File(defaultStagedAppDir, "app.yaml"));
-    deploy.setAppEngineDirectory(new File(defaultStagedAppDir, "WEB-INF/appengine-generated"));
-
     // tools extension required to initialize cloudSdkBuilderFactory
     final ToolsExtension tools = appengineExtension.getTools();
     project.afterEvaluate(
         project -> {
           // create the sdk builder factory after we know the location of the sdk
           cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome(), null);
+
+          // obtain deploy extension and set defaults
+          DeployExtension deploy = appengineExtension.getDeploy();
+          if (deploy.getDeployables() == null) {
+            deploy.setDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
+          }
+          if (deploy.getAppEngineDirectory() == null) {
+            deploy.setAppEngineDirectory(
+                new File(stageExtension.getStagingDirectory(), "WEB-INF/appengine-generated"));
+          }
+
+          DeployAllTask deployAllTask =
+              (DeployAllTask)
+                  project
+                      .getTasks()
+                      .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME);
+          deployAllTask.setStageDirectory(stageExtension.getStagingDirectory());
+          deployAllTask.setDeployConfig(new DeployExtension(deploy));
         });
   }
 

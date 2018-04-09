@@ -49,7 +49,8 @@ public class DeployExtension
   public DeployExtension(DeployExtension deployExtension) {
     this.gradleProject = deployExtension.gradleProject;
     this.bucket = deployExtension.bucket;
-    this.deployables = new ArrayList<>(deployExtension.deployables);
+    this.deployables =
+        deployExtension.deployables == null ? null : new ArrayList<>(deployExtension.deployables);
     this.imageUrl = deployExtension.imageUrl;
     this.project = deployExtension.project;
     this.promote = deployExtension.promote;

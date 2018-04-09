@@ -293,6 +293,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
+                    // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
                     deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
                   });
             });

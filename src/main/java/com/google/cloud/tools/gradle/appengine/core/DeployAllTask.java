@@ -58,6 +58,7 @@ public class DeployAllTask extends DefaultTask {
     if (!appYaml.exists()) {
       throw new GradleException("Failed to deploy all: app.yaml not found.");
     }
+    getLogger().info("appengineDeployAll: Preparing to deploy app.yaml");
     deployables.add(appYaml);
 
     // Look for configuration yamls

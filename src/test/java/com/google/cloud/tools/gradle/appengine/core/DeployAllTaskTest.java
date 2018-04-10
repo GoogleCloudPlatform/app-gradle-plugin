@@ -44,13 +44,13 @@ public class DeployAllTaskTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
-  @Mock private DeployExtension deployConfig;
-
   @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   @Mock private Builder builder;
   @Mock private CloudSdk cloudSdk;
 
   @Mock private AppEngineDeployment deploy;
+  @Mock private DeployExtension deployConfig;
+  @Mock private DeployExtension deployCopy;
 
   private DeployAllTask deployAllTask;
 
@@ -59,14 +59,17 @@ public class DeployAllTaskTest {
   /** Setup DeployAllTaskTest. */
   @Before
   public void setup() throws IOException, AppEngineException {
-    stageDir = tempFolder.newFolder("staging");
     List<File> deployables = new ArrayList<>();
     when(deployConfig.getDeployables()).thenReturn(deployables);
+    when(deployConfig.copyOf()).thenReturn(deployCopy);
+    List<File> deployablesCopy = new ArrayList<>();
+    when(deployCopy.getDeployables()).thenReturn(deployablesCopy);
 
     Project tempProject = ProjectBuilder.builder().build();
     deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
     deployAllTask.setDeployConfig(deployConfig);
     deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+    stageDir = tempFolder.newFolder("staging");
     deployAllTask.setStageDirectory(stageDir);
 
     when(cloudSdkBuilderFactory.newBuilder(deployAllTask.getLogger())).thenReturn(builder);
@@ -76,7 +79,7 @@ public class DeployAllTaskTest {
 
   @Test
   public void testDeployAllAction_standard() throws AppEngineException, IOException {
-    when(deployConfig.getAppEngineDirectory()).thenReturn(stageDir);
+    when(deployCopy.getAppEngineDirectory()).thenReturn(stageDir);
 
     // Make YAMLS
     final File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -89,20 +92,20 @@ public class DeployAllTaskTest {
 
     deployAllTask.deployAllAction();
 
-    assertTrue(deployConfig.getDeployables().contains(appYaml));
-    assertTrue(deployConfig.getDeployables().contains(cronYaml));
-    assertTrue(deployConfig.getDeployables().contains(dispatchYaml));
-    assertTrue(deployConfig.getDeployables().contains(dosYaml));
-    assertTrue(deployConfig.getDeployables().contains(indexYaml));
-    assertTrue(deployConfig.getDeployables().contains(queueYaml));
-    assertFalse(deployConfig.getDeployables().contains(invalidYaml));
-    verify(deploy).deploy(deployConfig);
+    assertTrue(deployCopy.getDeployables().contains(appYaml));
+    assertTrue(deployCopy.getDeployables().contains(cronYaml));
+    assertTrue(deployCopy.getDeployables().contains(dispatchYaml));
+    assertTrue(deployCopy.getDeployables().contains(dosYaml));
+    assertTrue(deployCopy.getDeployables().contains(indexYaml));
+    assertTrue(deployCopy.getDeployables().contains(queueYaml));
+    assertFalse(deployCopy.getDeployables().contains(invalidYaml));
+    verify(deploy).deploy(deployCopy);
   }
 
   @Test
   public void testDeployAllAction_flexible() throws AppEngineException, IOException {
     File appengineDir = tempFolder.newFolder("appengine");
-    when(deployConfig.getAppEngineDirectory()).thenReturn(appengineDir);
+    when(deployCopy.getAppEngineDirectory()).thenReturn(appengineDir);
 
     // Make YAMLS
     final File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -115,20 +118,20 @@ public class DeployAllTaskTest {
 
     deployAllTask.deployAllAction();
 
-    assertTrue(deployConfig.getDeployables().contains(appYaml));
-    assertTrue(deployConfig.getDeployables().contains(cronYaml));
-    assertTrue(deployConfig.getDeployables().contains(dispatchYaml));
-    assertTrue(deployConfig.getDeployables().contains(dosYaml));
-    assertTrue(deployConfig.getDeployables().contains(indexYaml));
-    assertTrue(deployConfig.getDeployables().contains(queueYaml));
-    assertFalse(deployConfig.getDeployables().contains(invalidYaml));
-    verify(deploy).deploy(deployConfig);
+    assertTrue(deployCopy.getDeployables().contains(appYaml));
+    assertTrue(deployCopy.getDeployables().contains(cronYaml));
+    assertTrue(deployCopy.getDeployables().contains(dispatchYaml));
+    assertTrue(deployCopy.getDeployables().contains(dosYaml));
+    assertTrue(deployCopy.getDeployables().contains(indexYaml));
+    assertTrue(deployCopy.getDeployables().contains(queueYaml));
+    assertFalse(deployCopy.getDeployables().contains(invalidYaml));
+    verify(deploy).deploy(deployCopy);
   }
 
   @Test
   public void testDeployAllAction_validFileNotInDirStandard()
       throws AppEngineException, IOException {
-    when(deployConfig.getAppEngineDirectory()).thenReturn(stageDir);
+    when(deployCopy.getAppEngineDirectory()).thenReturn(stageDir);
 
     // Make YAMLS
     File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -136,16 +139,16 @@ public class DeployAllTaskTest {
 
     deployAllTask.deployAllAction();
 
-    assertTrue(deployConfig.getDeployables().contains(appYaml));
-    assertFalse(deployConfig.getDeployables().contains(validInDifferentDirYaml));
-    verify(deploy).deploy(deployConfig);
+    assertTrue(deployCopy.getDeployables().contains(appYaml));
+    assertFalse(deployCopy.getDeployables().contains(validInDifferentDirYaml));
+    verify(deploy).deploy(deployCopy);
   }
 
   @Test
   public void testDeployAllAction_validFileNotInDirFlexible()
       throws AppEngineException, IOException {
     File appengineDir = tempFolder.newFolder("appengine");
-    when(deployConfig.getAppEngineDirectory()).thenReturn(appengineDir);
+    when(deployCopy.getAppEngineDirectory()).thenReturn(appengineDir);
 
     // Make YAMLS
     File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -153,8 +156,19 @@ public class DeployAllTaskTest {
 
     deployAllTask.deployAllAction();
 
-    assertTrue(deployConfig.getDeployables().contains(appYaml));
-    assertFalse(deployConfig.getDeployables().contains(validInDifferentDirYaml));
-    verify(deploy).deploy(deployConfig);
+    assertTrue(deployCopy.getDeployables().contains(appYaml));
+    assertFalse(deployCopy.getDeployables().contains(validInDifferentDirYaml));
+    verify(deploy).deploy(deployCopy);
+  }
+
+  @Test
+  public void testDeployAllAction_configNotModified() throws AppEngineException, IOException {
+    when(deployCopy.getAppEngineDirectory()).thenReturn(stageDir);
+    File appYaml = tempFolder.newFile("staging/app.yaml");
+    deployAllTask.deployAllAction();
+
+    assertTrue(deployCopy.getDeployables().contains(appYaml));
+    assertTrue(deployConfig.getDeployables().isEmpty());
+    verify(deploy).deploy(deployCopy);
   }
 }

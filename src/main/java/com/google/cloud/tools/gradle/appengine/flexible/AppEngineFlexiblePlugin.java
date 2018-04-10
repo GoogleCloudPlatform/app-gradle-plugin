@@ -100,7 +100,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
                       .getTasks()
                       .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME);
           deployAllTask.setStageDirectory(stageExtension.getStagingDirectory());
-          deployAllTask.setDeployConfig(new DeployExtension(deploy));
+          deployAllTask.setDeployConfig(deploy);
         });
   }
 

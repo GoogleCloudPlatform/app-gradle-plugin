@@ -45,32 +45,33 @@ public class DeployAllTask extends DefaultTask {
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
-    deployConfig.getDeployables().clear();
+    DeployExtension deployCopy = deployConfig.copyOf();
+    deployCopy.getDeployables().clear();
 
     // Look for app.yaml
     File appYaml = stageDirectory.toPath().resolve("app.yaml").toFile();
     if (!appYaml.exists()) {
       throw new GradleException("Failed to deploy all: app.yaml not found.");
     }
-    addDeployable(appYaml);
+    addDeployable(deployCopy, appYaml);
 
     // Look for configuration yamls
     String[] validYamls = {"cron.yaml", "dispatch.yaml", "dos.yaml", "index.yaml", "queue.yaml"};
     for (String yamlName : validYamls) {
-      File yaml = deployConfig.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
+      File yaml = deployCopy.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
       if (yaml.exists()) {
-        addDeployable(yaml);
+        addDeployable(deployCopy, yaml);
       }
     }
 
     // Deploy
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = cloudSdkBuilderFactory.newAppEngineDeployment(sdk);
-    deploy.deploy(deployConfig);
+    deploy.deploy(deployCopy);
   }
 
-  private void addDeployable(File yaml) {
+  private void addDeployable(DeployExtension deploy, File yaml) {
     getLogger().info("appengineDeployAll: Preparing to deploy " + yaml.getName());
-    deployConfig.getDeployables().add(yaml);
+    deploy.getDeployables().add(yaml);
   }
 }

@@ -114,8 +114,8 @@ public class AppEngineStandardPluginIntegrationTest {
 
   @Test
   public void testDeploy()
-      throws ProcessRunnerException, IOException, CloudSdkNotFoundException,
-          InvalidJavaSdkException, CloudSdkVersionFileException, CloudSdkOutOfDateException {
+      throws ProcessRunnerException, CloudSdkNotFoundException, InvalidJavaSdkException,
+          CloudSdkVersionFileException, CloudSdkOutOfDateException {
     BuildResult buildResult =
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
@@ -127,6 +127,38 @@ public class AppEngineStandardPluginIntegrationTest {
     Assert.assertThat(
         buildResult.getOutput(),
         CoreMatchers.containsString("Deployed service [standard-project]"));
+
+    CloudSdk cloudSdk =
+        new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
+    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "standard-project"));
+  }
+
+  @Test
+  public void testDeployAll()
+      throws ProcessRunnerException, CloudSdkNotFoundException, InvalidJavaSdkException,
+          CloudSdkVersionFileException, CloudSdkOutOfDateException {
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withDebug(true)
+            .withArguments("appengineDeployAll")
+            .build();
+
+    Assert.assertThat(
+        buildResult.getOutput(),
+        CoreMatchers.containsString("Deployed service [standard-project]"));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("Custom routings have been updated."));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("DoS protection has been updated."));
+    Assert.assertThat(
+        buildResult.getOutput(),
+        CoreMatchers.containsString("Indexes are being rebuilt. This may take a moment."));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("Cron jobs have been updated."));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
     CloudSdk cloudSdk =
         new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();

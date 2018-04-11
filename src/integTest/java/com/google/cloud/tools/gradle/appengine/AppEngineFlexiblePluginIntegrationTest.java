@@ -72,4 +72,37 @@ public class AppEngineFlexiblePluginIntegrationTest {
         new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
     cloudSdk.runAppCommand(Arrays.asList("services", "delete", "flexible-project"));
   }
+
+  @Test
+  public void testDeployAll()
+      throws ProcessRunnerException, CloudSdkNotFoundException, CloudSdkOutOfDateException,
+          CloudSdkVersionFileException, InvalidJavaSdkException {
+
+    BuildResult buildResult =
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath()
+            .withDebug(true)
+            .withArguments("appengineDeployAll")
+            .build();
+
+    Assert.assertThat(
+        buildResult.getOutput(),
+        CoreMatchers.containsString("Deployed service [flexible-project]"));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("Custom routings have been updated."));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("DoS protection has been updated."));
+    Assert.assertThat(
+        buildResult.getOutput(),
+        CoreMatchers.containsString("Indexes are being rebuilt. This may take a moment."));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("Cron jobs have been updated."));
+    Assert.assertThat(
+        buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
+
+    CloudSdk cloudSdk =
+        new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
+    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "flexible-project"));
+  }
 }

@@ -21,12 +21,14 @@ import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import java.io.File;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 public class DeployAllTask extends DefaultTask {
 
   private DeployExtension deployConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private File stageDirectory;
 
   public void setDeployConfig(DeployExtension deployConfig) {
     this.deployConfig = deployConfig;
@@ -36,27 +38,40 @@ public class DeployAllTask extends DefaultTask {
     this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
   }
 
+  public void setStageDirectory(File stageDirectory) {
+    this.stageDirectory = stageDirectory;
+  }
+
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
-    if (!deployConfig.getDeployables().isEmpty()) {
-      getLogger().warn("appengineDeployAll: Ignoring configured deployables.");
-      deployConfig.getDeployables().clear();
-    }
+    DeployExtension deployCopy = new DeployExtension(deployConfig);
+    deployCopy.getDeployables().clear();
 
-    String[] validYamls = {
-      "app.yaml", "cron.yaml", "dispatch.yaml", "dos.yaml", "index.yaml", "queue.yaml"
-    };
+    // Look for app.yaml
+    File appYaml = stageDirectory.toPath().resolve("app.yaml").toFile();
+    if (!appYaml.exists()) {
+      throw new GradleException("Failed to deploy all: app.yaml not found.");
+    }
+    addDeployable(deployCopy, appYaml);
+
+    // Look for configuration yamls
+    String[] validYamls = {"cron.yaml", "dispatch.yaml", "dos.yaml", "index.yaml", "queue.yaml"};
     for (String yamlName : validYamls) {
-      File yaml = deployConfig.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
+      File yaml = deployCopy.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
       if (yaml.exists()) {
-        getLogger().info("appengineDeployAll: Preparing to deploy " + yamlName);
-        deployConfig.getDeployables().add(yaml);
+        addDeployable(deployCopy, yaml);
       }
     }
 
+    // Deploy
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = cloudSdkBuilderFactory.newAppEngineDeployment(sdk);
-    deploy.deploy(deployConfig);
+    deploy.deploy(deployCopy);
+  }
+
+  private void addDeployable(DeployExtension deploy, File yaml) {
+    getLogger().info("appengineDeployAll: Preparing to deploy " + yaml.getName());
+    deploy.getDeployables().add(yaml);
   }
 }

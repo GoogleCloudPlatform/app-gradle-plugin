@@ -41,6 +41,16 @@ public class DeployTask extends DefaultTask {
   /** Task Entrypoint : DeployExtension application (via app.yaml). */
   @TaskAction
   public void deployAction() throws AppEngineException {
+    if (getProject()
+        .getGradle()
+        .getTaskGraph()
+        .getAllTasks()
+        .stream()
+        .anyMatch(t -> t.getName().equals(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME))) {
+      getLogger().lifecycle("Deploy all task called; skipping deploy task.");
+      return;
+    }
+
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deploy(deployConfig);

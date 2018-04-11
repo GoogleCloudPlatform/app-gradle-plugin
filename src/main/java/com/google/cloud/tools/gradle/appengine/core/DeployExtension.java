@@ -46,18 +46,18 @@ public class DeployExtension
   }
 
   /** Creates and return a deep copy of the DeployExtension. */
-  public DeployExtension copyOf() {
-    DeployExtension copy = new DeployExtension(this.gradleProject);
-    copy.bucket = this.bucket;
-    copy.deployables = this.deployables == null ? null : new ArrayList<>(this.deployables);
-    copy.imageUrl = this.imageUrl;
-    copy.project = this.project;
-    copy.promote = this.promote;
-    copy.server = this.server;
-    copy.stopPreviousVersion = this.stopPreviousVersion;
-    copy.version = this.version;
-    copy.appEngineDirectory = this.appEngineDirectory;
-    return copy;
+  public DeployExtension(DeployExtension deployExtension) {
+    this.gradleProject = deployExtension.gradleProject;
+    this.bucket = deployExtension.bucket;
+    this.deployables =
+        deployExtension.deployables == null ? null : new ArrayList<>(deployExtension.deployables);
+    this.imageUrl = deployExtension.imageUrl;
+    this.project = deployExtension.project;
+    this.promote = deployExtension.promote;
+    this.server = deployExtension.server;
+    this.stopPreviousVersion = deployExtension.stopPreviousVersion;
+    this.version = deployExtension.version;
+    this.appEngineDirectory = deployExtension.appEngineDirectory;
   }
 
   @Override

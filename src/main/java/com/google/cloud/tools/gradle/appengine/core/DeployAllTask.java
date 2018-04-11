@@ -45,7 +45,7 @@ public class DeployAllTask extends DefaultTask {
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
-    DeployExtension deployCopy = deployConfig.copyOf();
+    DeployExtension deployCopy = new DeployExtension(deployConfig);
     deployCopy.getDeployables().clear();
 
     // Look for app.yaml

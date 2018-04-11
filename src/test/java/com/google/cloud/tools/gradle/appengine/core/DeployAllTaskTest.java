@@ -16,6 +16,7 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -166,12 +167,16 @@ public class DeployAllTaskTest {
   public void testDeployAllAction_configNotModified() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
     final File appYaml = tempFolder.newFile("staging/app.yaml");
+    final File testDeployable = tempFolder.newFile("testDeployable");
+    deployConfig.getDeployables().add(testDeployable);
 
     deployAllTask.deployAllAction();
 
     verify(deploy).deploy(deployCapture.capture());
     DeployConfiguration captured = deployCapture.getValue();
     assertTrue(captured.getDeployables().contains(appYaml));
-    assertTrue(deployConfig.getDeployables().isEmpty());
+    
+    assertEquals(1, deployConfig.getDeployables().size());
+    assertTrue(deployConfig.getDeployables().contains(testDeployable));
   }
 }

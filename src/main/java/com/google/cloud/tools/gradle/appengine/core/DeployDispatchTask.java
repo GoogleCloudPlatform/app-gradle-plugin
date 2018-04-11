@@ -42,6 +42,16 @@ public class DeployDispatchTask extends DefaultTask {
   /** Task entrypoint : deploy dispatch.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
+    if (getProject()
+        .getGradle()
+        .getTaskGraph()
+        .getAllTasks()
+        .stream()
+        .anyMatch(t -> t.getName().equals(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME))) {
+      getLogger().lifecycle("Deploy all task called; skipping deploy dispatch task.");
+      return;
+    }
+
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deployDispatch(config);

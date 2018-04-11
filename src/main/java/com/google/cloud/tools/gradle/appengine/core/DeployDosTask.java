@@ -42,6 +42,16 @@ public class DeployDosTask extends DefaultTask {
   /** Task entrypoint : deploy dos.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
+    if (getProject()
+        .getGradle()
+        .getTaskGraph()
+        .getAllTasks()
+        .stream()
+        .anyMatch(t -> t.getName().equals(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME))) {
+      getLogger().lifecycle("Deploy all task called; skipping deploy dos task.");
+      return;
+    }
+
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
     deploy.deployDos(config);

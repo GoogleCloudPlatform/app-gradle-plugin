@@ -175,7 +175,7 @@ public class DeployAllTaskTest {
     verify(deploy).deploy(deployCapture.capture());
     DeployConfiguration captured = deployCapture.getValue();
     assertTrue(captured.getDeployables().contains(appYaml));
-    
+
     assertEquals(1, deployConfig.getDeployables().size());
     assertTrue(deployConfig.getDeployables().contains(testDeployable));
   }

@@ -101,6 +101,13 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             deploy.setAppEngineDirectory(
                 new File(stageExtension.getStagingDirectory(), "WEB-INF/appengine-generated"));
           }
+          deploy.setAppEngineWebXml(
+              stageExtension
+                  .getStagingDirectory()
+                  .toPath()
+                  .resolve("WEB-INF")
+                  .resolve("appengine-web.xml")
+                  .toFile());
 
           DeployAllTask deployAllTask =
               (DeployAllTask)

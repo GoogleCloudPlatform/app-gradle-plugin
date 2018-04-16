@@ -21,8 +21,10 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
+import java.io.IOException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.xml.sax.SAXException;
 
 /** Task to deploy App Engine applications. */
 public class DeployTask extends DefaultTask {
@@ -40,9 +42,10 @@ public class DeployTask extends DefaultTask {
 
   /** Task Entrypoint : DeployExtension application (via app.yaml). */
   @TaskAction
-  public void deployAction() throws AppEngineException {
+  public void deployAction() throws AppEngineException, IOException, SAXException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
-    deploy.deploy(deployConfig);
+    DeployExtension deployExtension = deployConfig.withPropertiesFromAppEngineWebXml();
+    deploy.deploy(deployExtension);
   }
 }

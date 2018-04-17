@@ -98,7 +98,8 @@ public class DeployExtensionTest {
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_nothingSet() throws IOException {
+  public void testWithPropertiesFromAppEngineWebXml_nothingSet()
+      throws IOException, AppEngineException, SAXException {
     appengineWebXml.createNewFile();
     Files.write(
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
@@ -106,8 +107,10 @@ public class DeployExtensionTest {
             + "</appengine-web-app>",
         appengineWebXml,
         Charsets.UTF_8);
+    deployExtension.setAppEngineWebXml(appengineWebXml);
     try {
-      deployExtension.setAppEngineWebXml(appengineWebXml);
+      deployExtension.withPropertiesFromAppEngineWebXml();
+      Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
           "appengine-plugin does not use gcloud global project state. Please configure the "
@@ -117,12 +120,15 @@ public class DeployExtensionTest {
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_sysPropertyBothSet() {
+  public void testWithPropertiesFromAppEngineWebXml_sysPropertyBothSet()
+      throws AppEngineException, SAXException, IOException {
     System.setProperty("deploy.read.appengine.web.xml", "true");
     deployExtension.setProject(PROJECT_BUILD);
     deployExtension.setProject(VERSION_BUILD);
+    deployExtension.setAppEngineWebXml(appengineWebXml);
     try {
-      deployExtension.setAppEngineWebXml(appengineWebXml);
+      deployExtension.withPropertiesFromAppEngineWebXml();
+      Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
           "Cannot override appengine.deploy config with appengine-web.xml. Either remove "
@@ -133,9 +139,12 @@ public class DeployExtensionTest {
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_noSysPropertyOnlyXml() {
+  public void testWithPropertiesFromAppEngineWebXml_noSysPropertyOnlyXml()
+      throws AppEngineException, SAXException, IOException {
+    deployExtension.setAppEngineWebXml(appengineWebXml);
     try {
-      deployExtension.setAppEngineWebXml(appengineWebXml);
+      deployExtension.withPropertiesFromAppEngineWebXml();
+      Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
           "appengine-plugin does not use gcloud global project state. If you would like to "

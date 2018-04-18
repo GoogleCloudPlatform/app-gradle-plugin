@@ -124,7 +124,7 @@ public class ProjectResolverTest {
       Assert.assertEquals(
           "appengine-plugin does not use gcloud global project state. If you would like to "
               + "use the state from appengine-web.xml, please set the system property "
-              + "deploy.read.appengine.web.xml.",
+              + "deploy.read.appengine.web.xml=true.",
           ex.getMessage());
     }
   }
@@ -184,7 +184,7 @@ public class ProjectResolverTest {
       Assert.assertEquals(
           "appengine-plugin does not use gcloud global project state. If you would like to "
               + "use the state from appengine-web.xml, please set the system property "
-              + "deploy.read.appengine.web.xml.",
+              + "deploy.read.appengine.web.xml=true.",
           ex.getMessage());
     }
   }

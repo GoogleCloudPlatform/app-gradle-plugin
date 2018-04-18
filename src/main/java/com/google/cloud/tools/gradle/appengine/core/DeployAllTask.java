@@ -20,11 +20,9 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import java.io.File;
-import java.io.IOException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
-import org.xml.sax.SAXException;
 
 public class DeployAllTask extends DefaultTask {
 
@@ -46,7 +44,7 @@ public class DeployAllTask extends DefaultTask {
 
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
-  public void deployAllAction() throws AppEngineException, IOException, SAXException {
+  public void deployAllAction() throws AppEngineException {
     DeployExtension deployCopy = new DeployExtension(deployConfig);
     deployCopy.getDeployables().clear();
 

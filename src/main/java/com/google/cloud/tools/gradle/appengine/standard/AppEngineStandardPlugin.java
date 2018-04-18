@@ -104,24 +104,14 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           }
 
           File appengineWebXml =
-              project.getPlugins().hasPlugin(WarPlugin.class)
-                  ? project
-                      .getConvention()
-                      .getPlugin(WarPluginConvention.class)
-                      .getWebAppDir()
-                      .toPath()
-                      .resolve("WEB-INF")
-                      .resolve("appengine-web.xml")
-                      .toFile()
-                  : project
-                      .getProjectDir()
-                      .toPath()
-                      .resolve("src")
-                      .resolve("main")
-                      .resolve("webapp")
-                      .resolve("WEB-INF")
-                      .resolve("appengine-web.xml")
-                      .toFile();
+              project
+                  .getConvention()
+                  .getPlugin(WarPluginConvention.class)
+                  .getWebAppDir()
+                  .toPath()
+                  .resolve("WEB-INF")
+                  .resolve("appengine-web.xml")
+                  .toFile();
           deploy.setPropertyResolver(new PropertyResolver(appengineWebXml));
 
           DeployAllTask deployAllTask =

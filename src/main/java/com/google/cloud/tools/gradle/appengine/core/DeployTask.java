@@ -45,7 +45,6 @@ public class DeployTask extends DefaultTask {
   public void deployAction() throws AppEngineException, IOException, SAXException {
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
-    DeployExtension deployExtension = deployConfig.withPropertiesFromAppEngineWebXml();
-    deploy.deploy(deployExtension);
+    deploy.deploy(deployConfig);
   }
 }

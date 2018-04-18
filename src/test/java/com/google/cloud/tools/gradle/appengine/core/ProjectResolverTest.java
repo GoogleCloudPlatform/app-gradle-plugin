@@ -16,90 +16,66 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
+import com.google.cloud.tools.gradle.appengine.standard.ProjectResolver;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import org.gradle.api.GradleException;
-import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.xml.sax.SAXException;
 
-public class DeployExtensionTest {
+public class ProjectResolverTest {
   private static final String PROJECT_BUILD = "project-build";
   private static final String PROJECT_XML = "project-xml";
-  private static final String VERSION_BUILD = "version-build";
-  private static final String VERSION_XML = "version-xml";
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private File appengineWebXml;
 
-  private DeployExtension deployExtension;
+  private ProjectResolver projectResolver;
 
-  /** Setup DeployExtensionTest. */
+  /** Setup ProjectResolverTest. */
   @Before
   public void setup() throws IOException {
     System.clearProperty("deploy.read.appengine.web.xml");
-    deployExtension = new DeployExtension(ProjectBuilder.builder().build());
     appengineWebXml = new File(temporaryFolder.newFolder("source", "WEB-INF"), "appengine-web.xml");
     appengineWebXml.createNewFile();
     Files.write(
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
             + "<appengine-web-app xmlns=\"http://appengine.google.com/ns/1.0\"><application>"
             + PROJECT_XML
-            + "</application><version>"
-            + VERSION_XML
-            + "</version></appengine-web-app>",
+            + "</application></appengine-web-app>",
         appengineWebXml,
         Charsets.UTF_8);
   }
 
-  /** Cleanup DeployExtensionTest. */
+  /** Cleanup ProjectResolverTest. */
   @After
   public void cleanup() {
     System.clearProperty("deploy.read.appengine.web.xml");
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_flexible()
-      throws AppEngineException, SAXException, IOException {
-    deployExtension.setVersion(VERSION_BUILD);
-    deployExtension.setProject(PROJECT_BUILD);
-    DeployExtension result = deployExtension.withPropertiesFromAppEngineWebXml();
-    Assert.assertEquals(VERSION_BUILD, result.getVersion());
-    Assert.assertEquals(PROJECT_BUILD, result.getProject());
+  public void testGetProject_buildConfig() {
+    projectResolver = new ProjectResolver(appengineWebXml);
+    String result = projectResolver.getProject(PROJECT_BUILD);
+    Assert.assertEquals(PROJECT_BUILD, result);
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_buildConfig()
-      throws AppEngineException, SAXException, IOException {
-    deployExtension.setAppEngineWebXml(appengineWebXml);
-    deployExtension.setVersion(VERSION_BUILD);
-    deployExtension.setProject(PROJECT_BUILD);
-    DeployExtension result = deployExtension.withPropertiesFromAppEngineWebXml();
-    Assert.assertEquals(VERSION_BUILD, result.getVersion());
-    Assert.assertEquals(PROJECT_BUILD, result.getProject());
-  }
-
-  @Test
-  public void testWithPropertiesFromAppEngineWebXml_xml()
-      throws AppEngineException, SAXException, IOException {
+  public void testGetProject_xml() {
     System.setProperty("deploy.read.appengine.web.xml", "true");
-    deployExtension.setAppEngineWebXml(appengineWebXml);
-    DeployExtension result = deployExtension.withPropertiesFromAppEngineWebXml();
-    Assert.assertEquals(VERSION_XML, result.getVersion());
-    Assert.assertEquals(PROJECT_XML, result.getProject());
+    projectResolver = new ProjectResolver(appengineWebXml);
+    String result = projectResolver.getProject(null);
+    Assert.assertEquals(PROJECT_XML, result);
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_nothingSet()
-      throws IOException, AppEngineException, SAXException {
+  public void testGetProject_nothingSet() throws IOException {
     appengineWebXml.createNewFile();
     Files.write(
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
@@ -107,9 +83,9 @@ public class DeployExtensionTest {
             + "</appengine-web-app>",
         appengineWebXml,
         Charsets.UTF_8);
-    deployExtension.setAppEngineWebXml(appengineWebXml);
+    projectResolver = new ProjectResolver(appengineWebXml);
     try {
-      deployExtension.withPropertiesFromAppEngineWebXml();
+      projectResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
@@ -120,14 +96,11 @@ public class DeployExtensionTest {
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_sysPropertyBothSet()
-      throws AppEngineException, SAXException, IOException {
+  public void testGetProject_sysPropertyBothSet() {
     System.setProperty("deploy.read.appengine.web.xml", "true");
-    deployExtension.setProject(PROJECT_BUILD);
-    deployExtension.setProject(VERSION_BUILD);
-    deployExtension.setAppEngineWebXml(appengineWebXml);
+    projectResolver = new ProjectResolver(appengineWebXml);
     try {
-      deployExtension.withPropertiesFromAppEngineWebXml();
+      projectResolver.getProject(PROJECT_BUILD);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
@@ -139,11 +112,10 @@ public class DeployExtensionTest {
   }
 
   @Test
-  public void testWithPropertiesFromAppEngineWebXml_noSysPropertyOnlyXml()
-      throws AppEngineException, SAXException, IOException {
-    deployExtension.setAppEngineWebXml(appengineWebXml);
+  public void testGetProject_noSysPropertyOnlyXml() {
+    projectResolver = new ProjectResolver(appengineWebXml);
     try {
-      deployExtension.withPropertiesFromAppEngineWebXml();
+      projectResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(

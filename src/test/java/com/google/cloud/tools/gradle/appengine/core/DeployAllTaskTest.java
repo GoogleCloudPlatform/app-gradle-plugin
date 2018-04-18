@@ -41,7 +41,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.xml.sax.SAXException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeployAllTaskTest {
@@ -82,7 +81,7 @@ public class DeployAllTaskTest {
   }
 
   @Test
-  public void testDeployAllAction_standard() throws AppEngineException, IOException, SAXException {
+  public void testDeployAllAction_standard() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
 
     final File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -107,7 +106,7 @@ public class DeployAllTaskTest {
   }
 
   @Test
-  public void testDeployAllAction_flexible() throws AppEngineException, IOException, SAXException {
+  public void testDeployAllAction_flexible() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
     final File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -133,7 +132,7 @@ public class DeployAllTaskTest {
 
   @Test
   public void testDeployAllAction_validFileNotInDirStandard()
-      throws AppEngineException, IOException, SAXException {
+      throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
 
     final File appYaml = tempFolder.newFile("staging/app.yaml");
@@ -149,7 +148,7 @@ public class DeployAllTaskTest {
 
   @Test
   public void testDeployAllAction_validFileNotInDirFlexible()
-      throws AppEngineException, IOException, SAXException {
+      throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
     // Make YAMLS
@@ -166,7 +165,7 @@ public class DeployAllTaskTest {
 
   @Test
   public void testDeployAllAction_configNotModified()
-      throws AppEngineException, IOException, SAXException {
+      throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
     final File appYaml = tempFolder.newFile("staging/app.yaml");
     final File testDeployable = tempFolder.newFile("testDeployable");

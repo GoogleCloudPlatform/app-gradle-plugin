@@ -18,7 +18,11 @@
 package com.google.cloud.tools.gradle.appengine;
 
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
+import com.google.common.base.Charsets;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.gradle.api.Project;
@@ -47,10 +51,17 @@ public class MultiModuleTestProject {
    *
    * @return root project
    */
-  public Project build() {
+  public Project build() throws IOException {
     Project rootProject = ProjectBuilder.builder().withProjectDir(projectRoot).build();
     for (String module : modules) {
       Project p = ProjectBuilder.builder().withName(module).withParent(rootProject).build();
+
+      // Create an appengine-web.xml for each module
+      Path webInf = p.getProjectDir().toPath().resolve("src/main/webapp/WEB-INF");
+      Files.createDirectories(webInf);
+      File appengineWebXml = Files.createFile(webInf.resolve("appengine-web.xml")).toFile();
+      Files.write(appengineWebXml.toPath(), "<appengine-web-app/>".getBytes(Charsets.UTF_8));
+
       p.getPluginManager().apply(JavaPlugin.class);
       p.getPluginManager().apply(WarPlugin.class);
       p.getPluginManager().apply(AppEngineStandardPlugin.class);

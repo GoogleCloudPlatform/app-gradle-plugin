@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.gradle.appengine.core;
+package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.gradle.appengine.standard.ProjectResolver;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import java.io.File;
@@ -32,6 +31,8 @@ import org.junit.rules.TemporaryFolder;
 public class ProjectResolverTest {
   private static final String PROJECT_BUILD = "project-build";
   private static final String PROJECT_XML = "project-xml";
+  private static final String VERSION_BUILD = "version-build";
+  private static final String VERSION_XML = "version-xml";
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private File appengineWebXml;
@@ -48,7 +49,9 @@ public class ProjectResolverTest {
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
             + "<appengine-web-app xmlns=\"http://appengine.google.com/ns/1.0\"><application>"
             + PROJECT_XML
-            + "</application></appengine-web-app>",
+            + "</application><version>"
+            + VERSION_XML
+            + "</version></appengine-web-app>",
         appengineWebXml,
         Charsets.UTF_8);
   }
@@ -90,7 +93,7 @@ public class ProjectResolverTest {
     } catch (GradleException ex) {
       Assert.assertEquals(
           "appengine-plugin does not use gcloud global project state. Please configure the "
-              + "application ID and version in your build.gradle or appengine-web.xml.",
+              + "application ID in your build.gradle or appengine-web.xml.",
           ex.getMessage());
     }
   }
@@ -121,7 +124,67 @@ public class ProjectResolverTest {
       Assert.assertEquals(
           "appengine-plugin does not use gcloud global project state. If you would like to "
               + "use the state from appengine-web.xml, please set the system property "
-              + "deploy.read.appengine.web.xml",
+              + "deploy.read.appengine.web.xml.",
+          ex.getMessage());
+    }
+  }
+
+  @Test
+  public void testGetVersion_buildConfig() {
+    projectResolver = new ProjectResolver(appengineWebXml);
+    String result = projectResolver.getVersion(VERSION_BUILD);
+    Assert.assertEquals(VERSION_BUILD, result);
+  }
+
+  @Test
+  public void testGetVersion_xml() {
+    System.setProperty("deploy.read.appengine.web.xml", "true");
+    projectResolver = new ProjectResolver(appengineWebXml);
+    String result = projectResolver.getVersion(null);
+    Assert.assertEquals(VERSION_XML, result);
+  }
+
+  @Test
+  public void testGetVersion_nothingSet() throws IOException {
+    appengineWebXml.createNewFile();
+    Files.write(
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+            + "<appengine-web-app xmlns=\"http://appengine.google.com/ns/1.0\">"
+            + "</appengine-web-app>",
+        appengineWebXml,
+        Charsets.UTF_8);
+    projectResolver = new ProjectResolver(appengineWebXml);
+    String result = projectResolver.getVersion(null);
+    Assert.assertEquals(null, result);
+  }
+
+  @Test
+  public void testGetVersion_sysPropertyBothSet() {
+    System.setProperty("deploy.read.appengine.web.xml", "true");
+    projectResolver = new ProjectResolver(appengineWebXml);
+    try {
+      projectResolver.getVersion(VERSION_BUILD);
+      Assert.fail();
+    } catch (GradleException ex) {
+      Assert.assertEquals(
+          "Cannot override appengine.deploy config with appengine-web.xml. Either remove "
+              + "the project/version properties from your build.gradle, or clear the "
+              + "deploy.read.appengine.web.xml system property to read from build.gradle.",
+          ex.getMessage());
+    }
+  }
+
+  @Test
+  public void testGetVersion_noSysPropertyOnlyXml() {
+    projectResolver = new ProjectResolver(appengineWebXml);
+    try {
+      projectResolver.getVersion(null);
+      Assert.fail();
+    } catch (GradleException ex) {
+      Assert.assertEquals(
+          "appengine-plugin does not use gcloud global project state. If you would like to "
+              + "use the state from appengine-web.xml, please set the system property "
+              + "deploy.read.appengine.web.xml.",
           ex.getMessage());
     }
   }

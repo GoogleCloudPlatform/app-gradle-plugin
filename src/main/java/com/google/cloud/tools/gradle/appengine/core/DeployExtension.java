@@ -128,7 +128,7 @@ public class DeployExtension
 
   @Override
   public String getVersion() {
-    return version;
+    return (projectResolver == null ? version : projectResolver.getVersion(version));
   }
 
   public void setVersion(String version) {

@@ -19,6 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.MultiModuleTestProject;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class RunExtensionTest {
   @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
 
   @Test
-  public void testProjectAsService_multiModuleBuilds() {
+  public void testProjectAsService_multiModuleBuilds() throws IOException {
     Project p =
         new MultiModuleTestProject(tmpDir.getRoot())
             .addModule("frontend")

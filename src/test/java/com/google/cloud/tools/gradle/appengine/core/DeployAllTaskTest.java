@@ -164,8 +164,7 @@ public class DeployAllTaskTest {
   }
 
   @Test
-  public void testDeployAllAction_configNotModified()
-      throws AppEngineException, IOException {
+  public void testDeployAllAction_configNotModified() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
     final File appYaml = tempFolder.newFile("staging/app.yaml");
     final File testDeployable = tempFolder.newFile("testDeployable");

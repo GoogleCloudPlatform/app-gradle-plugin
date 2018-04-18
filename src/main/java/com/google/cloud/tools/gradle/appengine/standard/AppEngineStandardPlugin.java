@@ -122,7 +122,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                       .resolve("WEB-INF")
                       .resolve("appengine-web.xml")
                       .toFile();
-          deploy.setProjectResolver(new ProjectResolver(appengineWebXml));
+          deploy.setPropertyResolver(new PropertyResolver(appengineWebXml));
 
           DeployAllTask deployAllTask =
               (DeployAllTask)

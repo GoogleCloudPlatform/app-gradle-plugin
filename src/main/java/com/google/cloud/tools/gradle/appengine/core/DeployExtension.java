@@ -19,7 +19,7 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
-import com.google.cloud.tools.gradle.appengine.standard.ProjectResolver;
+import com.google.cloud.tools.gradle.appengine.standard.PropertyResolver;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class DeployExtension
   private Boolean stopPreviousVersion;
   private String version;
   private File appEngineDirectory;
-  private ProjectResolver projectResolver;
+  private PropertyResolver propertyResolver;
 
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
@@ -60,7 +60,7 @@ public class DeployExtension
     this.stopPreviousVersion = deployExtension.stopPreviousVersion;
     this.version = deployExtension.version;
     this.appEngineDirectory = deployExtension.appEngineDirectory;
-    this.projectResolver = deployExtension.projectResolver;
+    this.propertyResolver = deployExtension.propertyResolver;
   }
 
   @Override
@@ -92,7 +92,7 @@ public class DeployExtension
 
   @Override
   public String getProject() {
-    return (projectResolver == null ? project : projectResolver.getProject(project));
+    return (propertyResolver == null ? project : propertyResolver.getProject(project));
   }
 
   public void setProject(String project) {
@@ -128,7 +128,7 @@ public class DeployExtension
 
   @Override
   public String getVersion() {
-    return (projectResolver == null ? version : projectResolver.getVersion(version));
+    return (propertyResolver == null ? version : propertyResolver.getVersion(version));
   }
 
   public void setVersion(String version) {
@@ -144,7 +144,7 @@ public class DeployExtension
     return appEngineDirectory;
   }
 
-  public void setProjectResolver(ProjectResolver projectResolver) {
-    this.projectResolver = projectResolver;
+  public void setPropertyResolver(PropertyResolver propertyResolver) {
+    this.propertyResolver = propertyResolver;
   }
 }

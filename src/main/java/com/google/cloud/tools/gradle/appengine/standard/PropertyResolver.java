@@ -24,11 +24,11 @@ import java.io.IOException;
 import org.gradle.api.GradleException;
 import org.xml.sax.SAXException;
 
-public class ProjectResolver {
+public class PropertyResolver {
 
   private AppEngineDescriptor appEngineDescriptor;
 
-  ProjectResolver(File appengineWebXml) {
+  PropertyResolver(File appengineWebXml) {
     try (FileInputStream stream = new FileInputStream(appengineWebXml)) {
       appEngineDescriptor = AppEngineDescriptor.parse(stream);
     } catch (IOException | SAXException ex) {

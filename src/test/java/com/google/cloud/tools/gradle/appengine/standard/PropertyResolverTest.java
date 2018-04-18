@@ -28,7 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class ProjectResolverTest {
+public class PropertyResolverTest {
   private static final String PROJECT_BUILD = "project-build";
   private static final String PROJECT_XML = "project-xml";
   private static final String VERSION_BUILD = "version-build";
@@ -37,9 +37,9 @@ public class ProjectResolverTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private File appengineWebXml;
 
-  private ProjectResolver projectResolver;
+  private PropertyResolver propertyResolver;
 
-  /** Setup ProjectResolverTest. */
+  /** Setup PropertyResolverTest. */
   @Before
   public void setup() throws IOException {
     System.clearProperty("deploy.read.appengine.web.xml");
@@ -56,7 +56,7 @@ public class ProjectResolverTest {
         Charsets.UTF_8);
   }
 
-  /** Cleanup ProjectResolverTest. */
+  /** Cleanup PropertyResolverTest. */
   @After
   public void cleanup() {
     System.clearProperty("deploy.read.appengine.web.xml");
@@ -64,16 +64,16 @@ public class ProjectResolverTest {
 
   @Test
   public void testGetProject_buildConfig() {
-    projectResolver = new ProjectResolver(appengineWebXml);
-    String result = projectResolver.getProject(PROJECT_BUILD);
+    propertyResolver = new PropertyResolver(appengineWebXml);
+    String result = propertyResolver.getProject(PROJECT_BUILD);
     Assert.assertEquals(PROJECT_BUILD, result);
   }
 
   @Test
   public void testGetProject_xml() {
     System.setProperty("deploy.read.appengine.web.xml", "true");
-    projectResolver = new ProjectResolver(appengineWebXml);
-    String result = projectResolver.getProject(null);
+    propertyResolver = new PropertyResolver(appengineWebXml);
+    String result = propertyResolver.getProject(null);
     Assert.assertEquals(PROJECT_XML, result);
   }
 
@@ -86,9 +86,9 @@ public class ProjectResolverTest {
             + "</appengine-web-app>",
         appengineWebXml,
         Charsets.UTF_8);
-    projectResolver = new ProjectResolver(appengineWebXml);
+    propertyResolver = new PropertyResolver(appengineWebXml);
     try {
-      projectResolver.getProject(null);
+      propertyResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
@@ -101,9 +101,9 @@ public class ProjectResolverTest {
   @Test
   public void testGetProject_sysPropertyBothSet() {
     System.setProperty("deploy.read.appengine.web.xml", "true");
-    projectResolver = new ProjectResolver(appengineWebXml);
+    propertyResolver = new PropertyResolver(appengineWebXml);
     try {
-      projectResolver.getProject(PROJECT_BUILD);
+      propertyResolver.getProject(PROJECT_BUILD);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
@@ -116,9 +116,9 @@ public class ProjectResolverTest {
 
   @Test
   public void testGetProject_noSysPropertyOnlyXml() {
-    projectResolver = new ProjectResolver(appengineWebXml);
+    propertyResolver = new PropertyResolver(appengineWebXml);
     try {
-      projectResolver.getProject(null);
+      propertyResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
@@ -131,16 +131,16 @@ public class ProjectResolverTest {
 
   @Test
   public void testGetVersion_buildConfig() {
-    projectResolver = new ProjectResolver(appengineWebXml);
-    String result = projectResolver.getVersion(VERSION_BUILD);
+    propertyResolver = new PropertyResolver(appengineWebXml);
+    String result = propertyResolver.getVersion(VERSION_BUILD);
     Assert.assertEquals(VERSION_BUILD, result);
   }
 
   @Test
   public void testGetVersion_xml() {
     System.setProperty("deploy.read.appengine.web.xml", "true");
-    projectResolver = new ProjectResolver(appengineWebXml);
-    String result = projectResolver.getVersion(null);
+    propertyResolver = new PropertyResolver(appengineWebXml);
+    String result = propertyResolver.getVersion(null);
     Assert.assertEquals(VERSION_XML, result);
   }
 
@@ -153,17 +153,17 @@ public class ProjectResolverTest {
             + "</appengine-web-app>",
         appengineWebXml,
         Charsets.UTF_8);
-    projectResolver = new ProjectResolver(appengineWebXml);
-    String result = projectResolver.getVersion(null);
+    propertyResolver = new PropertyResolver(appengineWebXml);
+    String result = propertyResolver.getVersion(null);
     Assert.assertEquals(null, result);
   }
 
   @Test
   public void testGetVersion_sysPropertyBothSet() {
     System.setProperty("deploy.read.appengine.web.xml", "true");
-    projectResolver = new ProjectResolver(appengineWebXml);
+    propertyResolver = new PropertyResolver(appengineWebXml);
     try {
-      projectResolver.getVersion(VERSION_BUILD);
+      propertyResolver.getVersion(VERSION_BUILD);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
@@ -176,9 +176,9 @@ public class ProjectResolverTest {
 
   @Test
   public void testGetVersion_noSysPropertyOnlyXml() {
-    projectResolver = new ProjectResolver(appengineWebXml);
+    propertyResolver = new PropertyResolver(appengineWebXml);
     try {
-      projectResolver.getVersion(null);
+      propertyResolver.getVersion(null);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(

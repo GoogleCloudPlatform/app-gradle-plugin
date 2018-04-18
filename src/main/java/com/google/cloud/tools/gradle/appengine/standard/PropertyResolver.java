@@ -86,8 +86,8 @@ public class PropertyResolver {
     } else if (!readAppEngineWebXml && buildProperty == null && xmlProperty != null) {
       // Should be reading from build file, but it's only configured in appengine-web.xml
       throw new GradleException(
-          "appengine-plugin does not use gcloud global project state. If you would like to "
-              + "use the state from appengine-web.xml, please set the system property "
+          "appengine-plugin does not use gcloud global state for project/version. If you would "
+              + "like to use the state from appengine-web.xml, please set the system property "
               + "deploy.read.appengine.web.xml=true.");
     }
 

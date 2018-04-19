@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.gradle.appengine.standard.PropertyResolver;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -71,7 +72,8 @@ public class ShowConfigurationTask extends DefaultTask {
         continue;
       }
       // This is just a helper for the extensions, don't show it
-      if (field.getType().equals(org.gradle.api.Project.class)) {
+      if (field.getType().equals(org.gradle.api.Project.class)
+          || field.getType().equals(PropertyResolver.class)) {
         continue;
       }
       result.append(getFieldData(field, extensionInstance, depth + 1));
@@ -122,7 +124,7 @@ public class ShowConfigurationTask extends DefaultTask {
   }
 
   private static String getGetterFromFieldName(String name) {
-    return "get" + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
+    return "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
 
   // Extract the generic type information <...>, recursively including any nested generic type info.

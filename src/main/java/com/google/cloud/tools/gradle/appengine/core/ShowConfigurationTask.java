@@ -22,6 +22,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -106,10 +108,21 @@ public class ShowConfigurationTask extends DefaultTask {
         .append(getGenericTypeData(root.getGenericType()))
         .append(") ")
         .append(root.getName())
-        .append(" = ")
-        .append(root.get(instance))
-        .append("\n");
+        .append(" = ");
+    try {
+      Method getter = instance.getClass().getMethod(getGetterFromFieldName(root.getName()));
+      result.append(getter.invoke(instance));
+    } catch (NoSuchMethodException ex) {
+      result.append(root.get(instance));
+    } catch (InvocationTargetException ex) {
+      result.append("<Failed to read property: ").append(ex.getCause().getMessage()).append(">");
+    }
+    result.append("\n");
     return result.toString();
+  }
+
+  private static String getGetterFromFieldName(String name) {
+    return "get" + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
   }
 
   // Extract the generic type information <...>, recursively including any nested generic type info.

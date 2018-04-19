@@ -38,7 +38,7 @@ public class ShowConfigurationTaskTest {
             + "    y {\n"
             + "      (int) yy = 0\n"
             + "      z {\n"
-            + "        (String) zz = hello\n"
+            + "        (String) zz = HELLO\n"
             + "        (Map<String, List<String>>) zzNested = {a=[a1, a2], b=[b1, b2]}\n"
             + "      }\n"
             + "    }\n"

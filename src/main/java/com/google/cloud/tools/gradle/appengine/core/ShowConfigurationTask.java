@@ -30,6 +30,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.internal.plugins.ExtensionContainerInternal;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.tasks.Input;
@@ -72,8 +73,7 @@ public class ShowConfigurationTask extends DefaultTask {
         continue;
       }
       // This is just a helper for the extensions, don't show it
-      if (field.getType().equals(org.gradle.api.Project.class)
-          || field.getType().equals(PropertyResolver.class)) {
+      if (field.getType().equals(Project.class) || field.getType().equals(PropertyResolver.class)) {
         continue;
       }
       result.append(getFieldData(field, extensionInstance, depth + 1));

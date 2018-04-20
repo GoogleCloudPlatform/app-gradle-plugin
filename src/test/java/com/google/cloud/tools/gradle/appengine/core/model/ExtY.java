@@ -24,6 +24,6 @@ public class ExtY {
   int yy = 0;
 
   public int getYy() {
-    return yy + 1;
+    return yy;
   }
 }

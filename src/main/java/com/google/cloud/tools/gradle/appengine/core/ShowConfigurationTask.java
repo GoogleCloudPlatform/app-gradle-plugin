@@ -25,6 +25,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.gradle.api.DefaultTask;
@@ -64,7 +66,9 @@ public class ShowConfigurationTask extends DefaultTask {
     result.append(spaces(depth)).append(extensionName).append(" {\n");
 
     // all non-extension fields
-    for (Method method : extensionInstance.getClass().getSuperclass().getDeclaredMethods()) {
+    Method[] methods = extensionInstance.getClass().getSuperclass().getDeclaredMethods();
+    Arrays.sort(methods, Comparator.comparing(Method::getName));
+    for (Method method : methods) {
       // ignore synthetic fields (stuff added by compiler or instrumenter)
       if (method.isSynthetic()) {
         continue;

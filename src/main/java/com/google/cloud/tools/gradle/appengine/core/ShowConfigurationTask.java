@@ -17,12 +17,10 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.gradle.appengine.standard.PropertyResolver;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +28,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
 import org.gradle.api.internal.plugins.ExtensionContainerInternal;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.tasks.Input;
@@ -67,16 +64,16 @@ public class ShowConfigurationTask extends DefaultTask {
     result.append(spaces(depth)).append(extensionName).append(" {\n");
 
     // all non-extension fields
-    for (Field field : extensionInstance.getClass().getSuperclass().getDeclaredFields()) {
+    for (Method method : extensionInstance.getClass().getSuperclass().getDeclaredMethods()) {
       // ignore synthetic fields (stuff added by compiler or instrumenter)
-      if (field.isSynthetic()) {
+      if (method.isSynthetic()) {
         continue;
       }
-      // This is just a helper for the extensions, don't show it
-      if (field.getType().equals(Project.class) || field.getType().equals(PropertyResolver.class)) {
-        continue;
+      if (method.getName().startsWith("get")
+          && method.getParameterCount() == 0
+          && method.getReturnType() != void.class) {
+        result.append(getMethodData(method, extensionInstance, depth + 1));
       }
-      result.append(getFieldData(field, extensionInstance, depth + 1));
     }
 
     // all extension fields
@@ -99,23 +96,20 @@ public class ShowConfigurationTask extends DefaultTask {
   }
 
   // Extract the type (and generic type parameters) and value for a given field.
-  private static String getFieldData(Field root, Object instance, int depth)
+  private static String getMethodData(Method method, Object instance, int depth)
       throws IllegalAccessException {
     StringBuilder result = new StringBuilder("");
-    root.setAccessible(true);
+    method.setAccessible(true);
     result
         .append(spaces(depth))
         .append("(")
-        .append(root.getType().getSimpleName())
-        .append(getGenericTypeData(root.getGenericType()))
+        .append(method.getReturnType().getSimpleName())
+        .append(getGenericTypeData(method.getGenericReturnType()))
         .append(") ")
-        .append(root.getName())
+        .append(getFieldNameFromGetter(method.getName()))
         .append(" = ");
     try {
-      Method getter = instance.getClass().getMethod(getGetterFromFieldName(root.getName()));
-      result.append(getter.invoke(instance));
-    } catch (NoSuchMethodException ex) {
-      result.append(root.get(instance));
+      result.append(method.invoke(instance));
     } catch (InvocationTargetException ex) {
       result.append("<Failed to read property: ").append(ex.getCause().getMessage()).append(">");
     }
@@ -123,8 +117,8 @@ public class ShowConfigurationTask extends DefaultTask {
     return result.toString();
   }
 
-  private static String getGetterFromFieldName(String name) {
-    return "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+  private static String getFieldNameFromGetter(String name) {
+    return Character.toLowerCase(name.charAt(3)) + name.substring(4);
   }
 
   // Extract the generic type information <...>, recursively including any nested generic type info.

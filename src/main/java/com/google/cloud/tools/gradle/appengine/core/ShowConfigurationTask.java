@@ -70,6 +70,8 @@ public class ShowConfigurationTask extends DefaultTask {
         continue;
       }
       if (method.getName().startsWith("get")
+          && method.getName().length() >= 4
+          && Character.isUpperCase(method.getName().charAt(3))
           && method.getParameterCount() == 0
           && method.getReturnType() != void.class) {
         result.append(getMethodData(method, extensionInstance, depth + 1));

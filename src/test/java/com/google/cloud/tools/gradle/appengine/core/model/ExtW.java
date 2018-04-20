@@ -17,10 +17,4 @@
 
 package com.google.cloud.tools.gradle.appengine.core.model;
 
-public class ExtX {
-  String xx = "hello";
-
-  public String getXx() {
-    return xx.toUpperCase();
-  }
-}
+public class ExtW {}

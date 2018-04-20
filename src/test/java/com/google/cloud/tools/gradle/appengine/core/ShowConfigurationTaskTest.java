@@ -17,7 +17,6 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.gradle.appengine.core.model.ExtW;
 import com.google.cloud.tools.gradle.appengine.core.model.ExtX;
 import com.google.cloud.tools.gradle.appengine.core.model.ExtY;
 import com.google.cloud.tools.gradle.appengine.core.model.ExtZ;
@@ -36,9 +35,8 @@ public class ShowConfigurationTaskTest {
         ""
             + "root {\n"
             + "  x {\n"
-            + "    (String) xx = HELLO\n"
             + "    y {\n"
-            + "      (int) yy = 0\n"
+            + "      (int) yy = 1\n"
             + "      z {\n"
             + "        (Map<String, List<String>>) zzNested = {a=[a1, a2], b=[b1, b2]}\n"
             + "      }\n"
@@ -46,7 +44,7 @@ public class ShowConfigurationTaskTest {
             + "  }\n"
             + "}\n";
     Project p = ProjectBuilder.builder().build();
-    ExtensionAware root = (ExtensionAware) p.getExtensions().create("root", ExtW.class);
+    ExtensionAware root = (ExtensionAware) p.getExtensions().create("root", ExtX.class);
     ExtensionAware x = (ExtensionAware) root.getExtensions().create("x", ExtX.class);
     ExtensionAware y = (ExtensionAware) x.getExtensions().create("y", ExtY.class);
     y.getExtensions().create("z", ExtZ.class);

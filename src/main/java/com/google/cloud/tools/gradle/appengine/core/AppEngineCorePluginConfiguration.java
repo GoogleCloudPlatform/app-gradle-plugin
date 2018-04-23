@@ -61,7 +61,7 @@ public class AppEngineCorePluginConfiguration {
     project
         .getLogger()
         .warn(
-            "WARNING: You are a using a release candidate for "
+            "WARNING: You are a using release candidate "
                 + getClass().getPackage().getImplementationVersion()
                 + ". Behavior of this plugin has changed since 1.3.5. Please see release notes at: "
                 + "https://github.com/GoogleCloudPlatform/app-gradle-plugin.");

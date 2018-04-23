@@ -34,12 +34,11 @@ import org.gradle.util.GradleVersion;
  */
 public class AppEnginePlugin implements Plugin<Project> {
 
-  static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
+  private static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
 
   @Override
   public void apply(Project project) {
-    checkGradleVersion(project);
-
+    checkGradleVersion();
     if (isAppEngineStandard(project)) {
       project.getPluginManager().apply(AppEngineStandardPlugin.class);
     } else {
@@ -60,14 +59,10 @@ public class AppEnginePlugin implements Plugin<Project> {
     // convention based lookup of appengine-web.xml as a fallback
     Path appengineWebXml =
         project.getProjectDir().toPath().resolve("src/main/webapp/WEB-INF/appengine-web.xml");
-    if (Files.exists(appengineWebXml)) {
-      return true;
-    }
-
-    return false;
+    return Files.exists(appengineWebXml);
   }
 
-  private void checkGradleVersion(Project project) {
+  private void checkGradleVersion() {
     if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
       throw new GradleException(
           "Detected "

@@ -67,12 +67,18 @@ public class AppEngineStandardPluginIntegrationTest {
   @Parameter(1)
   public String devAppServerStartedString;
 
+  // Used to fail tests when assertion fails outside of main thread
+  private volatile Throwable threadException;
+
+  /** Setup AppEngineStandardPluginIntegrationTest. */
   @Before
   public void setUp() throws IOException {
     System.setProperty("deploy.read.appengine.web.xml", "true");
     FileUtils.copyDirectory(new File(testProjectSrcDirectory), testProjectDir.getRoot());
+    threadException = null;
   }
 
+  /** Cleanup AppEngineStandardPluginIntegrationTest. */
   @After
   public void cleanup() {
     System.clearProperty("deploy.read.appengine.web.xml");
@@ -80,25 +86,33 @@ public class AppEngineStandardPluginIntegrationTest {
 
   @Test
   public void testDevAppServer_sync() throws IOException, InterruptedException {
-    Thread thread = new Thread(() -> {
-      try {
-        AssertConnection.assertResponseWithRetries(
-            "http://localhost:8080", 200, "Hello from the App Engine Standard project.", 60000);
-      } catch (InterruptedException ex) {
-        ex.printStackTrace();
-      } finally {
-        // stop server
-        try {
-          GradleRunner.create()
-              .withProjectDir(testProjectDir.getRoot())
-              .withPluginClasspath()
-              .withArguments("appengineStop")
-              .build();
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    });
+    Thread.UncaughtExceptionHandler handler = (thread, throwable) -> threadException = throwable;
+    Thread thread =
+        new Thread(
+            () -> {
+              try {
+                // Attempt to connect to server for 60 seconds
+                AssertConnection.assertResponseWithRetries(
+                    "http://localhost:8080",
+                    200,
+                    "Hello from the App Engine Standard project.",
+                    60000);
+              } catch (InterruptedException ex) {
+                Assert.fail(ex.getMessage());
+              } finally {
+                // stop server
+                try {
+                  GradleRunner.create()
+                      .withProjectDir(testProjectDir.getRoot())
+                      .withPluginClasspath()
+                      .withArguments("appengineStop")
+                      .build();
+                } catch (Exception ex) {
+                  ex.printStackTrace();
+                }
+              }
+            });
+    thread.setUncaughtExceptionHandler(handler);
     thread.setDaemon(true);
     thread.start();
 
@@ -109,6 +123,10 @@ public class AppEngineStandardPluginIntegrationTest {
         .build();
 
     thread.join();
+
+    if (threadException != null) {
+      Assert.fail(threadException.getMessage());
+    }
 
     AssertConnection.assertUnreachable("http://localhost:8080", 8000);
   }

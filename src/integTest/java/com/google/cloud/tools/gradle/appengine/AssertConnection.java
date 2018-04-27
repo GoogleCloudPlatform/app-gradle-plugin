@@ -59,4 +59,30 @@ public class AssertConnection {
     }
     Assert.fail("ConnectException expected");
   }
+
+  /** Connect and assert response is as expected within a specified time interval. */
+  public static void assertResponseWithRetries(
+      String url, int expectedCode, String expectedText, long timeout) throws InterruptedException {
+    long waitedMs = 0;
+    while (waitedMs < timeout) {
+      try {
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+        int responseCode = urlConnection.getResponseCode();
+        String response =
+            CharStreams.toString(new InputStreamReader(urlConnection.getInputStream()));
+
+        // Will only reach this point when a response is reached
+        Assert.assertEquals(expectedCode, responseCode);
+        Assert.assertThat(response, CoreMatchers.equalTo(expectedText));
+        return;
+
+      } catch (IOException ex) {
+        // No response, wait 100ms and try again
+        Thread.sleep(100);
+        waitedMs += 100;
+      }
+    }
+
+    Assert.fail("No response received in specified time interval.");
+  }
 }

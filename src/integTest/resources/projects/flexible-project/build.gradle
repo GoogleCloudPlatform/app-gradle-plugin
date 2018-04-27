@@ -28,3 +28,9 @@ repositories {
 dependencies {
   compile "javax.servlet:servlet-api:2.5"
 }
+
+appengine {
+  deploy {
+    project "travis-app-maven-plugin"
+  }
+}

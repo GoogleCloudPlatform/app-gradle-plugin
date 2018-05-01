@@ -39,12 +39,12 @@ public class AppEngineStandardExtension implements AppEngineCoreExtensionPropert
   public void createSubExtensions(Project project) {
     tools =
         ((ExtensionAware) this).getExtensions().create(TOOLS_EXT, ToolsExtension.class, project);
+    deploy =
+        ((ExtensionAware) this).getExtensions().create(DEPLOY_EXT, DeployExtension.class, project);
     stage =
         ((ExtensionAware) this)
             .getExtensions()
             .create(STAGE_EXT, StageStandardExtension.class, project);
-    deploy =
-        ((ExtensionAware) this).getExtensions().create(DEPLOY_EXT, DeployExtension.class, project);
     run = ((ExtensionAware) this).getExtensions().create(RUN_EXT, RunExtension.class, project);
   }
 

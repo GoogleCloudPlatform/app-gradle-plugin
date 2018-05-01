@@ -21,6 +21,7 @@ import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfigura
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import java.io.File;
+import java.util.Collections;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -86,7 +87,9 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
           // obtain deploy extension set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
-          deploy.updateDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
+          deploy.updateDeployables(
+              Collections.singletonList(
+                  new File(stageExtension.getStagingDirectory(), "app.yaml")));
 
           // grab default project configuration from staging default
           if (deploy.getAppEngineDirectory() == null) {

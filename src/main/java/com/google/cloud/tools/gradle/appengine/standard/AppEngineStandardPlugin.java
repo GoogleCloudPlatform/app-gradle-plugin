@@ -23,6 +23,7 @@ import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import java.io.File;
+import java.util.Collections;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
@@ -95,7 +96,9 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
           // obtain deploy extension and set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
-          deploy.updateDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
+          deploy.updateDeployables(
+              Collections.singletonList(
+                  new File(stageExtension.getStagingDirectory(), "app.yaml")));
 
           if (deploy.getAppEngineDirectory() == null) {
             deploy.setAppEngineDirectory(

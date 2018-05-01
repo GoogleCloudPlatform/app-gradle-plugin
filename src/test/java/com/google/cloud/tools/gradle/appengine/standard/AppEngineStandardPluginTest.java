@@ -288,9 +288,6 @@ public class AppEngineStandardPluginTest {
         new File(p.getBuildDir(), "staged-app/WEB-INF/appengine-generated"),
         deployExt.getAppEngineDirectory());
     assertEquals(
-        Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
-        deployExt.getDeployables());
-    assertEquals(
         Collections.singletonList(new File(p.getBuildDir(), "exploded-" + p.getName())),
         run.getServices());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());

@@ -20,6 +20,7 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import java.io.File;
+import java.util.ArrayList;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
@@ -45,8 +46,7 @@ public class DeployAllTask extends DefaultTask {
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
-    DeployExtension deployCopy = new DeployExtension(deployConfig);
-    deployCopy.getDeployables().clear();
+    DeployExtension deployCopy = new DeployExtension(deployConfig, new ArrayList<>());
 
     // Look for app.yaml
     File appYaml = stageDirectory.toPath().resolve("app.yaml").toFile();

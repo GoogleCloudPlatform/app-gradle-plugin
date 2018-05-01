@@ -31,9 +31,9 @@ public class DeployExtension
 
   // named gradleProject to disambiguate with deploy parameter "project"
   private final Project gradleProject;
+  private final List<File> deployables;
 
   private String bucket;
-  private List<File> deployables;
   private String imageUrl;
   private String project;
   private Boolean promote;
@@ -45,14 +45,13 @@ public class DeployExtension
 
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
+    this.deployables = new ArrayList<>();
   }
 
-  /** Creates and return a deep copy of the DeployExtension. */
-  public DeployExtension(DeployExtension deployExtension) {
+  /** Creates and return a copy of the DeployExtension with specified deployables. */
+  public DeployExtension(DeployExtension deployExtension, List<File> deployables) {
     this.gradleProject = deployExtension.gradleProject;
     this.bucket = deployExtension.bucket;
-    this.deployables =
-        deployExtension.deployables == null ? null : new ArrayList<>(deployExtension.deployables);
     this.imageUrl = deployExtension.imageUrl;
     this.project = deployExtension.project;
     this.promote = deployExtension.promote;
@@ -61,6 +60,7 @@ public class DeployExtension
     this.version = deployExtension.version;
     this.appEngineDirectory = deployExtension.appEngineDirectory;
     this.propertyResolver = deployExtension.propertyResolver;
+    this.deployables = deployables;
   }
 
   @Override
@@ -75,12 +75,6 @@ public class DeployExtension
   @Override
   public List<File> getDeployables() {
     return deployables;
-  }
-
-  // The name of this method is no longer "setDeployables" so the user can't configure it in
-  // their build file.
-  public void updateDeployables(List<File> deployables) {
-    this.deployables = deployables;
   }
 
   @Override

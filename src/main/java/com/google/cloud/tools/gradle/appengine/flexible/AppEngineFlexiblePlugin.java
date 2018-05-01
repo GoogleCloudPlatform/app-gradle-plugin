@@ -20,6 +20,7 @@ package com.google.cloud.tools.gradle.appengine.flexible;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import java.io.File;
 import java.util.Collections;
 import org.gradle.api.GradleException;
@@ -87,9 +88,6 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
           // obtain deploy extension set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
-          deploy.updateDeployables(
-              Collections.singletonList(
-                  new File(stageExtension.getStagingDirectory(), "app.yaml")));
 
           // grab default project configuration from staging default
           if (deploy.getAppEngineDirectory() == null) {
@@ -103,6 +101,14 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
                       .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME);
           deployAllTask.setStageDirectory(stageExtension.getStagingDirectory());
           deployAllTask.setDeployConfig(deploy);
+
+          DeployTask deployTask =
+              (DeployTask)
+                  project.getTasks().getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME);
+          deployTask.setDeployConfig(
+              deploy,
+              Collections.singletonList(
+                  new File(stageExtension.getStagingDirectory(), "app.yaml")));
         });
   }
 

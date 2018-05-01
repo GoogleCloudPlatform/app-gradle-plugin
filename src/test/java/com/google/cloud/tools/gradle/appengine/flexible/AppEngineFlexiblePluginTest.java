@@ -30,7 +30,6 @@ import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.bundling.Jar;
@@ -183,9 +182,6 @@ public class AppEngineFlexiblePluginTest {
         deployExt.getAppEngineDirectory().toPath());
     assertEquals((((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
-    assertEquals(
-        Collections.singletonList(new File(p.getBuildDir(), "staged-app/app.yaml")),
-        deployExt.getDeployables());
   }
 
   @Test

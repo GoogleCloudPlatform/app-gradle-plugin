@@ -21,6 +21,8 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
+import java.io.File;
+import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
@@ -30,8 +32,8 @@ public class DeployTask extends DefaultTask {
   private DeployExtension deployConfig;
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
 
-  public void setDeployConfig(DeployExtension deployConfig) {
-    this.deployConfig = deployConfig;
+  public void setDeployConfig(DeployExtension deployConfig, List<File> deployables) {
+    this.deployConfig = new DeployExtension(deployConfig, deployables);
   }
 
   public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {

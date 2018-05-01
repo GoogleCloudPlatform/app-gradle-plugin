@@ -64,9 +64,8 @@ public class DeployAllTaskTest {
   @Before
   public void setup() throws IOException, AppEngineException {
     Project tempProject = ProjectBuilder.builder().build();
-    deployConfig = new DeployExtension(tempProject);
     List<File> deployables = new ArrayList<>();
-    deployConfig.updateDeployables(deployables);
+    deployConfig = new DeployExtension(new DeployExtension(tempProject), deployables);
     deployCapture = ArgumentCaptor.forClass(DeployExtension.class);
     stageDir = tempFolder.newFolder("staging");
 

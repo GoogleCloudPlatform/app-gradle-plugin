@@ -26,4 +26,31 @@ public class ExtZ {
   private String zz = "hello";
   private Map<String, List<String>> zzNested =
       ImmutableMap.of("a", Arrays.asList("a1", "a2"), "b", Arrays.asList("b1", "b2"));
+
+  public String getZz() {
+    return zz.toUpperCase();
+  }
+
+  public Map<String, List<String>> getZzNested() {
+    return zzNested;
+  }
+
+  public String getThrownException() {
+    throw new RuntimeException("Getter threw an exception!");
+  }
+
+  // Dummies for testing getter detection
+  public void getNothing() {}
+
+  public String gettersStartWithGet() {
+    return "this is not actually a getter.";
+  }
+
+  public int get() {
+    return 4;
+  }
+
+  public int getParameter(int param) {
+    return param;
+  }
 }

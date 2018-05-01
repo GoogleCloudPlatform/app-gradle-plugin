@@ -22,4 +22,8 @@ import org.gradle.api.Project;
 public class ExtY {
   Project ignored;
   int yy = 0;
+
+  public int getYy() {
+    return yy;
+  }
 }

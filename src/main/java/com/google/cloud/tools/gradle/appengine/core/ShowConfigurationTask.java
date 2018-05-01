@@ -21,9 +21,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.gradle.api.DefaultTask;
@@ -36,7 +39,6 @@ import org.gradle.api.tasks.TaskAction;
 public class ShowConfigurationTask extends DefaultTask {
 
   private String extensionId;
-  private String allowedNestedPackageSearchPath;
 
   @Input
   public String getExtensionId() {
@@ -63,16 +65,20 @@ public class ShowConfigurationTask extends DefaultTask {
     result.append(spaces(depth)).append(extensionName).append(" {\n");
 
     // all non-extension fields
-    for (Field field : extensionInstance.getClass().getSuperclass().getDeclaredFields()) {
+    Method[] methods = extensionInstance.getClass().getSuperclass().getDeclaredMethods();
+    Arrays.sort(methods, Comparator.comparing(Method::getName));
+    for (Method method : methods) {
       // ignore synthetic fields (stuff added by compiler or instrumenter)
-      if (field.isSynthetic()) {
+      if (method.isSynthetic()) {
         continue;
       }
-      // This is just a helper for the extensions, don't show it
-      if (field.getType().equals(org.gradle.api.Project.class)) {
-        continue;
+      if (method.getName().startsWith("get")
+          && method.getName().length() >= 4
+          && Character.isUpperCase(method.getName().charAt(3))
+          && method.getParameterCount() == 0
+          && method.getReturnType() != void.class) {
+        result.append(getMethodData(method, extensionInstance, depth + 1));
       }
-      result.append(getFieldData(field, extensionInstance, depth + 1));
     }
 
     // all extension fields
@@ -95,21 +101,29 @@ public class ShowConfigurationTask extends DefaultTask {
   }
 
   // Extract the type (and generic type parameters) and value for a given field.
-  private static String getFieldData(Field root, Object instance, int depth)
+  private static String getMethodData(Method method, Object instance, int depth)
       throws IllegalAccessException {
     StringBuilder result = new StringBuilder("");
-    root.setAccessible(true);
+    method.setAccessible(true);
     result
         .append(spaces(depth))
         .append("(")
-        .append(root.getType().getSimpleName())
-        .append(getGenericTypeData(root.getGenericType()))
+        .append(method.getReturnType().getSimpleName())
+        .append(getGenericTypeData(method.getGenericReturnType()))
         .append(") ")
-        .append(root.getName())
-        .append(" = ")
-        .append(root.get(instance))
-        .append("\n");
+        .append(getFieldNameFromGetter(method.getName()))
+        .append(" = ");
+    try {
+      result.append(method.invoke(instance));
+    } catch (InvocationTargetException ex) {
+      result.append("<Failed to read property: ").append(ex.getCause().getMessage()).append(">");
+    }
+    result.append("\n");
     return result.toString();
+  }
+
+  private static String getFieldNameFromGetter(String name) {
+    return Character.toLowerCase(name.charAt(3)) + name.substring(4);
   }
 
   // Extract the generic type information <...>, recursively including any nested generic type info.

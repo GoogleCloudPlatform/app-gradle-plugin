@@ -16,9 +16,6 @@
  */
 
 appengine {
-  deploy {
-    deployables = ["test0", "test1"]
-  }
   run {
     services = ["test0", "test1"]
   }

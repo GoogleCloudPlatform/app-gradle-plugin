@@ -86,9 +86,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
           // obtain deploy extension set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
-          if (deploy.getDeployables() == null) {
-            deploy.setDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
-          }
+          deploy.updateDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
+
           // grab default project configuration from staging default
           if (deploy.getAppEngineDirectory() == null) {
             deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());

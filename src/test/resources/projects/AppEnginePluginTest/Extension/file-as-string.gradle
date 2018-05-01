@@ -15,9 +15,6 @@
  *
  */
 appengine {
-  deploy {
-    deployables = "test"
-  }
   run {
     services = "test"
   }

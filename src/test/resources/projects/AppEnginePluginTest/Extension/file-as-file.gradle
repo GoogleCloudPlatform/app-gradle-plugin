@@ -15,9 +15,6 @@
  *
  */
 appengine {
-  deploy {
-    deployables = file("test")
-  }
   run {
     services = new File("test")
   }

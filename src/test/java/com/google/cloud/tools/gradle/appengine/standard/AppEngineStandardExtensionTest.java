@@ -17,7 +17,6 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -80,13 +79,10 @@ public class AppEngineStandardExtensionTest {
     Project p = setUpTestProject("file-as-string");
 
     AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
-    DeployExtension deploy = ext.getDeploy();
     StageStandardExtension stage = ext.getStage();
     RunExtension run = ext.getRun();
     ToolsExtension tools = ext.getTools();
 
-    Assert.assertEquals(deploy.getDeployables().size(), 1);
-    Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
     Assert.assertEquals(run.getServices().size(), 1);
     Assert.assertEquals("test", run.getServices().get(0).getName());
     Assert.assertEquals("test", stage.getSourceDirectory().getName());
@@ -101,11 +97,7 @@ public class AppEngineStandardExtensionTest {
 
     AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
     RunExtension run = ext.getRun();
-    DeployExtension deploy = ext.getDeploy();
 
-    Assert.assertEquals(deploy.getDeployables().size(), 2);
-    Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());
-    Assert.assertEquals("test1", deploy.getDeployables().get(1).getName());
     Assert.assertEquals(run.getServices().size(), 2);
     Assert.assertEquals("test0", run.getServices().get(0).getName());
     Assert.assertEquals("test1", run.getServices().get(1).getName());
@@ -117,12 +109,9 @@ public class AppEngineStandardExtensionTest {
 
     AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
     RunExtension run = ext.getRun();
-    DeployExtension deploy = ext.getDeploy();
     StageStandardExtension stage = ext.getStage();
     ToolsExtension tools = ext.getTools();
 
-    Assert.assertEquals(deploy.getDeployables().size(), 1);
-    Assert.assertEquals("test", deploy.getDeployables().get(0).getName());
     Assert.assertEquals(run.getServices().size(), 1);
     Assert.assertEquals("test", run.getServices().get(0).getName());
     Assert.assertEquals("test", stage.getSourceDirectory().getName());
@@ -137,11 +126,7 @@ public class AppEngineStandardExtensionTest {
 
     AppEngineStandardExtension ext = p.getExtensions().getByType(AppEngineStandardExtension.class);
     RunExtension run = ext.getRun();
-    DeployExtension deploy = ext.getDeploy();
 
-    Assert.assertEquals(deploy.getDeployables().size(), 2);
-    Assert.assertEquals("test0", deploy.getDeployables().get(0).getName());
-    Assert.assertEquals("test1", deploy.getDeployables().get(1).getName());
     Assert.assertEquals(run.getServices().size(), 2);
     Assert.assertEquals("test0", run.getServices().get(0).getName());
     Assert.assertEquals("test1", run.getServices().get(1).getName());

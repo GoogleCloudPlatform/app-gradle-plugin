@@ -77,7 +77,9 @@ public class DeployExtension
     return deployables;
   }
 
-  public void setDeployables(Object deployables) {
+  // The name of this method is no longer "setDeployables" so the user can't configure it in
+  // their build file.
+  public void updateDeployables(Object deployables) {
     this.deployables = new ArrayList<>(gradleProject.files(deployables).getFiles());
   }
 

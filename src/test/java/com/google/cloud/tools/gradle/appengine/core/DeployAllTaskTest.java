@@ -66,7 +66,7 @@ public class DeployAllTaskTest {
     Project tempProject = ProjectBuilder.builder().build();
     deployConfig = new DeployExtension(tempProject);
     List<File> deployables = new ArrayList<>();
-    deployConfig.setDeployables(deployables);
+    deployConfig.updateDeployables(deployables);
     deployCapture = ArgumentCaptor.forClass(DeployExtension.class);
     stageDir = tempFolder.newFolder("staging");
 

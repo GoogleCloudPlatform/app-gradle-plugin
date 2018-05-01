@@ -95,9 +95,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
           // obtain deploy extension and set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
-          if (deploy.getDeployables() == null) {
-            deploy.setDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
-          }
+          deploy.updateDeployables(new File(stageExtension.getStagingDirectory(), "app.yaml"));
+
           if (deploy.getAppEngineDirectory() == null) {
             deploy.setAppEngineDirectory(
                 new File(stageExtension.getStagingDirectory(), "WEB-INF/appengine-generated"));

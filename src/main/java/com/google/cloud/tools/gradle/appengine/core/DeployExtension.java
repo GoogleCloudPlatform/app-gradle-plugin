@@ -48,7 +48,7 @@ public class DeployExtension
     this.deployables = ImmutableList.of();
   }
 
-  /** Creates and return a copy of the DeployExtension with specified deployables. */
+  /** Creates and returns a copy of the DeployExtension with specified deployables. */
   public DeployExtension(DeployExtension deployExtension, List<File> deployables) {
     this.gradleProject = deployExtension.gradleProject;
     this.bucket = deployExtension.bucket;

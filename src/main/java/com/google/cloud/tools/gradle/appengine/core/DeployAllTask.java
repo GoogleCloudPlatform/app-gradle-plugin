@@ -21,6 +21,7 @@ import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
@@ -46,32 +47,32 @@ public class DeployAllTask extends DefaultTask {
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
-    DeployExtension deployCopy = new DeployExtension(deployConfig, new ArrayList<>());
+    List<File> deployables = new ArrayList<>();
 
     // Look for app.yaml
     File appYaml = stageDirectory.toPath().resolve("app.yaml").toFile();
     if (!appYaml.exists()) {
       throw new GradleException("Failed to deploy all: app.yaml not found.");
     }
-    addDeployable(deployCopy, appYaml);
+    addDeployable(deployables, appYaml);
 
     // Look for configuration yamls
     String[] validYamls = {"cron.yaml", "dispatch.yaml", "dos.yaml", "index.yaml", "queue.yaml"};
     for (String yamlName : validYamls) {
-      File yaml = deployCopy.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
+      File yaml = deployConfig.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
       if (yaml.exists()) {
-        addDeployable(deployCopy, yaml);
+        addDeployable(deployables, yaml);
       }
     }
 
     // Deploy
     CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     AppEngineDeployment deploy = cloudSdkBuilderFactory.newAppEngineDeployment(sdk);
-    deploy.deploy(deployCopy);
+    deploy.deploy(new DeployExtension(deployConfig, deployables));
   }
 
-  private void addDeployable(DeployExtension deploy, File yaml) {
+  private void addDeployable(List<File> deployables, File yaml) {
     getLogger().info("appengineDeployAll: Preparing to deploy " + yaml.getName());
-    deploy.getDeployables().add(yaml);
+    deployables.add(yaml);
   }
 }

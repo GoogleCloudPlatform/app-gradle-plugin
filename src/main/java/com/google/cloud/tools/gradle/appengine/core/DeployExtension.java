@@ -20,8 +20,8 @@ package com.google.cloud.tools.gradle.appengine.core;
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
 import com.google.cloud.tools.gradle.appengine.standard.PropertyResolver;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import org.gradle.api.Project;
 
@@ -31,7 +31,7 @@ public class DeployExtension
 
   // named gradleProject to disambiguate with deploy parameter "project"
   private final Project gradleProject;
-  private final List<File> deployables;
+  private final ImmutableList<File> deployables;
 
   private String bucket;
   private String imageUrl;
@@ -45,7 +45,7 @@ public class DeployExtension
 
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
-    this.deployables = new ArrayList<>();
+    this.deployables = ImmutableList.<File>builder().build();
   }
 
   /** Creates and return a copy of the DeployExtension with specified deployables. */
@@ -60,7 +60,7 @@ public class DeployExtension
     this.version = deployExtension.version;
     this.appEngineDirectory = deployExtension.appEngineDirectory;
     this.propertyResolver = deployExtension.propertyResolver;
-    this.deployables = deployables;
+    this.deployables = ImmutableList.<File>builder().addAll(deployables).build();
   }
 
   @Override

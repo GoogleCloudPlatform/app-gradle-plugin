@@ -16,7 +16,6 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -29,8 +28,6 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk.Builder;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
@@ -64,8 +61,7 @@ public class DeployAllTaskTest {
   @Before
   public void setup() throws IOException, AppEngineException {
     Project tempProject = ProjectBuilder.builder().build();
-    List<File> deployables = new ArrayList<>();
-    deployConfig = new DeployExtension(new DeployExtension(tempProject), deployables);
+    deployConfig = new DeployExtension(tempProject);
     deployCapture = ArgumentCaptor.forClass(DeployExtension.class);
     stageDir = tempFolder.newFolder("staging");
 
@@ -160,22 +156,5 @@ public class DeployAllTaskTest {
     DeployConfiguration captured = deployCapture.getValue();
     assertTrue(captured.getDeployables().contains(appYaml));
     assertFalse(captured.getDeployables().contains(validInDifferentDirYaml));
-  }
-
-  @Test
-  public void testDeployAllAction_configNotModified() throws AppEngineException, IOException {
-    deployConfig.setAppEngineDirectory(stageDir);
-    final File appYaml = tempFolder.newFile("staging/app.yaml");
-    final File testDeployable = tempFolder.newFile("testDeployable");
-    deployConfig.getDeployables().add(testDeployable);
-
-    deployAllTask.deployAllAction();
-
-    verify(deploy).deploy(deployCapture.capture());
-    DeployConfiguration captured = deployCapture.getValue();
-    assertTrue(captured.getDeployables().contains(appYaml));
-
-    assertEquals(1, deployConfig.getDeployables().size());
-    assertTrue(deployConfig.getDeployables().contains(testDeployable));
   }
 }

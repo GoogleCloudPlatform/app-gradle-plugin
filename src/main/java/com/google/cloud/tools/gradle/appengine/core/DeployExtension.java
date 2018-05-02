@@ -45,7 +45,7 @@ public class DeployExtension
 
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
-    this.deployables = ImmutableList.<File>builder().build();
+    this.deployables = ImmutableList.of();
   }
 
   /** Creates and return a copy of the DeployExtension with specified deployables. */
@@ -60,7 +60,7 @@ public class DeployExtension
     this.version = deployExtension.version;
     this.appEngineDirectory = deployExtension.appEngineDirectory;
     this.propertyResolver = deployExtension.propertyResolver;
-    this.deployables = ImmutableList.<File>builder().addAll(deployables).build();
+    this.deployables = ImmutableList.copyOf(deployables);
   }
 
   @Override

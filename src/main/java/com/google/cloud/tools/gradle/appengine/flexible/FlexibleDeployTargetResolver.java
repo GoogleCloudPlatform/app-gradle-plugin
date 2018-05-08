@@ -28,12 +28,12 @@ public class FlexibleDeployTargetResolver implements DeployTargetResolver {
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
       throw new GradleException(
-          "project must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.project = 'my-project-name'\n"
-              + "2. set appengine.deploy.project = '"
+          "Deployment project must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.project = 'my-project-name'\n"
+              + "2. Set appengine.deploy.project = '"
               + GCLOUD_CONFIG
               + "' to use project from gcloud config.\n"
-              + "3. using "
+              + "3. Using "
               + APPENGINE_CONFIG
               + " is not allowed for flexible environment projects");
     } else if (configString.equals(GCLOUD_CONFIG)) {
@@ -49,12 +49,12 @@ public class FlexibleDeployTargetResolver implements DeployTargetResolver {
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
       throw new GradleException(
-          "version must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.version = 'my-version'\n"
-              + "2. set appengine.deploy.version = '"
+          "Deployment version must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.version = 'my-version'\n"
+              + "2. Set appengine.deploy.version = '"
               + GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.\n"
-              + "3. using "
+              + "3. Using "
               + APPENGINE_CONFIG
               + " is not allowed for flexible environment projects");
     } else if (configString.equals(GCLOUD_CONFIG)) {

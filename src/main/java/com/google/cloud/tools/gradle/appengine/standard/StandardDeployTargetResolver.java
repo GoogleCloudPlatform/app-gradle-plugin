@@ -38,14 +38,14 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
   public String getProject(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(
-          "project must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.project = 'my-project-name'\n"
-              + "2. set appengine.deploy.project = '"
+          "Deployment project must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.project = 'my-project-name'\n"
+              + "2. Set appengine.deploy.project = '"
               + APPENGINE_CONFIG
               + "' to use <application> from appengine-web.xml\n"
-              + "3. set appengine.deploy.project = '"
+              + "3. Set appengine.deploy.project = '"
               + GCLOUD_CONFIG
-              + "' to use project from gcloud config.");
+              + "' to use project from gcloud config");
     } else if (configString.equals(APPENGINE_CONFIG)) {
       try {
         AppEngineDescriptor appEngineDescriptor =
@@ -69,12 +69,12 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
   public String getVersion(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(
-          "version must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.version = 'my-version'\n"
-              + "2. set appengine.deploy.version = '"
+          "Deployment version must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.version = 'my-version'\n"
+              + "2. Set appengine.deploy.version = '"
               + APPENGINE_CONFIG
               + "' to use <version> from appengine-web.xml\n"
-              + "3. set appengine.deploy.version = '"
+              + "3. Set appengine.deploy.version = '"
               + GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.");
     } else if (configString.equals(APPENGINE_CONFIG)) {

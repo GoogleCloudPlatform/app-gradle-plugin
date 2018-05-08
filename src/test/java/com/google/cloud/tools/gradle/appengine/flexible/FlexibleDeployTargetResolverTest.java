@@ -45,12 +45,12 @@ public class FlexibleDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "project must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.project = 'my-project-name'\n"
-              + "2. set appengine.deploy.project = '"
+          "Deployment project must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.project = 'my-project-name'\n"
+              + "2. Set appengine.deploy.project = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to use project from gcloud config.\n"
-              + "3. using "
+              + "3. Using "
               + DeployTargetResolver.APPENGINE_CONFIG
               + " is not allowed for flexible environment projects",
           ex.getMessage());
@@ -72,12 +72,12 @@ public class FlexibleDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "project must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.project = 'my-project-name'\n"
-              + "2. set appengine.deploy.project = '"
+          "Deployment project must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.project = 'my-project-name'\n"
+              + "2. Set appengine.deploy.project = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to use project from gcloud config.\n"
-              + "3. using "
+              + "3. Using "
               + DeployTargetResolver.APPENGINE_CONFIG
               + " is not allowed for flexible environment projects",
           ex.getMessage());
@@ -99,12 +99,12 @@ public class FlexibleDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "version must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.version = 'my-version'\n"
-              + "2. set appengine.deploy.version = '"
+          "Deployment version must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.version = 'my-version'\n"
+              + "2. Set appengine.deploy.version = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.\n"
-              + "3. using "
+              + "3. Using "
               + DeployTargetResolver.APPENGINE_CONFIG
               + " is not allowed for flexible environment projects",
           ex.getMessage());
@@ -126,12 +126,12 @@ public class FlexibleDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "version must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.version = 'my-version'\n"
-              + "2. set appengine.deploy.version = '"
+          "Deployment version must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.version = 'my-version'\n"
+              + "2. Set appengine.deploy.version = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.\n"
-              + "3. using "
+              + "3. Using "
               + DeployTargetResolver.APPENGINE_CONFIG
               + " is not allowed for flexible environment projects",
           ex.getMessage());

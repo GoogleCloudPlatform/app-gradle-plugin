@@ -81,14 +81,14 @@ public class StandardDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "project must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.project = 'my-project-name'\n"
-              + "2. set appengine.deploy.project = '"
+          "Deployment project must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.project = 'my-project-name'\n"
+              + "2. Set appengine.deploy.project = '"
               + DeployTargetResolver.APPENGINE_CONFIG
               + "' to use <application> from appengine-web.xml\n"
-              + "3. set appengine.deploy.project = '"
+              + "3. Set appengine.deploy.project = '"
               + DeployTargetResolver.GCLOUD_CONFIG
-              + "' to use project from gcloud config.",
+              + "' to use project from gcloud config",
           ex.getMessage());
     }
   }
@@ -122,12 +122,12 @@ public class StandardDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "version must be defined or configured to read from system state\n"
-              + "1. set appengine.deploy.version = 'my-version'\n"
-              + "2. set appengine.deploy.version = '"
+          "Deployment version must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.version = 'my-version'\n"
+              + "2. Set appengine.deploy.version = '"
               + DeployTargetResolver.APPENGINE_CONFIG
               + "' to use <version> from appengine-web.xml\n"
-              + "3. set appengine.deploy.version = '"
+              + "3. Set appengine.deploy.version = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.",
           ex.getMessage());

@@ -19,7 +19,6 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
-import com.google.cloud.tools.gradle.appengine.standard.PropertyResolver;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -31,7 +30,6 @@ public class DeployExtension
 
   // named gradleProject to disambiguate with deploy parameter "project"
   private final Project gradleProject;
-  private final ImmutableList<File> deployables;
 
   private String bucket;
   private String imageUrl;
@@ -41,7 +39,9 @@ public class DeployExtension
   private Boolean stopPreviousVersion;
   private String version;
   private File appEngineDirectory;
-  private PropertyResolver propertyResolver;
+
+  @InternalProperty private final ImmutableList<File> deployables;
+  @InternalProperty private DeployTargetResolver deployTargetResolver;
 
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
@@ -59,7 +59,7 @@ public class DeployExtension
     this.stopPreviousVersion = deployExtension.stopPreviousVersion;
     this.version = deployExtension.version;
     this.appEngineDirectory = deployExtension.appEngineDirectory;
-    this.propertyResolver = deployExtension.propertyResolver;
+    this.deployTargetResolver = deployExtension.deployTargetResolver;
     this.deployables = ImmutableList.copyOf(deployables);
   }
 
@@ -88,7 +88,7 @@ public class DeployExtension
 
   @Override
   public String getProject() {
-    return (propertyResolver == null ? project : propertyResolver.getProject(project));
+    return deployTargetResolver.getProject(project);
   }
 
   public void setProject(String project) {
@@ -124,7 +124,7 @@ public class DeployExtension
 
   @Override
   public String getVersion() {
-    return (propertyResolver == null ? version : propertyResolver.getVersion(version));
+    return deployTargetResolver.getVersion(version);
   }
 
   public void setVersion(String version) {
@@ -140,7 +140,7 @@ public class DeployExtension
     return appEngineDirectory;
   }
 
-  public void setPropertyResolver(PropertyResolver propertyResolver) {
-    this.propertyResolver = propertyResolver;
+  public void setDeployTargetResolver(DeployTargetResolver deployTargetResolver) {
+    this.deployTargetResolver = deployTargetResolver;
   }
 }

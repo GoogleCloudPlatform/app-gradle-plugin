@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google LLC. All Rights Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,17 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.core.model;
+package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.gradle.appengine.core.InternalProperty;
-import org.gradle.api.Project;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ExtY {
-  Project ignored;
-  @InternalProperty private String someInternalString = "internal";
-  int yy = 0;
-}
+/**
+ * Add this annotation to an extension member that should not be printed (displayed to user) when
+ * running {@link ShowConfigurationTask}.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD})
+public @interface InternalProperty {}

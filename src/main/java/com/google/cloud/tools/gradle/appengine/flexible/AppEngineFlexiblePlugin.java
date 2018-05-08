@@ -94,6 +94,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
             deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
           }
 
+          deploy.setDeployTargetResolver(new FlexibleDeployTargetResolver());
+
           DeployAllTask deployAllTask =
               (DeployAllTask)
                   project

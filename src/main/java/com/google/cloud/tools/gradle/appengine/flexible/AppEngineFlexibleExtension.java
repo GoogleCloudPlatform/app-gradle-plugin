@@ -19,19 +19,20 @@ package com.google.cloud.tools.gradle.appengine.flexible;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.core.InternalProperty;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 
 public class AppEngineFlexibleExtension implements AppEngineCoreExtensionProperties {
-  private static final String TOOLS_EXT = "tools";
-  private static final String DEPLOY_EXT = "deploy";
-  private static final String STAGE_EXT = "stage";
+  @InternalProperty private static final String TOOLS_EXT = "tools";
+  @InternalProperty private static final String DEPLOY_EXT = "deploy";
+  @InternalProperty private static final String STAGE_EXT = "stage";
 
-  private ToolsExtension tools;
-  private DeployExtension deploy;
-  private StageFlexibleExtension stage;
+  @InternalProperty private ToolsExtension tools;
+  @InternalProperty private DeployExtension deploy;
+  @InternalProperty private StageFlexibleExtension stage;
 
   /** Create nested configuration blocks as Extensions. */
   public void createSubExtensions(Project project) {

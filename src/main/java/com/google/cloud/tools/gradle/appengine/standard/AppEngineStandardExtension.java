@@ -19,21 +19,22 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.core.InternalProperty;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 
 public class AppEngineStandardExtension implements AppEngineCoreExtensionProperties {
-  private static final String TOOLS_EXT = "tools";
-  private static final String DEPLOY_EXT = "deploy";
-  private static final String STAGE_EXT = "stage";
-  private static final String RUN_EXT = "run";
+  @InternalProperty private static final String TOOLS_EXT = "tools";
+  @InternalProperty private static final String DEPLOY_EXT = "deploy";
+  @InternalProperty private static final String STAGE_EXT = "stage";
+  @InternalProperty private static final String RUN_EXT = "run";
 
-  private ToolsExtension tools;
-  private DeployExtension deploy;
-  private StageStandardExtension stage;
-  private RunExtension run;
+  @InternalProperty private ToolsExtension tools;
+  @InternalProperty private DeployExtension deploy;
+  @InternalProperty private StageStandardExtension stage;
+  @InternalProperty private RunExtension run;
 
   /** Create nested configuration blocks as Extensions. */
   public void createSubExtensions(Project project) {

@@ -7,6 +7,8 @@ This Gradle plugin provides tasks to build and deploy Google App Engine applicat
 
 # Reference Documentation
 
+[User Guide](USER_GUIDE.md)
+
 App Engine Standard Environment:
 * [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle)
 * [App Engine Gradle Plugin Tasks and Parameters (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle-reference)

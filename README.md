@@ -5,9 +5,11 @@
 
 This Gradle plugin provides tasks to build and deploy Google App Engine applications.
 
-# Reference Documentation
+| 2.0 Release Candidates are Live |
+| :------------------------------ |
+| 2.0-rc have been published. The behavior of the appengine-gradle-plugin has changed since v1.+, please see the [CHANGELOG](CHANGELOG.md) for a full list of changes and an updated [USER GUIDE](USER_GUIDE.md) for details. If you are having trouble using or updating your plugin, please file a [new issue](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues).|
 
-[User Guide](USER_GUIDE.md)
+# Reference Documentation
 
 App Engine Standard Environment:
 * [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle)

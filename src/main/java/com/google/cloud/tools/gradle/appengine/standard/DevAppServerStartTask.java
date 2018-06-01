@@ -24,6 +24,8 @@ import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
 import java.io.File;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
+import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
@@ -34,6 +36,11 @@ public class DevAppServerStartTask extends DefaultTask {
   private CloudSdkBuilderFactory cloudSdkBuilderFactory;
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
   private File devAppServerLoggingDir;
+
+  public DevAppServerStartTask() {
+    // force it to always run (required since we use OutputDirectory)
+    this.getOutputs().upToDateWhen(task -> false);
+  }
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;

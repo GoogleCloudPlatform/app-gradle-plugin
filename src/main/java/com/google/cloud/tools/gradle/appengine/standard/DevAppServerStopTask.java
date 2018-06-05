@@ -48,8 +48,8 @@ public class DevAppServerStopTask extends DefaultTask {
     AppEngineDevServer server = serverHelper.getAppServer(sdk, runConfig);
     try {
       server.stop(serverHelper.getStopConfiguration(runConfig));
-    } catch (AppEngineException e) {
-      getLogger().warn("Failed to stop server: " + e.getMessage());
+    } catch (AppEngineException ex) {
+      getLogger().error("Failed to stop server: " + ex.getMessage());
     }
   }
 }

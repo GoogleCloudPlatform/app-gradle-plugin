@@ -24,8 +24,6 @@ import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
 import java.io.File;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Task;
-import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 

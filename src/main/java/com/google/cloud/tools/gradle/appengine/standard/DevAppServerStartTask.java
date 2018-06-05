@@ -35,6 +35,11 @@ public class DevAppServerStartTask extends DefaultTask {
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
   private File devAppServerLoggingDir;
 
+  public DevAppServerStartTask() {
+    // force it to always run (required since we use OutputDirectory)
+    this.getOutputs().upToDateWhen(task -> false);
+  }
+
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
   }

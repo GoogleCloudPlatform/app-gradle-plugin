@@ -20,9 +20,10 @@ package com.google.cloud.tools.gradle.appengine.standard;
 import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
 import com.google.cloud.tools.appengine.api.devserver.DefaultStopConfiguration;
 import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer1;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer2;
+import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -41,16 +42,16 @@ public class DevAppServerHelper {
   private Validator validator = new Validator();
 
   /** Return an appserver based on serverVersion. */
-  public AppEngineDevServer getAppServer(CloudSdk sdk, RunExtension run) {
+  public AppEngineDevServer getAppServer(LocalRun localRun, RunExtension run, ProcessHandler processHandler) {
 
     String serverVersion = run.getServerVersion();
     validator.validateServerVersion(serverVersion);
 
     switch (serverVersion) {
       case V1:
-        return new CloudSdkAppEngineDevServer1(sdk);
+        localRun.newDevAppServer1(processHandler);
       case V2:
-        return new CloudSdkAppEngineDevServer2(sdk);
+        localRun.newDevAppServer2(processHandler);
       default:
         throw new AssertionError("Unexpected serverVersion " + run.getServerVersion());
     }

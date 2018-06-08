@@ -41,9 +41,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CheckCloudSdkTaskTest {
 
-  @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-
-  @Mock private CloudSdk.Builder builder;
   @Mock private CloudSdk sdk;
 
   private CheckCloudSdkTask checkCloudSdkTask;
@@ -53,10 +50,7 @@ public class CheckCloudSdkTaskTest {
   public void setup() throws CloudSdkNotFoundException {
     Project tempProject = ProjectBuilder.builder().build();
     checkCloudSdkTask = tempProject.getTasks().create("tempCheckCloudSdk", CheckCloudSdkTask.class);
-    checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
-
-    when(cloudSdkBuilderFactory.newBuilder(Mockito.any(Logger.class))).thenReturn(builder);
-    when(builder.build()).thenReturn(sdk);
+    checkCloudSdkTask.setCloudSdk(sdk);
   }
 
   @Test

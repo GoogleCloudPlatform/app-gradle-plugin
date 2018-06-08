@@ -21,9 +21,10 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import com.google.cloud.tools.appengine.cloudsdk.InvalidJavaSdkException;
-import com.google.cloud.tools.appengine.cloudsdk.internal.process.ProcessRunnerException;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandlerException;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.File;
 import java.io.IOException;
@@ -166,9 +167,7 @@ public class AppEngineStandardPluginIntegrationTest {
   }
 
   @Test
-  public void testDeploy()
-      throws ProcessRunnerException, CloudSdkNotFoundException, InvalidJavaSdkException,
-          CloudSdkVersionFileException, CloudSdkOutOfDateException {
+  public void testDeploy() throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
     BuildResult buildResult =
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
@@ -181,15 +180,12 @@ public class AppEngineStandardPluginIntegrationTest {
         buildResult.getOutput(),
         CoreMatchers.containsString("Deployed service [standard-project]"));
 
-    CloudSdk cloudSdk =
-        new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
-    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "standard-project"));
+    CloudSdk cloudSdk = new CloudSdk.Builder().build();
+    Gcloud.builder(cloudSdk).build().runCommand(Arrays.asList("gcloud", "services", "delete", "standard-project"));
   }
 
   @Test
-  public void testDeployAll()
-      throws ProcessRunnerException, CloudSdkNotFoundException, InvalidJavaSdkException,
-          CloudSdkVersionFileException, CloudSdkOutOfDateException {
+  public void testDeployAll() throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
     BuildResult buildResult =
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
@@ -213,8 +209,7 @@ public class AppEngineStandardPluginIntegrationTest {
     Assert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
-    CloudSdk cloudSdk =
-        new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
-    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "standard-project"));
+    CloudSdk cloudSdk = new CloudSdk.Builder().build();
+    Gcloud.builder(cloudSdk).build().runCommand(Arrays.asList("gcloud", "services", "delete", "standard-project"));
   }
 }

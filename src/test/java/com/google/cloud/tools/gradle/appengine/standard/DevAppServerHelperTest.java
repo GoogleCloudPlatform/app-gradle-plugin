@@ -25,6 +25,8 @@ import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer1;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDevServer2;
+import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
 import com.google.cloud.tools.gradle.appengine.standard.DevAppServerHelper.Validator;
 import org.gradle.api.ProjectConfigurationException;
 import org.hamcrest.Matchers;
@@ -41,12 +43,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DevAppServerHelperTest {
 
-  @Mock private CloudSdk sdk;
-
+  @Mock private LocalRun localRun;
+  @Mock private ProcessHandler processHandler;
   @Mock private RunExtension run;
-
   @Spy private Validator validator;
-
   @Rule public ExpectedException exception = ExpectedException.none();
 
   @InjectMocks private DevAppServerHelper helper = new DevAppServerHelper();
@@ -55,7 +55,7 @@ public class DevAppServerHelperTest {
   public void testGetAppServer_v1() {
     when(run.getServerVersion()).thenReturn("1");
     Assert.assertThat(
-        helper.getAppServer(sdk, run), Matchers.instanceOf(CloudSdkAppEngineDevServer1.class));
+        helper.getAppServer(localRun, run, processHandler), Matchers.instanceOf(CloudSdkAppEngineDevServer1.class));
     verify(validator, times(1)).validateServerVersion(run.getServerVersion());
   }
 
@@ -63,7 +63,7 @@ public class DevAppServerHelperTest {
   public void testGetAppServer_v2() {
     when(run.getServerVersion()).thenReturn("2-alpha");
     Assert.assertThat(
-        helper.getAppServer(sdk, run), Matchers.instanceOf(CloudSdkAppEngineDevServer2.class));
+        helper.getAppServer(localRun, run, processHandler), Matchers.instanceOf(CloudSdkAppEngineDevServer2.class));
     verify(validator, times(1)).validateServerVersion(run.getServerVersion());
   }
 
@@ -74,7 +74,7 @@ public class DevAppServerHelperTest {
     exception.expectMessage(
         "Invalid serverVersion 'nonsense' use one of " + DevAppServerHelper.SERVER_VERSIONS);
 
-    helper.getAppServer(sdk, run);
+    helper.getAppServer(localRun, run, processHandler);
   }
 
   @Test

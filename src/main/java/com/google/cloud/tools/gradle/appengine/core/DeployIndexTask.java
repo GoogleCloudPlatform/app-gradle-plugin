@@ -22,6 +22,7 @@ import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
@@ -29,21 +30,19 @@ import org.gradle.api.tasks.TaskAction;
 public class DeployIndexTask extends DefaultTask {
 
   private DeployProjectConfigurationConfiguration config;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private Gcloud gcloud;
 
   public void setDeployConfig(DeployProjectConfigurationConfiguration config) {
     this.config = config;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setGcloud(Gcloud gcloud) {
+    this.gcloud = gcloud;
   }
 
   /** Task entrypoint : deploy index.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
-    AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
-    deploy.deployIndex(config);
+    gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger())).deployIndex(config);
   }
 }

@@ -19,11 +19,8 @@ package com.google.cloud.tools.gradle.appengine;
 
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
-import com.google.cloud.tools.appengine.cloudsdk.InvalidJavaSdkException;
-import com.google.cloud.tools.appengine.cloudsdk.internal.process.ProcessRunnerException;
-import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandlerException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -52,9 +49,7 @@ public class AppEngineFlexiblePluginIntegrationTest {
   }
 
   @Test
-  public void testDeploy()
-      throws ProcessRunnerException, CloudSdkNotFoundException, CloudSdkOutOfDateException,
-          CloudSdkVersionFileException, InvalidJavaSdkException {
+  public void testDeploy() throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
 
     BuildResult buildResult =
         GradleRunner.create()
@@ -68,15 +63,12 @@ public class AppEngineFlexiblePluginIntegrationTest {
         buildResult.getOutput(),
         CoreMatchers.containsString("Deployed service [flexible-project]"));
 
-    CloudSdk cloudSdk =
-        new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
-    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "flexible-project"));
+    CloudSdk cloudSdk = new CloudSdk.Builder().build();
+    Gcloud.builder(cloudSdk).build().runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
   }
 
   @Test
-  public void testDeployAll()
-      throws ProcessRunnerException, CloudSdkNotFoundException, CloudSdkOutOfDateException,
-          CloudSdkVersionFileException, InvalidJavaSdkException {
+  public void testDeployAll() throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
 
     BuildResult buildResult =
         GradleRunner.create()
@@ -101,8 +93,7 @@ public class AppEngineFlexiblePluginIntegrationTest {
     Assert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
-    CloudSdk cloudSdk =
-        new CloudSdk.Builder().exitListener(new NonZeroExceptionExitListener()).build();
-    cloudSdk.runAppCommand(Arrays.asList("services", "delete", "flexible-project"));
+    CloudSdk cloudSdk = new CloudSdk.Builder().build();
+    Gcloud.builder(cloudSdk).build().runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
   }
 }

@@ -17,14 +17,16 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import java.io.File;
 import java.util.Collections;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
@@ -49,7 +51,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   public static final String RUN_EXTENSION = "run";
 
   private Project project;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private CloudSdkOperations cloudSdkOperations;
   private AppEngineStandardExtension appengineExtension;
   private RunExtension runExtension;
   private StageStandardExtension stageExtension;
@@ -88,12 +90,17 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     stageExtension.setSourceDirectory(explodedWarDir);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
 
-    // tools extension required to initialize cloudSdkBuilderFactory
+    // tools extension required to initialize cloudSdkOperations
     final ToolsExtension tools = appengineExtension.getTools();
     project.afterEvaluate(
         project -> {
           // create the sdk builder factory after we know the location of the sdk
-          cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome(), null);
+          try {
+            cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
+          } catch (CloudSdkNotFoundException ex) {
+            // this should be caught in AppEngineCorePluginConfig before it can ever reach here.
+            throw new GradleException("Could not find CloudSDK: ", ex);
+          }
 
           // obtain deploy extension and set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
@@ -169,7 +176,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                   project.afterEvaluate(
                       project -> {
                         stageTask1.setStagingConfig(stageExtension);
-                        stageTask1.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                        stageTask1.setAppCfg(cloudSdkOperations.getAppcfg());
                       });
                 });
 
@@ -218,7 +225,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     runTask.setRunConfig(runExtension);
-                    runTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    runTask.setLocalRun(cloudSdkOperations.getLocalRun());
                   });
             });
 
@@ -236,7 +243,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     startTask.setRunConfig(runExtension);
-                    startTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    startTask.setLocalRun(cloudSdkOperations.getLocalRun());
                     startTask.setDevAppServerLoggingDir(
                         new File(project.getBuildDir(), DEV_APP_SERVER_OUTPUT_DIR_NAME));
                   });
@@ -255,7 +262,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     stopTask.setRunConfig(runExtension);
-                    stopTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    stopTask.setLocalRun(cloudSdkOperations.getLocalRun());
                   });
             });
   }

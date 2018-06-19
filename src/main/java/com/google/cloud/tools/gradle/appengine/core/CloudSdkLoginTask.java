@@ -18,11 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAuth;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 

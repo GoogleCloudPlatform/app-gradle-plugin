@@ -29,5 +29,8 @@ dependencies {
   compile "javax.servlet:javax.servlet-api:3.1.0"
 }
 
+appengine.deploy.project = "APPENGINE_CONFIG"
+appengine.deploy.version = "APPENGINE_CONFIG"
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8

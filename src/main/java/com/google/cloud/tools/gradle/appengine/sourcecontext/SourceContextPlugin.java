@@ -63,8 +63,7 @@ public class SourceContextPlugin implements Plugin<Project> {
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(
-        project ->
-        {
+        project -> {
           try {
             cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
           } catch (CloudSdkNotFoundException ex) {

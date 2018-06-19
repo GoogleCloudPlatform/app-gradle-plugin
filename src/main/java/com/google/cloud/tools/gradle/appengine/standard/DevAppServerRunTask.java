@@ -18,7 +18,6 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import org.gradle.api.DefaultTask;
@@ -43,6 +42,8 @@ public class DevAppServerRunTask extends DefaultTask {
   /** Task entrypoint : run the devappserver (blocking). */
   @TaskAction
   public void runAction() throws AppEngineException, ProjectConfigurationException {
-    serverHelper.getAppServer(localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger())).run(runConfig);
+    serverHelper
+        .getAppServer(localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()))
+        .run(runConfig);
   }
 }

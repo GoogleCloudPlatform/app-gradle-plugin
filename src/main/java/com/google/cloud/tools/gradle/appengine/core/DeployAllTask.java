@@ -18,7 +18,6 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import java.io.File;
 import java.util.ArrayList;
@@ -67,7 +66,8 @@ public class DeployAllTask extends DefaultTask {
     }
 
     // Deploy
-    AppEngineDeployment deploy = gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()));
+    AppEngineDeployment deploy =
+        gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()));
     deploy.deploy(new DeployExtension(deployConfig, deployables));
   }
 

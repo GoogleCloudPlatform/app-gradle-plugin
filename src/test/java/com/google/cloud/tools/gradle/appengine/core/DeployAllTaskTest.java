@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
@@ -38,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,8 +46,6 @@ public class DeployAllTaskTest {
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Mock private Gcloud gcloud;
-  @Mock private ProcessHandler processHandler;
-
   @Mock private CloudSdkAppEngineDeployment deploy;
 
   private DeployExtension deployConfig;
@@ -70,7 +68,7 @@ public class DeployAllTaskTest {
     deployAllTask.setGcloud(gcloud);
     deployAllTask.setStageDirectory(stageDir);
 
-    when(gcloud.newDeployment(processHandler)).thenReturn(deploy);
+    when(gcloud.newDeployment(Mockito.any(ProcessHandler.class))).thenReturn(deploy);
   }
 
   @Test

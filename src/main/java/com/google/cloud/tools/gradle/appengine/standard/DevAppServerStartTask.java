@@ -18,12 +18,10 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
 import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
 import java.io.File;
 import java.io.IOException;
@@ -72,13 +70,14 @@ public class DevAppServerStartTask extends DefaultTask {
     FileOutputLineListener logFileWriter = new FileOutputLineListener(logFile);
 
     Logger taskLogger = getLogger();
-    ProcessHandler processHandler = LegacyProcessHandler.builder()
-        .addStdOutLineListener(taskLogger::lifecycle)
-        .addStdOutLineListener(logFileWriter)
-        .addStdErrLineListener(taskLogger::lifecycle)
-        .addStdErrLineListener(logFileWriter)
-        .setExitListener(new NonZeroExceptionExitListener())
-        .buildDevAppServerAsync(runConfig.getStartSuccessTimeout());
+    ProcessHandler processHandler =
+        LegacyProcessHandler.builder()
+            .addStdOutLineListener(taskLogger::lifecycle)
+            .addStdOutLineListener(logFileWriter)
+            .addStdErrLineListener(taskLogger::lifecycle)
+            .addStdErrLineListener(logFileWriter)
+            .setExitListener(new NonZeroExceptionExitListener())
+            .buildDevAppServerAsync(runConfig.getStartSuccessTimeout());
 
     serverHelper.getAppServer(localRun, runConfig, processHandler).run(runConfig);
 

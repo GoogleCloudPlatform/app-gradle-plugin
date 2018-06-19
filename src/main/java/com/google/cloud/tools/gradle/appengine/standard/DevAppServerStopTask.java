@@ -19,7 +19,6 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
@@ -44,7 +43,9 @@ public class DevAppServerStopTask extends DefaultTask {
   /** Task entrypoint : Stop the dev appserver (get StopConfiguration from helper). */
   @TaskAction
   public void stopAction() throws CloudSdkNotFoundException {
-    AppEngineDevServer server = serverHelper.getAppServer(localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()));
+    AppEngineDevServer server =
+        serverHelper.getAppServer(
+            localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()));
     try {
       server.stop(serverHelper.getStopConfiguration(runConfig));
     } catch (AppEngineException ex) {

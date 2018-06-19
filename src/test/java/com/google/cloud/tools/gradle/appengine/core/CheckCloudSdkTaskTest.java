@@ -28,7 +28,6 @@ import com.google.cloud.tools.appengine.cloudsdk.InvalidJavaSdkException;
 import com.google.cloud.tools.appengine.cloudsdk.serialization.CloudSdkVersion;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
 import org.junit.Before;

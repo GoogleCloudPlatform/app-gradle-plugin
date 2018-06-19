@@ -64,11 +64,14 @@ public class AppEngineFlexiblePluginIntegrationTest {
         CoreMatchers.containsString("Deployed service [flexible-project]"));
 
     CloudSdk cloudSdk = new CloudSdk.Builder().build();
-    Gcloud.builder(cloudSdk).build().runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
+    Gcloud.builder(cloudSdk)
+        .build()
+        .runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
   }
 
   @Test
-  public void testDeployAll() throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
+  public void testDeployAll()
+      throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
 
     BuildResult buildResult =
         GradleRunner.create()
@@ -94,6 +97,8 @@ public class AppEngineFlexiblePluginIntegrationTest {
         buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
     CloudSdk cloudSdk = new CloudSdk.Builder().build();
-    Gcloud.builder(cloudSdk).build().runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
+    Gcloud.builder(cloudSdk)
+        .build()
+        .runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
   }
 }

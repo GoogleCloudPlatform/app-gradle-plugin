@@ -100,6 +100,7 @@ public class AppEngineCorePluginConfiguration {
             if (toolsExtension.getCloudSdkHome() == null) {
               managedCloudSdk =
                   new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion()).newManagedSdk();
+              toolsExtension.setCloudSdkHome(managedCloudSdk.getSdkHome().toFile());
             }
           } catch (UnsupportedOsException | BadCloudSdkVersionException ex) {
             throw new GradleException("Configuring... ", ex);
@@ -108,12 +109,11 @@ public class AppEngineCorePluginConfiguration {
           try {
             cloudSdkOperations =
                 new CloudSdkOperations(
-                    managedCloudSdk != null
-                        ? managedCloudSdk.getSdkHome().toFile()
-                        : toolsExtension.getCloudSdkHome(),
-                    toolsExtension.getServiceAccountKeyFile());
+                    toolsExtension.getCloudSdkHome(), toolsExtension.getServiceAccountKeyFile());
           } catch (CloudSdkNotFoundException ex) {
-            throw new GradleException("Could not find CloudSDK: ", ex);
+            // this should never happen, not foudn exception only occurs when auto-discovery fails,
+            // but we don't use that mechanism anymore.
+            throw new AssertionError("Failed when attempting to discover SDK: ", ex);
           }
         });
   }
@@ -130,7 +130,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    if (toolsExtension.getCloudSdkHome() == null) {
+                    if (managedCloudSdk != null) {
                       downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))

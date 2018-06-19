@@ -17,21 +17,16 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.AppCfg;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
 import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
-import com.google.cloud.tools.gradle.appengine.util.io.GradleLoggerOutputListener;
 import java.io.File;
 import org.gradle.api.Nullable;
-import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 
 /** Cloud Sdk Operations with all common configuration. */
@@ -42,7 +37,15 @@ public class CloudSdkOperations {
   private final LocalRun localRun;
   private final AppCfg appcfg;
 
-  public CloudSdkOperations(File cloudSdkHome, @Nullable File credentialFile) throws CloudSdkNotFoundException {
+  /**
+   * Operations factory for Cloud Sdk based actions.
+   *
+   * @param cloudSdkHome path to cloud sdk
+   * @param credentialFile optional path to a credential file
+   * @throws CloudSdkNotFoundException when cloud sdk path cannot be validated
+   */
+  public CloudSdkOperations(File cloudSdkHome, @Nullable File credentialFile)
+      throws CloudSdkNotFoundException {
     cloudSdk = new CloudSdk.Builder().sdkPath(cloudSdkHome.toPath()).build();
     localRun = LocalRun.builder(cloudSdk).build();
     gcloud =
@@ -71,6 +74,7 @@ public class CloudSdkOperations {
     return appcfg;
   }
 
+  /** Create a return a new default configured process handler. */
   public static ProcessHandler getDefaultHandler(Logger logger) {
     return LegacyProcessHandler.builder()
         .addStdErrLineListener(logger::lifecycle)

@@ -29,8 +29,8 @@ dependencies {
   compile "javax.servlet:servlet-api:2.5"
 }
 
-appengine.deploy.project = "APPENGINE_CONFIG"
-appengine.deploy.version = "APPENGINE_CONFIG"
+appengine.deploy.project = "GCLOUD_CONFIG"
+appengine.deploy.version = "1"
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7

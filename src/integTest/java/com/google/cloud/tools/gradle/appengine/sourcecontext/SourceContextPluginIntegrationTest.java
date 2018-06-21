@@ -98,18 +98,6 @@ public class SourceContextPluginIntegrationTest {
 
     String commitHash = "9a282640c4a91769d328bbf23e8d8b2b5dcbbb5b";
 
-    File sourceContextsFile =
-        new File(
-            testProjectDir.getRoot(),
-            "build/exploded-"
-                + testProjectDir.getRoot().getName() // this is project.name
-                + "/WEB-INF/classes/source-contexts.json");
-    Assert.assertTrue(
-        sourceContextsFile.getAbsolutePath() + " is missing", sourceContextsFile.exists());
-    Assert.assertTrue(
-        com.google.common.io.Files.toString(sourceContextsFile, Charsets.UTF_8)
-            .contains(commitHash));
-
     File sourceContextFile =
         new File(
             testProjectDir.getRoot(),

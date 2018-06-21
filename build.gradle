@@ -31,6 +31,7 @@ apply plugin: 'java'
 apply plugin: 'java-gradle-plugin'
 
 repositories {
+    mavenLocal()
   mavenCentral()
 }
 
@@ -47,7 +48,7 @@ group = 'com.google.cloud.tools'
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.6.2'
+  compile 'com.google.cloud.tools:appengine-plugins-core:0.6.4'
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'junit:junit:4.12'

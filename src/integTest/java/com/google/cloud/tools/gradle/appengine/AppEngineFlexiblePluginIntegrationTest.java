@@ -21,8 +21,11 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandlerException;
+import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
+import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import org.apache.commons.io.FileUtils;
 import org.gradle.testkit.runner.BuildResult;
@@ -49,7 +52,9 @@ public class AppEngineFlexiblePluginIntegrationTest {
   }
 
   @Test
-  public void testDeploy() throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
+  public void testDeploy()
+      throws CloudSdkNotFoundException, IOException, ProcessHandlerException,
+          UnsupportedOsException {
 
     BuildResult buildResult =
         GradleRunner.create()
@@ -63,15 +68,13 @@ public class AppEngineFlexiblePluginIntegrationTest {
         buildResult.getOutput(),
         CoreMatchers.containsString("Deployed service [flexible-project]"));
 
-    CloudSdk cloudSdk = new CloudSdk.Builder().build();
-    Gcloud.builder(cloudSdk)
-        .build()
-        .runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
+    deleteProject();
   }
 
   @Test
   public void testDeployAll()
-      throws CloudSdkNotFoundException, IOException, ProcessHandlerException {
+      throws CloudSdkNotFoundException, IOException, ProcessHandlerException,
+          UnsupportedOsException {
 
     BuildResult buildResult =
         GradleRunner.create()
@@ -96,9 +99,17 @@ public class AppEngineFlexiblePluginIntegrationTest {
     Assert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
-    CloudSdk cloudSdk = new CloudSdk.Builder().build();
+    deleteProject();
+  }
+
+  private static void deleteProject()
+      throws UnsupportedOsException, CloudSdkNotFoundException, IOException,
+          ProcessHandlerException {
+    Path sdkHome = ManagedCloudSdk.newManagedSdk().getSdkHome();
+    CloudSdk cloudSdk = new CloudSdk.Builder().sdkPath(sdkHome).build();
     Gcloud.builder(cloudSdk)
         .build()
-        .runCommand(Arrays.asList("app", "services", "delete", "flexible-project"));
+        .runCommand(
+            Arrays.asList("app", "services", "delete", "flexible-project", "--quiet"));
   }
 }

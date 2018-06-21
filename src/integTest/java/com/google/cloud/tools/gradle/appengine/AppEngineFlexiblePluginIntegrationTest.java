@@ -109,7 +109,6 @@ public class AppEngineFlexiblePluginIntegrationTest {
     CloudSdk cloudSdk = new CloudSdk.Builder().sdkPath(sdkHome).build();
     Gcloud.builder(cloudSdk)
         .build()
-        .runCommand(
-            Arrays.asList("app", "services", "delete", "flexible-project", "--quiet"));
+        .runCommand(Arrays.asList("app", "services", "delete", "flexible-project", "--quiet"));
   }
 }

@@ -152,8 +152,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    if (toolsExtension.getCloudSdkHome() != null
-                        && toolsExtension.getCloudSdkVersion() != null) {
+                    if (managedCloudSdk == null && toolsExtension.getCloudSdkVersion() != null) {
                       checkCloudSdkTask.setVersion(toolsExtension.getCloudSdkVersion());
                       checkCloudSdkTask.setCloudSdk(cloudSdkOperations.getCloudSdk());
                       p.getTasks()

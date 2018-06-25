@@ -24,6 +24,8 @@ import org.gradle.api.tasks.Sync;
 /** Expand a war. */
 public class ExplodeWarTask extends Sync {
 
+  // if you change this name, you must change how it is resolved dynamically in {@link
+  // RunExtension#projectAsService}
   private File explodedAppDirectory;
 
   public void setWarFile(File warFile) {

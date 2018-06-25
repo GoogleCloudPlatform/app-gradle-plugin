@@ -317,11 +317,12 @@ public class RunExtension implements RunConfiguration {
         .getTasks()
         .findByName(AppEngineStandardPlugin.START_TASK_NAME)
         .dependsOn(serviceProject.getTasks().findByPath(BasePlugin.ASSEMBLE_TASK_NAME));
-    return (File)
-        serviceProject
-            .getTasks()
-            .findByName(AppEngineStandardPlugin.EXPLODE_WAR_TASK_NAME)
-            .property("explodedAppDirectory");
+    return serviceProject
+        .getTasks()
+        .findByName(AppEngineStandardPlugin.EXPLODE_WAR_TASK_NAME)
+        .getOutputs()
+        .getFiles()
+        .getSingleFile();
   }
 
   @Override

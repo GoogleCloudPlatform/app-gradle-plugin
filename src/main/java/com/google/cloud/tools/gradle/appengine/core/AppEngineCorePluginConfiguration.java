@@ -21,6 +21,7 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
 import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
 import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
+import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.util.GradleVersion;
@@ -95,15 +96,21 @@ public class AppEngineCorePluginConfiguration {
 
   private void configureFactories() {
     project.afterEvaluate(
-        project -> {
+        projectAfterEvaluated -> {
           try {
             if (toolsExtension.getCloudSdkHome() == null) {
               managedCloudSdk =
                   new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion()).newManagedSdk();
               toolsExtension.setCloudSdkHome(managedCloudSdk.getSdkHome().toFile());
             }
-          } catch (UnsupportedOsException | BadCloudSdkVersionException ex) {
-            throw new GradleException("Configuring... ", ex);
+          } catch (UnsupportedOsException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+          } catch (BadCloudSdkVersionException ex) {
+            throw new RuntimeException(
+                "Failed to auto-configure Cloud Sdk at version = '"
+                    + toolsExtension.getCloudSdkVersion()
+                    + "': "
+                    + ex.getMessage());
           }
 
           try {
@@ -111,7 +118,7 @@ public class AppEngineCorePluginConfiguration {
                 new CloudSdkOperations(
                     toolsExtension.getCloudSdkHome(), toolsExtension.getServiceAccountKeyFile());
           } catch (CloudSdkNotFoundException ex) {
-            // this should never happen, not foudn exception only occurs when auto-discovery fails,
+            // this should never happen, not found exception only occurs when auto-discovery fails,
             // but we don't use that mechanism anymore.
             throw new AssertionError("Failed when attempting to discover SDK: ", ex);
           }

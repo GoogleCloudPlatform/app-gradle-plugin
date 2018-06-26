@@ -106,7 +106,7 @@ public class AppEngineCorePluginConfiguration {
             throw new RuntimeException(ex.getMessage(), ex);
           } catch (BadCloudSdkVersionException ex) {
             throw new RuntimeException(
-                "Failed to auto-configure Cloud Sdk at version = '"
+                "Failed to auto-configure Cloud Sdk at cloudSdkVersion = '"
                     + toolsExtension.getCloudSdkVersion()
                     + "': "
                     + ex.getMessage());

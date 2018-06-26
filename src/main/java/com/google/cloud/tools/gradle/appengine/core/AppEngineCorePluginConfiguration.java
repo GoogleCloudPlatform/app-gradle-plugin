@@ -109,7 +109,8 @@ public class AppEngineCorePluginConfiguration {
                 "Failed to auto-configure Cloud Sdk at cloudSdkVersion = '"
                     + toolsExtension.getCloudSdkVersion()
                     + "': "
-                    + ex.getMessage());
+                    + ex.getMessage(),
+                ex);
           }
 
           try {

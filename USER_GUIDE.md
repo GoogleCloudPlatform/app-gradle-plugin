@@ -111,7 +111,7 @@ The Cloud SDK will be installed/updated/verified depending on which parameters a
 
 The Cloud SDK is installed in `$USER_HOME/.cache/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
 on Linux, `$USER_HOME/Library/Application Support/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk`
-on OSX, and `%LOCALAPPDATA%/google-cloud-tools-java/managed-cloud-sdk/<version>/google-cloud-sdk` on Windows.
+on OSX, and `%LOCALAPPDATA%/google/ct4j-cloud-sdk/<version>/google-cloud-sdk` on Windows.
 The Cloud SDK installation/verification occurs automatically before running any appengine tasks, but
 it can also be called explicitly by running the tasks `downloadCloudSdk` and `checkCloudSdk`.
 

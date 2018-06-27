@@ -2,7 +2,7 @@
 
 | NOTE             |
 | :---------------- |
-| The behavior of the appengine-gradle-plugin has changed since v1.+, please see the [CHANGELOG](CHANGELOG.md) for a full list of changes. If you are having trouble using or updating your plugin, please file a [new issue](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues).|
+| The behavior of the appengine-gradle-plugin has changed since v1.+; please see the [CHANGELOG](CHANGELOG.md) for a full list of changes. If you are having trouble using or updating your plugin, please file a [new issue](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues).|
 
 ## Applying the Plugin
 Include the plugin jar in your buildscript classpath and apply the appropriate Standard or Flexible plugin:
@@ -105,7 +105,7 @@ The Cloud SDK will be installed/updated/verified depending on which parameters a
 | Parameters Specified   | Action |
 | ---------------------- | ------ |
 | None                   | Latest version of Cloud SDK is downloaded and installed. |
-| Both parameters        | Current Cloud SDK installation at `cloudSdkHome` is verified. |
+| Both parameters        | Cloud SDK installation specified at `cloudSdkHome` is verified. |
 | `cloudSdkHome` only    | No verification. |
 | `cloudSdkVersion` only | Cloud SDK at specified version is downloaded and installed. |
 
@@ -181,11 +181,14 @@ Deploy has some Flexible environment only parameters that are not listed here an
 | --------------------- | ----------- |
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
-| `project`             | The Google Cloud Project target for this deployment. This parameter may also be set to `APPENGINE_CONFIG` to read from `<application>` in `appengine-web.xml` or `GCLOUD_CONFIG` to delegate to gcloud's global state. |
+| `project`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
 | `promote`             | Promote the deployed version to receive all traffic. |
 | `server`              | The App Engine server to connect to. Typically, you do not need to change this value. |
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |
-| `version`             | The version of the app that will be created or replaced by this deployment.  This parameter may also be set to `APPENGINE_CONFIG` to read from `<version>` in `appengine-web.xml` or `GCLOUD_CONFIG` to have gcloud auto generate one during deployment. |
+| `version`             | The version of the app that will be created or replaced by this deployment. This also can be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
+
+\* setting a property to `GCLOUD_CONFIG` will deploy using the gcloud settings for the property.
+\* setting a property to `APPENGINE_CONFIG` will deploy using the value read from `appengine-web.xml`.
 
 ---
 
@@ -342,7 +345,7 @@ The Cloud SDK will be installed/updated/verified depending on which parameters a
 | Parameters Specified   | Action |
 | ---------------------- | ------ |
 | None                   | Latest version of Cloud SDK is downloaded and installed. |
-| Both parameters        | Current Cloud SDK installation at `cloudSdkHome` is verified. |
+| Both parameters        | Cloud SDK installation specified at `cloudSdkHome` is verified. |
 | `cloudSdkHome` only    | No verification. |
 | `cloudSdkVersion` only | Cloud SDK at specified version is downloaded and installed. |
 
@@ -370,8 +373,10 @@ The `deploy` configuration has the following parameters :
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
 | `imageUrl`            | Deploy with a Docker URL from the Google container registry. |
-| `project`             | The Google Cloud Project target for this deployment. |
+| `project`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG`.\* |
 | `promote`             | Promote the deployed version to receive all traffic. |
 | `server`              | The App Engine server to connect to. Typically, you do not need to change this value. |
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |
-| `version`             | The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you by the Cloud SDK. |
+| `version`             | The version of the app that will be created or replaced by this deployment. This also can be set to `GCLOUD_CONFIG` |
+
+\* setting a property to `GCLOUD_CONFIG` will deploy using the gcloud settings for the property.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google LLC. All Rights Reserved.
+ * Copyright (c) 2018 Google Inc. All Right Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,12 @@
 plugins {
   id 'java'
   id 'war'
-  id 'com.google.cloud.tools.appengine'
+  id 'com.google.cloud.tools.appengine-standard'
 }
 
-repositories {
-  mavenCentral()
+appengine {
+  tools {
+    cloudSdkVersion = "192.0.0"
+  }
 }
 
-dependencies {
-  compile "javax.servlet:servlet-api:2.5"
-}
-
-appengine.deploy.project = "GCLOUD_CONFIG"
-appengine.deploy.version = "1"
-
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7

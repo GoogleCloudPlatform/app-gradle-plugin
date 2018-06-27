@@ -18,9 +18,8 @@
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkGenRepoInfoFile;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
@@ -29,7 +28,7 @@ import org.gradle.api.tasks.TaskAction;
 public class GenRepoInfoFileTask extends DefaultTask {
 
   private GenRepoInfoFileExtension configuration;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private Gcloud gcloud;
 
   @Nested
   public GenRepoInfoFileExtension getConfiguration() {
@@ -40,15 +39,15 @@ public class GenRepoInfoFileTask extends DefaultTask {
     this.configuration = configuration;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setGcloud(Gcloud gcloud) {
+    this.gcloud = gcloud;
   }
 
   /** Task entrypoint : generate source context file. */
   @TaskAction
   public void generateRepositoryInfoFile() throws AppEngineException {
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
-    CloudSdkGenRepoInfoFile generator = new CloudSdkGenRepoInfoFile(sdk);
-    generator.generate(configuration);
+    gcloud
+        .newGenRepoInfo(CloudSdkOperations.getDefaultHandler(getLogger()))
+        .generate(configuration);
   }
 }

@@ -17,11 +17,13 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import java.io.File;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
@@ -34,7 +36,7 @@ public class SourceContextPlugin implements Plugin<Project> {
 
   private Project project;
   private GenRepoInfoFileExtension extension;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private CloudSdkOperations cloudSdkOperations;
 
   public static final String SOURCE_CONTEXT_EXTENSION = "sourceContext";
 
@@ -61,8 +63,14 @@ public class SourceContextPlugin implements Plugin<Project> {
 
     // wait to read the cloudSdkHome till after project evaluation
     project.afterEvaluate(
-        project ->
-            cloudSdkBuilderFactory = new CloudSdkBuilderFactory(tools.getCloudSdkHome(), null));
+        project -> {
+          try {
+            cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
+          } catch (CloudSdkNotFoundException ex) {
+            // this should be caught in AppEngineCorePluginConfig before it can ever reach here.
+            throw new GradleException("Could not find CloudSDK: ", ex);
+          }
+        });
   }
 
   private void createSourceContextTask() {
@@ -77,7 +85,7 @@ public class SourceContextPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     genRepoInfoFile.setConfiguration(extension);
-                    genRepoInfoFile.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    genRepoInfoFile.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
     configureArchiveTask(project.getTasks().withType(War.class).findByName("war"));

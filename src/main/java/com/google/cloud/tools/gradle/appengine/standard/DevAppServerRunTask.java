@@ -18,8 +18,8 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.ProjectConfigurationException;
 import org.gradle.api.tasks.TaskAction;
@@ -28,22 +28,22 @@ import org.gradle.api.tasks.TaskAction;
 public class DevAppServerRunTask extends DefaultTask {
 
   private RunExtension runConfig;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private LocalRun localRun;
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setLocalRun(LocalRun localRun) {
+    this.localRun = localRun;
   }
 
   /** Task entrypoint : run the devappserver (blocking). */
   @TaskAction
   public void runAction() throws AppEngineException, ProjectConfigurationException {
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
-
-    serverHelper.getAppServer(sdk, runConfig).run(runConfig);
+    serverHelper
+        .getAppServer(localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()))
+        .run(runConfig);
   }
 }

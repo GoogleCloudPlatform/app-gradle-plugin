@@ -13,6 +13,7 @@ Task runs automatically when `cloudSdkHome` and `cloudSdkVersion` are both confi
 * New `appengineDeployAll` task to deploy application with all valid yaml configs simultaneously. ([#239](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/239), [#240](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/240))
 
 ### Changed
+* `appengineStop` no longer fails if the stop request to server fails, but it will log an error. ([#267](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/267))
 * Upgrade App Engine Plugins Core dependency to 0.5.2.
 * Remove deprecated `appYamls` parameter.
 * `project` and `version` are no longer pulled from the global gcloud state by default. `project` must be configured in build.gradle using the `deploy.project` property, users may use special keywords for project to specify that they would like to read it from appengine-web.xml (`project = "APPENGINE_CONFIG"`) or from gcloud global state (`project = "GCLOUD_CONFIG"`). `version` is also configured the same way.

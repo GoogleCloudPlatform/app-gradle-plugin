@@ -31,6 +31,7 @@ dependencies {
 
 appengine {
   deploy {
-    project "travis-app-maven-plugin"
+    project = "GCLOUD_CONFIG"
+    version = "1"
   }
 }

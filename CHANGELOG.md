@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-## [unreleased]
 
+## 2.0.0 (in release candidate)
 ### Added
 * New `cloudSdkVersion` parameter to specify desired Cloud SDK version.
 * New `downloadCloudSdk` task installs/updates the Cloud SDK and Java App Engine components ([#205](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues/205)).

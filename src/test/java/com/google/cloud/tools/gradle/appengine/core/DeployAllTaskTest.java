@@ -22,10 +22,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk.Builder;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
 import java.io.File;
 import java.io.IOException;
 import org.gradle.api.Project;
@@ -37,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,11 +45,8 @@ public class DeployAllTaskTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
-  @Mock private CloudSdkBuilderFactory cloudSdkBuilderFactory;
-  @Mock private Builder builder;
-  @Mock private CloudSdk cloudSdk;
-
-  @Mock private AppEngineDeployment deploy;
+  @Mock private Gcloud gcloud;
+  @Mock private CloudSdkAppEngineDeployment deploy;
 
   private DeployExtension deployConfig;
   private ArgumentCaptor<DeployExtension> deployCapture;
@@ -67,12 +65,10 @@ public class DeployAllTaskTest {
 
     deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
     deployAllTask.setDeployConfig(deployConfig);
-    deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+    deployAllTask.setGcloud(gcloud);
     deployAllTask.setStageDirectory(stageDir);
 
-    when(cloudSdkBuilderFactory.newBuilder(deployAllTask.getLogger())).thenReturn(builder);
-    when(builder.build()).thenReturn(cloudSdk);
-    when(cloudSdkBuilderFactory.newAppEngineDeployment(cloudSdk)).thenReturn(deploy);
+    when(gcloud.newDeployment(Mockito.any(ProcessHandler.class))).thenReturn(deploy);
   }
 
   @Test

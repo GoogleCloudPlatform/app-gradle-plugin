@@ -18,12 +18,15 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
+import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
+import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
 import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
 import java.io.File;
 import java.io.IOException;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
@@ -31,16 +34,21 @@ import org.gradle.api.tasks.TaskAction;
 public class DevAppServerStartTask extends DefaultTask {
 
   private RunExtension runConfig;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private LocalRun localRun;
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
   private File devAppServerLoggingDir;
+
+  public DevAppServerStartTask() {
+    // force it to always run (required since we use OutputDirectory)
+    this.getOutputs().upToDateWhen(task -> false);
+  }
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setLocalRun(LocalRun localRun) {
+    this.localRun = localRun;
   }
 
   public void setDevAppServerLoggingDir(File devAppServerLoggingDir) {
@@ -61,16 +69,17 @@ public class DevAppServerStartTask extends DefaultTask {
     File logFile = new File(devAppServerLoggingDir, "dev_appserver.out");
     FileOutputLineListener logFileWriter = new FileOutputLineListener(logFile);
 
-    CloudSdk sdk =
-        cloudSdkBuilderFactory
-            .newBuilder(getLogger())
-            .async(true)
-            .runDevAppServerWait(runConfig.getStartSuccessTimeout())
-            .addStdErrLineListener(logFileWriter)
+    Logger taskLogger = getLogger();
+    ProcessHandler processHandler =
+        LegacyProcessHandler.builder()
+            .addStdOutLineListener(taskLogger::lifecycle)
             .addStdOutLineListener(logFileWriter)
-            .build();
+            .addStdErrLineListener(taskLogger::lifecycle)
+            .addStdErrLineListener(logFileWriter)
+            .setExitListener(new NonZeroExceptionExitListener())
+            .buildDevAppServerAsync(runConfig.getStartSuccessTimeout());
 
-    serverHelper.getAppServer(sdk, runConfig).run(runConfig);
+    serverHelper.getAppServer(localRun, runConfig, processHandler).run(runConfig);
 
     getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
   }

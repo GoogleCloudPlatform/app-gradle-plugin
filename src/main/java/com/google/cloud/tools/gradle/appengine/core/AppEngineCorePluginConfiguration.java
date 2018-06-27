@@ -17,6 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
 import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
 import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
@@ -49,7 +50,7 @@ public class AppEngineCorePluginConfiguration {
   private Project project;
   private DeployExtension deployExtension;
   private ToolsExtension toolsExtension;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private CloudSdkOperations cloudSdkOperations;
   private ManagedCloudSdk managedCloudSdk;
   private String taskGroup;
 
@@ -94,22 +95,33 @@ public class AppEngineCorePluginConfiguration {
 
   private void configureFactories() {
     project.afterEvaluate(
-        project -> {
+        projectAfterEvaluated -> {
           try {
             if (toolsExtension.getCloudSdkHome() == null) {
               managedCloudSdk =
                   new ManagedCloudSdkFactory(toolsExtension.getCloudSdkVersion()).newManagedSdk();
+              toolsExtension.setCloudSdkHome(managedCloudSdk.getSdkHome().toFile());
             }
-          } catch (UnsupportedOsException | BadCloudSdkVersionException ex) {
-            throw new GradleException("Configuring... ", ex);
+          } catch (UnsupportedOsException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+          } catch (BadCloudSdkVersionException ex) {
+            throw new RuntimeException(
+                "Failed to auto-configure Cloud Sdk at cloudSdkVersion = '"
+                    + toolsExtension.getCloudSdkVersion()
+                    + "': "
+                    + ex.getMessage(),
+                ex);
           }
 
-          cloudSdkBuilderFactory =
-              new CloudSdkBuilderFactory(
-                  managedCloudSdk != null
-                      ? managedCloudSdk.getSdkHome().toFile()
-                      : toolsExtension.getCloudSdkHome(),
-                  toolsExtension.getServiceAccountKeyFile());
+          try {
+            cloudSdkOperations =
+                new CloudSdkOperations(
+                    toolsExtension.getCloudSdkHome(), toolsExtension.getServiceAccountKeyFile());
+          } catch (CloudSdkNotFoundException ex) {
+            // this should never happen, not found exception only occurs when auto-discovery fails,
+            // but we don't use that mechanism anymore.
+            throw new AssertionError("Failed when attempting to discover SDK: ", ex);
+          }
         });
   }
 
@@ -125,7 +137,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    if (toolsExtension.getCloudSdkHome() == null) {
+                    if (managedCloudSdk != null) {
                       downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
@@ -147,10 +159,9 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   p -> {
-                    if (toolsExtension.getCloudSdkHome() != null
-                        && toolsExtension.getCloudSdkVersion() != null) {
+                    if (managedCloudSdk == null && toolsExtension.getCloudSdkVersion() != null) {
                       checkCloudSdkTask.setVersion(toolsExtension.getCloudSdkVersion());
-                      checkCloudSdkTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                      checkCloudSdkTask.setCloudSdk(cloudSdkOperations.getCloudSdk());
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(checkCloudSdkTask));
@@ -171,7 +182,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    loginTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    loginTask.setGcloud(cloudSdkOperations.getGcloud());
                     if (toolsExtension.getServiceAccountKeyFile() != null) {
                       loginTask.doLast(
                           task ->
@@ -198,7 +209,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
-                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
@@ -216,7 +227,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
@@ -234,7 +245,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
@@ -252,7 +263,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
@@ -270,7 +281,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
@@ -288,7 +299,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
@@ -307,7 +318,7 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
-                    deployAllTask.setCloudSdkBuilderFactory(cloudSdkBuilderFactory);
+                    deployAllTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }

@@ -19,8 +19,9 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.gradle.appengine.core.CloudSdkBuilderFactory;
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
@@ -28,23 +29,27 @@ import org.gradle.api.tasks.TaskAction;
 public class DevAppServerStopTask extends DefaultTask {
 
   private RunExtension runConfig;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private LocalRun localRun;
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setLocalRun(LocalRun localRun) {
+    this.localRun = localRun;
   }
 
   /** Task entrypoint : Stop the dev appserver (get StopConfiguration from helper). */
   @TaskAction
-  public void stopAction() throws AppEngineException {
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
-
-    AppEngineDevServer server = serverHelper.getAppServer(sdk, runConfig);
-    server.stop(serverHelper.getStopConfiguration(runConfig));
+  public void stopAction() throws CloudSdkNotFoundException {
+    AppEngineDevServer server =
+        serverHelper.getAppServer(
+            localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()));
+    try {
+      server.stop(serverHelper.getStopConfiguration(runConfig));
+    } catch (AppEngineException ex) {
+      getLogger().error("Failed to stop server: " + ex.getMessage());
+    }
   }
 }

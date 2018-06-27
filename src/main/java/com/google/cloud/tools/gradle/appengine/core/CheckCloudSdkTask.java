@@ -30,15 +30,15 @@ import org.gradle.api.tasks.TaskAction;
 
 public class CheckCloudSdkTask extends DefaultTask {
 
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private CloudSdk cloudSdk;
   private String version;
 
   public void setVersion(String version) {
     this.version = version;
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setCloudSdk(CloudSdk cloudSdk) {
+    this.cloudSdk = cloudSdk;
   }
 
   /** Task entrypoint : Verify Cloud SDK installation. */
@@ -48,12 +48,11 @@ public class CheckCloudSdkTask extends DefaultTask {
           CloudSdkOutOfDateException, AppEngineJavaComponentsNotInstalledException {
     // These properties are only set by AppEngineCorePluginConfiguration if the correct config
     // params are set in the tools extension.
-    if (Strings.isNullOrEmpty(version) || cloudSdkBuilderFactory == null) {
+    if (Strings.isNullOrEmpty(version) || cloudSdk == null) {
       throw new GradleException(
           "Cloud SDK home path and version must be configured in order to run this task.");
     }
 
-    CloudSdk cloudSdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
     if (!version.equals(cloudSdk.getVersion().toString())) {
       throw new GradleException(
           "Specified Cloud SDK version ("

@@ -18,9 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import java.io.File;
 import java.util.List;
 import org.gradle.api.DefaultTask;
@@ -30,21 +28,19 @@ import org.gradle.api.tasks.TaskAction;
 public class DeployTask extends DefaultTask {
 
   private DeployExtension deployConfig;
-  private CloudSdkBuilderFactory cloudSdkBuilderFactory;
+  private Gcloud gcloud;
 
   public void setDeployConfig(DeployExtension deployConfig, List<File> deployables) {
     this.deployConfig = new DeployExtension(deployConfig, deployables);
   }
 
-  public void setCloudSdkBuilderFactory(CloudSdkBuilderFactory cloudSdkBuilderFactory) {
-    this.cloudSdkBuilderFactory = cloudSdkBuilderFactory;
+  public void setGcloud(Gcloud gcloud) {
+    this.gcloud = gcloud;
   }
 
   /** Task Entrypoint : DeployExtension application (via app.yaml). */
   @TaskAction
   public void deployAction() throws AppEngineException {
-    CloudSdk sdk = cloudSdkBuilderFactory.newBuilder(getLogger()).build();
-    AppEngineDeployment deploy = new CloudSdkAppEngineDeployment(sdk);
-    deploy.deploy(deployConfig);
+    gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger())).deploy(deployConfig);
   }
 }

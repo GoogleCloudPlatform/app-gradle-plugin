@@ -21,11 +21,10 @@ import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import java.io.File;
 import java.util.List;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy App Engine applications. */
-public class DeployTask extends DefaultTask {
+public class DeployTask extends GcloudTask {
 
   private DeployExtension deployConfig;
   private Gcloud gcloud;

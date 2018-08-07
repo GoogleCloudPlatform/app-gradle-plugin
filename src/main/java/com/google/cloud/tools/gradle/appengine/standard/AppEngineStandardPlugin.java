@@ -160,6 +160,13 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   }
 
   private void createStageTask() {
+    project
+        .getTasks()
+        .withType(StageStandardTask.class)
+        .whenTaskAdded(
+            stageStandardTask ->
+                project.afterEvaluate(
+                    ignored -> stageStandardTask.setAppCfg(cloudSdkOperations.getAppcfg())));
 
     StageStandardTask stageTask =
         project
@@ -176,7 +183,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                   project.afterEvaluate(
                       project -> {
                         stageTask1.setStagingConfig(stageExtension);
-                        stageTask1.setAppCfg(cloudSdkOperations.getAppcfg());
                       });
                 });
 

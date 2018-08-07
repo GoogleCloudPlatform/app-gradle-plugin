@@ -171,6 +171,7 @@ public class AppEngineCorePluginConfiguration {
   }
 
   private void createLoginTask() {
+    injectGcloud(CloudSdkLoginTask.class);
     project
         .getTasks()
         .create(
@@ -182,7 +183,6 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    loginTask.setGcloud(cloudSdkOperations.getGcloud());
                     if (toolsExtension.getServiceAccountKeyFile() != null) {
                       loginTask.doLast(
                           task ->
@@ -197,6 +197,7 @@ public class AppEngineCorePluginConfiguration {
   }
 
   private void createDeployTask() {
+    injectGcloud(DeployTask.class);
     project
         .getTasks()
         .create(
@@ -205,16 +206,12 @@ public class AppEngineCorePluginConfiguration {
             deployTask -> {
               deployTask.setGroup(taskGroup);
               deployTask.setDescription("Deploy an App Engine application");
-
-              project.afterEvaluate(
-                  project -> {
-                    // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
-                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
-                  });
+              // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
             });
   }
 
   private void createDeployCronTask() {
+    injectGcloud(DeployCronTask.class);
     project
         .getTasks()
         .create(
@@ -227,12 +224,12 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
 
   private void createDeployDispatchTask() {
+    injectGcloud(DeployDispatchTask.class);
     project
         .getTasks()
         .create(
@@ -245,12 +242,12 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
 
   private void createDeployDosTask() {
+    injectGcloud(DeployDosTask.class);
     project
         .getTasks()
         .create(
@@ -263,12 +260,12 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
 
   private void createDeployIndexTask() {
+    injectGcloud(DeployIndexTask.class);
     project
         .getTasks()
         .create(
@@ -281,12 +278,12 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
 
   private void createDeployQueueTask() {
+    injectGcloud(DeployQueueTask.class);
     project
         .getTasks()
         .create(
@@ -299,12 +296,12 @@ public class AppEngineCorePluginConfiguration {
               project.afterEvaluate(
                   project -> {
                     deployTask.setDeployConfig(deployExtension);
-                    deployTask.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
   }
 
   private void createDeployAllTask() {
+    injectGcloud(DeployAllTask.class);
     project
         .getTasks()
         .create(
@@ -315,11 +312,7 @@ public class AppEngineCorePluginConfiguration {
               deployAllTask.setDescription(
                   "Deploy an App Engine application and all of its config files");
 
-              project.afterEvaluate(
-                  project -> {
-                    // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
-                    deployAllTask.setGcloud(cloudSdkOperations.getGcloud());
-                  });
+              // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
             });
   }
 
@@ -346,5 +339,14 @@ public class AppEngineCorePluginConfiguration {
               + GRADLE_MIN_VERSION
               + " or higher.");
     }
+  }
+
+  private void injectGcloud(Class<? extends GcloudTask> gcloudTask) {
+    project
+        .getTasks()
+        .withType(gcloudTask)
+        .whenTaskAdded(
+            task ->
+                project.afterEvaluate(project -> task.setGcloud(cloudSdkOperations.getGcloud())));
   }
 }

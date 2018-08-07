@@ -17,21 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.DefaultTask;
 
-public class CloudSdkLoginTask extends GcloudTask {
-
-  private Gcloud gcloud;
-
-  public void setGcloud(Gcloud gcloud) {
-    this.gcloud = gcloud;
-  }
-
-  /** Login by delegating to gcloud auth login. */
-  @TaskAction
-  public void login() throws AppEngineException {
-    gcloud.newAuth(CloudSdkOperations.getDefaultHandler(getLogger())).login();
-  }
+public abstract class GcloudTask extends DefaultTask {
+  public abstract void setGcloud(Gcloud gcloud);
 }

@@ -22,11 +22,10 @@ import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
-public class DeployAllTask extends DefaultTask {
+public class DeployAllTask extends GcloudTask {
 
   private DeployExtension deployConfig;
   private Gcloud gcloud;

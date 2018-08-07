@@ -20,11 +20,10 @@ package com.google.cloud.tools.gradle.appengine.core;
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy queue configuration. */
-public class DeployQueueTask extends DefaultTask {
+public class DeployQueueTask extends GcloudTask {
 
   private DeployProjectConfigurationConfiguration config;
   private Gcloud gcloud;

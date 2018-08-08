@@ -15,29 +15,18 @@
  *
  */
 
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2"
-    }
-  }
-  dependencies {
-    classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
-    classpath 'net.researchgate:gradle-release:2.6.0'
-  }
+plugins {
+  id 'java'
+  id 'maven'
+  id 'java-gradle-plugin'
+  id 'net.researchgate.release' version '2.6.0'
+  id 'com.github.sherter.google-java-format' version '0.6'
+  id 'checkstyle'
 }
-
-apply plugin: 'java'
-apply plugin: 'java-gradle-plugin'
 
 repositories {
   mavenCentral()
 }
-
-apply from: 'scripts/releasing.gradle'
-apply from: 'scripts/integTest.gradle'
-apply from: 'scripts/google-java-format.gradle'
-apply from: 'scripts/checkstyle.gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -55,6 +44,10 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.7.21'
 }
 
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.4.1'
+}
+
 jar {
   manifest {
     attributes 'Implementation-Title': project.name,
@@ -66,6 +59,7 @@ jar {
   }
 }
 
+/* TESTING */
 test {
   testLogging {
     showStandardStreams = true
@@ -73,6 +67,107 @@ test {
   }
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.4.1'
+sourceSets {
+  integTest {
+    compileClasspath += main.output
+    runtimeClasspath += main.output
+  }
 }
+
+configurations {
+  integTestCompile.extendsFrom testCompile
+  integTestRuntime.extendsFrom testRuntime
+}
+
+task integTest(type: Test) {
+  testClassesDir = sourceSets.integTest.output.classesDir
+  classpath = sourceSets.integTest.runtimeClasspath
+  outputs.upToDateWhen { false }
+}
+/* TESTING */
+
+
+/* RELEASING */
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+  classifier 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  from javadoc.destinationDir
+  classifier = 'javadoc'
+}
+
+task writePom {
+  project.afterEvaluate {
+    def outputFile = file("$buildDir/pom/${project.name}-${project.version}.pom")
+    outputs.file outputFile
+
+    doLast {
+      pom {
+        project {
+          name 'App Engine Gradle Plugin'
+          description 'This Gradle plugin provides tasks to build and deploy Google App Engine applications.'
+          url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
+          inceptionYear '2016'
+
+          scm {
+            url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
+            connection 'scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
+            developerConnection 'scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
+          }
+
+          licenses {
+            license {
+              name 'The Apache Software License, Version 2.0'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              distribution 'repo'
+            }
+          }
+
+          developers {
+            developer {
+              id 'loosebazooka'
+              name 'Appu Goundan'
+              email 'appu@google.com'
+            }
+          }
+        }
+      }.writeTo(outputFile)
+    }
+  }
+}
+
+// for kokoro releases
+task prepareRelease(type: Copy) {
+  from jar
+  from sourceJar
+  from javadocJar
+  from writePom
+
+  into "${buildDir}/release-artifacts"
+
+  dependsOn build
+  dependsOn cleanPrepareRelease
+}
+
+release {
+  tagTemplate = 'v$version'
+  git {
+    requireBranch = /^release_v\d+.*$/  //regex
+  }
+}
+/* RELEASING */
+
+/* FORMATTING */
+check.dependsOn verifyGoogleJavaFormat
+// to auto-format run ./gradlew googleJavaFormat
+
+checkstyle {
+  toolVersion = "7.6.1"
+  // get the google_checks.xml file from the actual tool we're invoking
+  config = resources.text.fromArchiveEntry(configurations.checkstyle[0], 'google_checks.xml')
+  maxErrors = 0
+  maxWarnings = 0
+}
+/* FORMATTING */

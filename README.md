@@ -25,6 +25,7 @@ App Engine Flexible Environment:
 
 | appengine-gradle-plugin | gradle version |
 |-------------------------|----------------|
+| 2.0.0 +                 | 4.0 or newer   |
 | 1.3.3 +                 | 3.4.1 or newer |
 | 1.0.0 - 1.3.2           | 3.0 or newer   |
 

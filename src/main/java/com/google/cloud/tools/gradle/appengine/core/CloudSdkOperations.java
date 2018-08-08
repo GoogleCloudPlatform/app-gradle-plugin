@@ -26,7 +26,6 @@ import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
 import java.io.File;
-import org.gradle.api.Nullable;
 import org.gradle.api.logging.Logger;
 
 /** Cloud Sdk Operations with all common configuration. */
@@ -44,7 +43,7 @@ public class CloudSdkOperations {
    * @param credentialFile optional path to a credential file
    * @throws CloudSdkNotFoundException when cloud sdk path cannot be validated
    */
-  public CloudSdkOperations(File cloudSdkHome, @Nullable File credentialFile)
+  public CloudSdkOperations(File cloudSdkHome, File credentialFile)
       throws CloudSdkNotFoundException {
     cloudSdk = new CloudSdk.Builder().sdkPath(cloudSdkHome.toPath()).build();
     localRun = LocalRun.builder(cloudSdk).build();

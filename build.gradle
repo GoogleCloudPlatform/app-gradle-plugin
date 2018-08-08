@@ -44,8 +44,8 @@ dependencies {
   testCompile 'org.mockito:mockito-core:2.7.21'
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.4.1'
+wrapper {
+  gradleVersion = '4.9'
 }
 
 jar {
@@ -80,7 +80,7 @@ configurations {
 }
 
 task integTest(type: Test) {
-  testClassesDir = sourceSets.integTest.output.classesDir
+  testClassesDirs = sourceSets.integTest.output.classesDirs
   classpath = sourceSets.integTest.runtimeClasspath
   outputs.upToDateWhen { false }
 }

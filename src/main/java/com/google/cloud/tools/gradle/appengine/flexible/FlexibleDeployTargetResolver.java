@@ -28,9 +28,9 @@ public class FlexibleDeployTargetResolver implements DeployTargetResolver {
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
       throw new GradleException(
-          "Deployment project must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.project = 'my-project-name'\n"
-              + "2. Set appengine.deploy.project = '"
+          "Deployment projectId must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
+              + "2. Set appengine.deploy.projectId = '"
               + GCLOUD_CONFIG
               + "' to use project from gcloud config.\n"
               + "3. Using "

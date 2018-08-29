@@ -45,9 +45,9 @@ public class FlexibleDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "Deployment project must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.project = 'my-project-name'\n"
-              + "2. Set appengine.deploy.project = '"
+          "Deployment projectId must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
+              + "2. Set appengine.deploy.projectId = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to use project from gcloud config.\n"
               + "3. Using "
@@ -72,9 +72,9 @@ public class FlexibleDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "Deployment project must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.project = 'my-project-name'\n"
-              + "2. Set appengine.deploy.project = '"
+          "Deployment projectId must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
+              + "2. Set appengine.deploy.projectId = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to use project from gcloud config.\n"
               + "3. Using "

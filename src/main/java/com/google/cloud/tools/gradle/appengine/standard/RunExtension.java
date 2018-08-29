@@ -60,6 +60,7 @@ public class RunExtension implements RunConfiguration {
   private File datastorePath;
   private Map<String, String> environment;
   private List<String> additionalArguments;
+  private String projectId;
 
   /**
    * Constructor.
@@ -351,5 +352,14 @@ public class RunExtension implements RunConfiguration {
   public void setAdditionalArguments(List<String> additionalArguments) {
     this.additionalArguments =
         additionalArguments != null ? ImmutableList.copyOf(additionalArguments) : null;
+  }
+
+  @Override
+  public String getProjectId() {
+    return projectId;
+  }
+
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
   }
 }

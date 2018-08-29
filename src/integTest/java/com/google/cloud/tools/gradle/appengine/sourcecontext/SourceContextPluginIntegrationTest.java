@@ -107,7 +107,8 @@ public class SourceContextPluginIntegrationTest {
     Assert.assertTrue(
         sourceContextFile.getAbsolutePath() + " is missing", sourceContextFile.exists());
     Assert.assertTrue(
-        com.google.common.io.Files.toString(sourceContextFile, Charsets.UTF_8)
+        com.google.common.io.Files.asCharSource(sourceContextFile, Charsets.UTF_8)
+            .read()
             .contains(commitHash));
   }
 }

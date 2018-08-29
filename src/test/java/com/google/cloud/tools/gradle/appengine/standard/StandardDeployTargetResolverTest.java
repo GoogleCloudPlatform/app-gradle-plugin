@@ -41,15 +41,14 @@ public class StandardDeployTargetResolverTest {
   public void setup() throws IOException {
     appengineWebXml = new File(temporaryFolder.newFolder("source", "WEB-INF"), "appengine-web.xml");
     appengineWebXml.createNewFile();
-    Files.write(
-        "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-            + "<appengine-web-app xmlns=\"http://appengine.google.com/ns/1.0\"><application>"
-            + PROJECT_XML
-            + "</application><version>"
-            + VERSION_XML
-            + "</version></appengine-web-app>",
-        appengineWebXml,
-        Charsets.UTF_8);
+    Files.asCharSink(appengineWebXml, Charsets.UTF_8)
+        .write(
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<appengine-web-app xmlns=\"http://appengine.google.com/ns/1.0\"><application>"
+                + PROJECT_XML
+                + "</application><version>"
+                + VERSION_XML
+                + "</version></appengine-web-app>");
   }
 
   @Test
@@ -81,12 +80,12 @@ public class StandardDeployTargetResolverTest {
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(
-          "Deployment project must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.project = 'my-project-name'\n"
-              + "2. Set appengine.deploy.project = '"
+          "Deployment projectId must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
+              + "2. Set appengine.deploy.projectId = '"
               + DeployTargetResolver.APPENGINE_CONFIG
               + "' to use <application> from appengine-web.xml\n"
-              + "3. Set appengine.deploy.project = '"
+              + "3. Set appengine.deploy.projectId = '"
               + DeployTargetResolver.GCLOUD_CONFIG
               + "' to use project from gcloud config",
           ex.getMessage());

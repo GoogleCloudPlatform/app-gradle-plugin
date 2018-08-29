@@ -33,7 +33,7 @@ public class DeployExtension
 
   private String bucket;
   private String imageUrl;
-  private String project;
+  private String projectId;
   private Boolean promote;
   private String server;
   private Boolean stopPreviousVersion;
@@ -53,7 +53,7 @@ public class DeployExtension
     this.gradleProject = deployExtension.gradleProject;
     this.bucket = deployExtension.bucket;
     this.imageUrl = deployExtension.imageUrl;
-    this.project = deployExtension.project;
+    this.projectId = deployExtension.projectId;
     this.promote = deployExtension.promote;
     this.server = deployExtension.server;
     this.stopPreviousVersion = deployExtension.stopPreviousVersion;
@@ -87,12 +87,12 @@ public class DeployExtension
   }
 
   @Override
-  public String getProject() {
-    return deployTargetResolver.getProject(project);
+  public String getProjectId() {
+    return deployTargetResolver.getProject(projectId);
   }
 
-  public void setProject(String project) {
-    this.project = project;
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
   }
 
   @Override

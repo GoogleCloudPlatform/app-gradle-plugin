@@ -29,7 +29,7 @@ dependencies {
   compile "javax.servlet:javax.servlet-api:3.1.0"
 }
 
-appengine.deploy.project = "GCLOUD_CONFIG"
+appengine.deploy.projectId = "GCLOUD_CONFIG"
 appengine.deploy.version = "1"
 
 sourceCompatibility = JavaVersion.VERSION_1_8

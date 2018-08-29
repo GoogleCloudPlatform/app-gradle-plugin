@@ -31,7 +31,7 @@ dependencies {
 
 appengine {
   deploy {
-    project = "GCLOUD_CONFIG"
+    projectId = "GCLOUD_CONFIG"
     version = "1"
   }
 }

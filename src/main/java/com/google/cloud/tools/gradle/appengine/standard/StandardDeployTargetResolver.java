@@ -38,12 +38,12 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
   public String getProject(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(
-          "Deployment project must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.project = 'my-project-name'\n"
-              + "2. Set appengine.deploy.project = '"
+          "Deployment projectId must be defined or configured to read from system state\n"
+              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
+              + "2. Set appengine.deploy.projectId = '"
               + APPENGINE_CONFIG
               + "' to use <application> from appengine-web.xml\n"
-              + "3. Set appengine.deploy.project = '"
+              + "3. Set appengine.deploy.projectId = '"
               + GCLOUD_CONFIG
               + "' to use project from gcloud config");
     } else if (configString.equals(APPENGINE_CONFIG)) {

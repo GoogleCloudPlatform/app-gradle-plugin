@@ -1,9 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-rc3
+### Changed
+* Changed appengine.deploy.project -> appengine.deploy.projectId ([#286](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/286)).
+* New appengine.run.projectId to set project for devserver runs. ([#286](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/286)).
+
+
 ## 2.0.0-rc2
 ### Added
-* Auto inject internal command runners into custom app engine tasks ([#297](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/279)).
+* Auto inject internal command runners into custom app engine tasks ([#279](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/279)).
 
 ## 2.0.0-rc1
 ### Added

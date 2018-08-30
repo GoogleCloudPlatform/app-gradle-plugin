@@ -51,7 +51,7 @@ public class AppEnginePluginTest {
   public void testCheckGradleVersion_fail() throws IOException {
     try {
       new TestProject(testProjectRoot.getRoot())
-          .addAutoDetectingBuildFile()
+          .addAutoDownloadingBuildFile()
           .applyGradleRunnerWithGradleVersion("2.8");
     } catch (UnexpectedBuildFailure ex) {
       assertThat(
@@ -67,7 +67,7 @@ public class AppEnginePluginTest {
   public void testDetectStandard_withGradleRunner() throws IOException {
     BuildResult buildResult =
         new TestProject(testProjectRoot.getRoot())
-            .addAutoDetectingBuildFile()
+            .addAutoDownloadingBuildFile()
             .addAppEngineWebXml()
             .applyGradleRunner("tasks");
 
@@ -83,7 +83,7 @@ public class AppEnginePluginTest {
   public void testDetectFlexible_withGradleRunner() throws IOException {
     BuildResult buildResult =
         new TestProject(testProjectRoot.getRoot())
-            .addAutoDetectingBuildFile()
+            .addAutoDownloadingBuildFile()
             .applyGradleRunner("tasks");
 
     assertThat(

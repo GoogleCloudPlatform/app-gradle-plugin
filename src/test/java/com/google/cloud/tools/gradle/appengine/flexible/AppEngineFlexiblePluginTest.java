@@ -182,6 +182,9 @@ public class AppEngineFlexiblePluginTest {
         deployExt.getAppEngineDirectory().toPath());
     assertEquals((((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
+
+    assertEquals("test-project", deployExt.getProjectId());
+    assertEquals("test-version", deployExt.getVersion());
   }
 
   @Test

@@ -17,13 +17,18 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
+import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
+import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
+
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
+import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.util.Collections;
 import org.gradle.api.GradleException;
@@ -118,7 +123,12 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                   .resolve("WEB-INF")
                   .resolve("appengine-web.xml")
                   .toFile();
-          deploy.setDeployTargetResolver(new StandardDeployTargetResolver(appengineWebXml));
+
+          // configure the deploy extensions's project/version parameters
+          StandardDeployTargetResolver resolver =
+              new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations.getGcloud());
+          deploy.setProjectId(resolver.getProject(deploy.getProjectId()));
+          deploy.setVersion(resolver.getVersion(deploy.getVersion()));
 
           DeployAllTask deployAllTask =
               (DeployAllTask)
@@ -135,6 +145,18 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               deploy,
               Collections.singletonList(
                   new File(stageExtension.getStagingDirectory(), "app.yaml")));
+
+          // configure the runExtension's project parameter
+          // assign the run project to the deploy project if none is specified
+          if (Strings.isNullOrEmpty(runExtension.getProjectId())) {
+            runExtension.setProjectId(deploy.getProjectId());
+          }
+          if (runExtension.getProjectId().equals(GCLOUD_CONFIG)) {
+            runExtension.setProjectId(
+                ConfigReader.from(cloudSdkOperations.getGcloud()).getProject());
+          } else if (runExtension.getProjectId().equals(APPENGINE_CONFIG)) {
+            runExtension.setProjectId(ConfigReader.from(appengineWebXml).getProject());
+          }
         });
   }
 

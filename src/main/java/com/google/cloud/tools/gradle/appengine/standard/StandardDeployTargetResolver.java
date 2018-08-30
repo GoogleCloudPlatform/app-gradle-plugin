@@ -17,24 +17,29 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.appengine.AppEngineDescriptor;
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import org.gradle.api.GradleException;
-import org.xml.sax.SAXException;
+import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
+import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
 
-public class StandardDeployTargetResolver implements DeployTargetResolver {
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
+import java.io.File;
+import org.gradle.api.GradleException;
+
+public class StandardDeployTargetResolver {
 
   private final File appengineWebXml;
+  private final Gcloud gcloud;
 
-  public StandardDeployTargetResolver(File appengineWebXml) {
+  public StandardDeployTargetResolver(File appengineWebXml, Gcloud gcloud) {
     this.appengineWebXml = appengineWebXml;
+    this.gcloud = gcloud;
   }
 
-  @Override
+  /**
+   * Process user configuration of "projectId". If not configured, show usage. If set to
+   * APPENGINE_CONFIG then read from appengine-web.xml. If set to GCLOUD_CONFIG then read from
+   * gcloud's config state. If set but not a keyword then just return the set value.
+   */
   public String getProject(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(
@@ -47,25 +52,19 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
               + GCLOUD_CONFIG
               + "' to use project from gcloud config");
     } else if (configString.equals(APPENGINE_CONFIG)) {
-      try {
-        AppEngineDescriptor appEngineDescriptor =
-            AppEngineDescriptor.parse(new FileInputStream(appengineWebXml));
-        String appengineWebXmlProject = appEngineDescriptor.getProjectId();
-        if (appengineWebXmlProject == null || appengineWebXmlProject.trim().isEmpty()) {
-          throw new GradleException("<application> was not found in appengine-web.xml");
-        }
-        return appengineWebXmlProject;
-      } catch (IOException | SAXException | AppEngineException ex) {
-        throw new GradleException("Failed to read project from appengine-web.xml", ex);
-      }
+      return ConfigReader.from(appengineWebXml).getProject();
     } else if (configString.equals(GCLOUD_CONFIG)) {
-      return null;
+      return ConfigReader.from(gcloud).getProject();
     } else {
       return configString;
     }
   }
 
-  @Override
+  /**
+   * Process user configuration of "version". If not configured, show usage. If set to
+   * APPENGINE_CONFIG then read from appengine-web.xml. If set to GCLOUD_CONFIG then allow gcloud to
+   * generate a version. If set but not a keyword then just return the set value.
+   */
   public String getVersion(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(
@@ -78,18 +77,9 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
               + GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.");
     } else if (configString.equals(APPENGINE_CONFIG)) {
-      try {
-        AppEngineDescriptor appEngineDescriptor =
-            AppEngineDescriptor.parse(new FileInputStream(appengineWebXml));
-        String appengineWebXmlVersion = appEngineDescriptor.getProjectVersion();
-        if (appengineWebXmlVersion == null || appengineWebXmlVersion.trim().isEmpty()) {
-          throw new GradleException("<version> was not found in appengine-web.xml");
-        }
-        return appengineWebXmlVersion;
-      } catch (IOException | SAXException | AppEngineException ex) {
-        throw new GradleException("Failed to read version from appengine-web.xml", ex);
-      }
+      return ConfigReader.from(appengineWebXml).getVersion();
     } else if (configString.equals(GCLOUD_CONFIG)) {
+      // can be null to allow gcloud to generate this
       return null;
     } else {
       return configString;

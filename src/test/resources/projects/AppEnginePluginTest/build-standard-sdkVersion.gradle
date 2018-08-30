@@ -25,5 +25,9 @@ appengine {
   tools {
     cloudSdkVersion = "192.0.0"
   }
+  deploy {
+    projectId = "project"
+    version = "version"
+  }
 }
 

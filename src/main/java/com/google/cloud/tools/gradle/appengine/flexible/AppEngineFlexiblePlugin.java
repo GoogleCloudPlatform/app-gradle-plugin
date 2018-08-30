@@ -17,10 +17,13 @@
 
 package com.google.cloud.tools.gradle.appengine.flexible;
 
+import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
+import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import java.io.File;
 import java.util.Collections;
 import org.gradle.api.GradleException;
@@ -42,6 +45,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
   private Project project;
   private AppEngineFlexibleExtension appengineExtension;
+  private CloudSdkOperations cloudSdkOperations;
   private StageFlexibleExtension stageExtension;
 
   @Override
@@ -71,8 +75,18 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
       stageExtension.setDockerDirectory(dockerOptionalDir);
     }
 
+    // tools extension required to initialize cloudSdkOperations
+    final ToolsExtension tools = appengineExtension.getTools();
     project.afterEvaluate(
         project -> {
+          // create the sdk builder factory after we know the location of the sdk
+          try {
+            cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
+          } catch (CloudSdkNotFoundException ex) {
+            // this should be caught in AppEngineCorePluginConfig before it can ever reach here.
+            throw new GradleException("Could not find CloudSDK: ", ex);
+          }
+
           // we can only set the default location of "archive" after project evaluation (callback)
           if (stageExtension.getArtifact() == null) {
             if (project.getPlugins().hasPlugin(WarPlugin.class)) {
@@ -94,7 +108,10 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
             deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
           }
 
-          deploy.setDeployTargetResolver(new FlexibleDeployTargetResolver());
+          FlexibleDeployTargetResolver resolver =
+              new FlexibleDeployTargetResolver(cloudSdkOperations.getGcloud());
+          deploy.setProjectId(resolver.getProject(deploy.getProjectId()));
+          deploy.setVersion(resolver.getVersion(deploy.getVersion()));
 
           DeployAllTask deployAllTask =
               (DeployAllTask)

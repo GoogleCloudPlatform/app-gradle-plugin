@@ -17,12 +17,26 @@
 
 package com.google.cloud.tools.gradle.appengine.flexible;
 
-import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
+import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
+import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
+
+import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import org.gradle.api.GradleException;
 
-public class FlexibleDeployTargetResolver implements DeployTargetResolver {
+public class FlexibleDeployTargetResolver {
 
-  @Override
+  private final Gcloud gcloud;
+
+  public FlexibleDeployTargetResolver(Gcloud gcloud) {
+    this.gcloud = gcloud;
+  }
+
+  /**
+   * Process user configuration of "projectId". If not configured or set to APPENGINE_CONFIG (not
+   * allowed for flex), show usage. If set to GCLOUD_CONFIG then read from gcloud's global state. If
+   * set but not a keyword then just return the set value.
+   */
   public String getProject(String configString) {
     if (configString == null
         || configString.trim().isEmpty()
@@ -37,13 +51,17 @@ public class FlexibleDeployTargetResolver implements DeployTargetResolver {
               + APPENGINE_CONFIG
               + " is not allowed for flexible environment projects");
     } else if (configString.equals(GCLOUD_CONFIG)) {
-      return null;
+      return ConfigReader.from(gcloud).getProject();
     } else {
       return configString;
     }
   }
 
-  @Override
+  /**
+   * Process user configuration of "version". If not configured or set to APPENGINE_CONFIG (not
+   * allowed for flex), show usage. If set to GCLOUD_CONFIG then allow gcloud to generate a version.
+   * If set but not a keyword then just return the set value.
+   */
   public String getVersion(String configString) {
     if (configString == null
         || configString.trim().isEmpty()
@@ -58,6 +76,7 @@ public class FlexibleDeployTargetResolver implements DeployTargetResolver {
               + APPENGINE_CONFIG
               + " is not allowed for flexible environment projects");
     } else if (configString.equals(GCLOUD_CONFIG)) {
+      // can be null to allow gcloud to generate this
       return null;
     } else {
       return configString;

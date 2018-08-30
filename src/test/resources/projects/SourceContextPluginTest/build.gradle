@@ -22,3 +22,9 @@ plugins {
   id 'com.google.cloud.tools.source-context'
 }
 
+appengine {
+  deploy {
+    projectId = "project"
+    version = "version"
+  }
+}

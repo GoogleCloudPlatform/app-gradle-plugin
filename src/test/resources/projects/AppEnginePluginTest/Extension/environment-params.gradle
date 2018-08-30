@@ -19,4 +19,8 @@ appengine {
     run {
         environment = [key1: "value1", key2: "value2"]
     }
+    deploy {
+        projectId = "project"
+        version = "version"
+    }
 }

@@ -318,6 +318,9 @@ public class AppEngineStandardPluginTest {
         run.getServices());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     assertEquals(20, run.getStartSuccessTimeout());
+
+    assertEquals("test-project", deployExt.getProjectId());
+    assertEquals("test-version", deployExt.getVersion());
   }
 
   @Test

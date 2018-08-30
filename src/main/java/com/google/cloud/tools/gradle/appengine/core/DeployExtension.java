@@ -41,7 +41,6 @@ public class DeployExtension
   private File appEngineDirectory;
 
   @InternalProperty private final ImmutableList<File> deployables;
-  @InternalProperty private DeployTargetResolver deployTargetResolver;
 
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
@@ -59,7 +58,6 @@ public class DeployExtension
     this.stopPreviousVersion = deployExtension.stopPreviousVersion;
     this.version = deployExtension.version;
     this.appEngineDirectory = deployExtension.appEngineDirectory;
-    this.deployTargetResolver = deployExtension.deployTargetResolver;
     this.deployables = ImmutableList.copyOf(deployables);
   }
 
@@ -88,7 +86,7 @@ public class DeployExtension
 
   @Override
   public String getProjectId() {
-    return deployTargetResolver.getProject(projectId);
+    return projectId;
   }
 
   public void setProjectId(String projectId) {
@@ -124,7 +122,7 @@ public class DeployExtension
 
   @Override
   public String getVersion() {
-    return deployTargetResolver.getVersion(version);
+    return version;
   }
 
   public void setVersion(String version) {
@@ -138,9 +136,5 @@ public class DeployExtension
   @Override
   public File getAppEngineDirectory() {
     return appEngineDirectory;
-  }
-
-  public void setDeployTargetResolver(DeployTargetResolver deployTargetResolver) {
-    this.deployTargetResolver = deployTargetResolver;
   }
 }

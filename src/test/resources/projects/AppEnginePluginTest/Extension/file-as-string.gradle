@@ -26,4 +26,8 @@ appengine {
   tools {
     cloudSdkHome = "test"
   }
+  deploy {
+    projectId = "project"
+    version = "version"
+  }
 }

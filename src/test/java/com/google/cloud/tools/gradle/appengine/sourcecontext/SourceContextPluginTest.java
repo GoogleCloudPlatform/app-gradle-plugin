@@ -19,6 +19,8 @@ package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardExtension;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.cloud.tools.gradle.appengine.util.ExtensionUtil;
 import com.google.common.base.Charsets;
@@ -99,6 +101,11 @@ public class SourceContextPluginTest {
     project.getPluginManager().apply(WarPlugin.class);
     project.getPluginManager().apply(AppEngineStandardPlugin.class);
     project.getPluginManager().apply(SourceContextPlugin.class);
+
+    DeployExtension deploy =
+        project.getExtensions().getByType(AppEngineStandardExtension.class).getDeploy();
+    deploy.setProjectId("project");
+    deploy.setVersion("version");
     ((ProjectInternal) project).evaluate();
 
     ExtensionAware ext =

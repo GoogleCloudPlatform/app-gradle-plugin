@@ -19,4 +19,8 @@ appengine {
   run {
     services = ["test0", "test1"]
   }
+  deploy {
+    projectId = "project"
+    version = "version"
+  }
 }

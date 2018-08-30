@@ -21,3 +21,9 @@ plugins {
   id 'com.google.cloud.tools.appengine-standard'
 }
 
+appengine {
+  deploy {
+    projectId = "project"
+    version = "version"
+  }
+}

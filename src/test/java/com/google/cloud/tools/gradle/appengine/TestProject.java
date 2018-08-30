@@ -17,6 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import static com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration.APPENGINE_EXTENSION;
+
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.common.base.Charsets;
@@ -27,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
+import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.WarPlugin;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -73,8 +77,8 @@ public class TestProject {
     return this;
   }
 
-  /** Add an generic appengine-gradle-plugin build file (for auto detection cases). */
-  public TestProject addAutoDetectingBuildFile() throws IOException {
+  /** Add an generic appengine-gradle-plugin build file (for auto downloading sdk cases). */
+  public TestProject addAutoDownloadingBuildFile() throws IOException {
     addBuildFile("projects/AppEnginePluginTest/build-auto.gradle");
     return this;
   }
@@ -152,6 +156,12 @@ public class TestProject {
     for (Class<?> clazz : plugins) {
       p.getPluginManager().apply(clazz);
     }
+
+    Object appengineExt = p.getExtensions().getByName(APPENGINE_EXTENSION);
+    DeployExtension deploy =
+        ((ExtensionAware) appengineExt).getExtensions().getByType(DeployExtension.class);
+    deploy.setProjectId("test-project");
+    deploy.setVersion("test-version");
 
     ((ProjectInternal) p).evaluate();
 

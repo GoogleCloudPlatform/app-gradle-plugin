@@ -21,3 +21,10 @@ plugins {
   id 'com.google.cloud.tools.appengine-flexible'
 }
 
+appengine {
+  deploy {
+    projectId = "project"
+    version = "version"
+  }
+}
+

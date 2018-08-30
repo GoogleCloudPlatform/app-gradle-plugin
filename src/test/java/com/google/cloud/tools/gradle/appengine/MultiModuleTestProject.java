@@ -17,6 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
+import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
+import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardExtension;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.common.base.Charsets;
 import java.io.File;
@@ -65,6 +67,11 @@ public class MultiModuleTestProject {
       p.getPluginManager().apply(JavaPlugin.class);
       p.getPluginManager().apply(WarPlugin.class);
       p.getPluginManager().apply(AppEngineStandardPlugin.class);
+
+      DeployExtension deploy =
+          p.getExtensions().getByType(AppEngineStandardExtension.class).getDeploy();
+      deploy.setProjectId("project");
+      deploy.setVersion("version");
     }
     ((ProjectInternal) rootProject).evaluate();
     return rootProject;

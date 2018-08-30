@@ -29,7 +29,6 @@ import java.io.IOException;
 import org.gradle.api.GradleException;
 import org.xml.sax.SAXException;
 
-
 public final class ConfigReader {
   public static final String GCLOUD_CONFIG = "GCLOUD_CONFIG";
   public static final String APPENGINE_CONFIG = "APPENGINE_CONFIG";

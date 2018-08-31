@@ -24,7 +24,7 @@ plugins {
 
 appengine {
   deploy {
-    projectId = "project"
+    projectId = "projectId"
     version = "version";
   }
 }

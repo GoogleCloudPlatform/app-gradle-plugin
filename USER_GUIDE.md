@@ -131,6 +131,8 @@ Valid for versions "1" and "2-alpha"
 | `serverVersion`       | Server versions to use, options are "1" or "2-alpha" |
 | `services`            | List of services to run |
 | `additionalArguments` | Additional arguments to pass to the Dev App Server process |
+| `automaticRestart`    | Automatically restart the server when explode-war directory has changed |
+| `projectId`           | Set a Google Cloud Project Id on the running development server |
 
 Only valid for version "2-alpha"
 
@@ -141,7 +143,6 @@ Only valid for version "2-alpha"
 | `allowSkippedFiles`      |
 | `apiPort`                |
 | `authDomain`             |
-| `automaticRestart`       |
 | `clearDatastore`         |
 | `customEntrypoint`       |
 | `datastorePath`          |
@@ -181,7 +182,7 @@ Deploy has some Flexible environment only parameters that are not listed here an
 | --------------------- | ----------- |
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
-| `project`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
+| `projectId`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
 | `promote`             | Promote the deployed version to receive all traffic. |
 | `server`              | The App Engine server to connect to. Typically, you do not need to change this value. |
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |
@@ -230,9 +231,9 @@ appengine {
 }
 ```
 
-### How do I enable hot reload of my application?
+### How do I enable automatic reload of my application?
 
-To enable hot reload of classes:
+To enable automatic reload of your application:
 1. You must tell the Dev App Server v1 to scan for changes :
     ```groovy
     appengine {
@@ -272,7 +273,10 @@ appengine {
 
 ### I want to use Dev Appserver 2 (alpha), how do I switch to it?
 
-To switch back to the Dev App Server v2-alpha (that was default in version < 1.3.0) use the `serverVersion` parameter
+Caution: The v2-alpha version of the development web server is not fully
+supported, and you may find errors when using this version.
+
+To switch Dev App Server v2-alpha use the `serverVersion` parameter.
 
 ```
 appengine {
@@ -373,7 +377,7 @@ The `deploy` configuration has the following parameters :
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
 | `imageUrl`            | Deploy with a Docker URL from the Google container registry. |
-| `project`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG`.\* |
+| `projectId`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG`.\* |
 | `promote`             | Promote the deployed version to receive all traffic. |
 | `server`              | The App Engine server to connect to. Typically, you do not need to change this value. |
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |

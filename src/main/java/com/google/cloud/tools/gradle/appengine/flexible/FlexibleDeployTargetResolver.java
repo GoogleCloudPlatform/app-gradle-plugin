@@ -51,7 +51,7 @@ public class FlexibleDeployTargetResolver {
               + APPENGINE_CONFIG
               + " is not allowed for flexible environment projects");
     } else if (configString.equals(GCLOUD_CONFIG)) {
-      return ConfigReader.from(gcloud).getProject();
+      return ConfigReader.getProject(gcloud);
     } else {
       return configString;
     }

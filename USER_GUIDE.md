@@ -276,7 +276,7 @@ appengine {
 Caution: The v2-alpha version of the development web server is not fully
 supported, and you may find errors when using this version.
 
-To switch Dev App Server v2-alpha use the `serverVersion` parameter.
+To switch to Dev App Server v2-alpha use the `serverVersion` parameter.
 
 ```
 appengine {

@@ -35,78 +35,50 @@ public final class ConfigReader {
 
   private ConfigReader() {}
 
-  public static AppEngineWebXmlConfig from(File appengineWebXml) {
-    return new AppEngineWebXmlConfig(appengineWebXml);
-  }
-
-  public static GcloudConfig from(Gcloud gcloud) {
-    return new GcloudConfig(gcloud);
-  }
-
-  /** Configuration reader from appengine-web.xml. */
-  public static class AppEngineWebXmlConfig {
-
-    private final File appengineWebXml;
-
-    private AppEngineWebXmlConfig(File appengineWebXml) {
-      this.appengineWebXml = appengineWebXml;
-    }
-
-    /** Return "application" tag from appengine-web.xml or error out if could not read. */
-    public String getProject() {
-      try {
-        AppEngineDescriptor appEngineDescriptor =
-            AppEngineDescriptor.parse(new FileInputStream(appengineWebXml));
-        String appengineWebXmlProject = appEngineDescriptor.getProjectId();
-        if (appengineWebXmlProject == null || appengineWebXmlProject.trim().isEmpty()) {
-          throw new GradleException("<application> was not found in appengine-web.xml");
-        }
-        return appengineWebXmlProject;
-      } catch (IOException | SAXException | AppEngineException ex) {
-        throw new GradleException("Failed to read project from appengine-web.xml", ex);
+  /** Return gcloud config property for project, or error out if not found. */
+  public static String getProject(Gcloud gcloud) {
+    try {
+      String gcloudProject = gcloud.getConfig().getProject();
+      if (gcloudProject == null || gcloudProject.trim().isEmpty()) {
+        throw new GradleException("Project was not found in gcloud config");
       }
-    }
-
-    /** Return "version" tag from appengine-web.xml or error out if could not read. */
-    public String getVersion() {
-      try {
-        AppEngineDescriptor appEngineDescriptor =
-            AppEngineDescriptor.parse(new FileInputStream(appengineWebXml));
-        String appengineWebXmlVersion = appEngineDescriptor.getProjectVersion();
-        if (appengineWebXmlVersion == null || appengineWebXmlVersion.trim().isEmpty()) {
-          throw new GradleException("<version> was not found in appengine-web.xml");
-        }
-        return appengineWebXmlVersion;
-      } catch (IOException | SAXException | AppEngineException ex) {
-        throw new GradleException("Failed to read version from appengine-web.xml", ex);
-      }
+      return gcloudProject;
+    } catch (CloudSdkNotFoundException
+        | CloudSdkOutOfDateException
+        | CloudSdkVersionFileException
+        | IOException
+        | ProcessHandlerException ex) {
+      throw new GradleException("Failed to read project from gcloud config", ex);
     }
   }
 
-  /** Configuration reader from "gcloud config". */
-  public static class GcloudConfig {
-
-    private final Gcloud gcloud;
-
-    private GcloudConfig(Gcloud gcloud) {
-      this.gcloud = gcloud;
-    }
-
-    /** Return gcloud config property for project, or error out if not found. */
-    public String getProject() {
-      try {
-        String gcloudProject = gcloud.getConfig().getProject();
-        if (gcloudProject == null || gcloudProject.trim().isEmpty()) {
-          throw new GradleException("Project was not found in gcloud config");
-        }
-        return gcloudProject;
-      } catch (CloudSdkNotFoundException
-          | CloudSdkOutOfDateException
-          | CloudSdkVersionFileException
-          | IOException
-          | ProcessHandlerException ex) {
-        throw new GradleException("Failed to read project from gcloud config", ex);
+  /** Return "application" tag from appengine-web.xml or error out if could not read. */
+  public static String getProject(File appengineWebXml) {
+    try {
+      AppEngineDescriptor appEngineDescriptor =
+          AppEngineDescriptor.parse(new FileInputStream(appengineWebXml));
+      String appengineWebXmlProject = appEngineDescriptor.getProjectId();
+      if (appengineWebXmlProject == null || appengineWebXmlProject.trim().isEmpty()) {
+        throw new GradleException("<application> was not found in appengine-web.xml");
       }
+      return appengineWebXmlProject;
+    } catch (IOException | SAXException | AppEngineException ex) {
+      throw new GradleException("Failed to read project from appengine-web.xml", ex);
+    }
+  }
+
+  /** Return "version" tag from appengine-web.xml or error out if could not read. */
+  public static String getVersion(File appengineWebXml) {
+    try {
+      AppEngineDescriptor appEngineDescriptor =
+          AppEngineDescriptor.parse(new FileInputStream(appengineWebXml));
+      String appengineWebXmlVersion = appEngineDescriptor.getProjectVersion();
+      if (appengineWebXmlVersion == null || appengineWebXmlVersion.trim().isEmpty()) {
+        throw new GradleException("<version> was not found in appengine-web.xml");
+      }
+      return appengineWebXmlVersion;
+    } catch (IOException | SAXException | AppEngineException ex) {
+      throw new GradleException("Failed to read version from appengine-web.xml", ex);
     }
   }
 }

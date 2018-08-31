@@ -52,9 +52,9 @@ public class StandardDeployTargetResolver {
               + GCLOUD_CONFIG
               + "' to use project from gcloud config");
     } else if (configString.equals(APPENGINE_CONFIG)) {
-      return ConfigReader.from(appengineWebXml).getProject();
+      return ConfigReader.getProject(appengineWebXml);
     } else if (configString.equals(GCLOUD_CONFIG)) {
-      return ConfigReader.from(gcloud).getProject();
+      return ConfigReader.getProject(gcloud);
     } else {
       return configString;
     }
@@ -77,7 +77,7 @@ public class StandardDeployTargetResolver {
               + GCLOUD_CONFIG
               + "' to have gcloud generate a version for you.");
     } else if (configString.equals(APPENGINE_CONFIG)) {
-      return ConfigReader.from(appengineWebXml).getVersion();
+      return ConfigReader.getVersion(appengineWebXml);
     } else if (configString.equals(GCLOUD_CONFIG)) {
       // can be null to allow gcloud to generate this
       return null;

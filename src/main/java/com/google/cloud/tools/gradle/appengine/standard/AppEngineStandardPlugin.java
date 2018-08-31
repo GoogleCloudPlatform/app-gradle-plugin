@@ -152,10 +152,9 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             runExtension.setProjectId(deploy.getProjectId());
           }
           if (runExtension.getProjectId().equals(GCLOUD_CONFIG)) {
-            runExtension.setProjectId(
-                ConfigReader.from(cloudSdkOperations.getGcloud()).getProject());
+            runExtension.setProjectId(ConfigReader.getProject(cloudSdkOperations.getGcloud()));
           } else if (runExtension.getProjectId().equals(APPENGINE_CONFIG)) {
-            runExtension.setProjectId(ConfigReader.from(appengineWebXml).getProject());
+            runExtension.setProjectId(ConfigReader.getProject(appengineWebXml));
           }
         });
   }

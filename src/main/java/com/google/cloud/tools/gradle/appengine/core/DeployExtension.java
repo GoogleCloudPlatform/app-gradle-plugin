@@ -22,6 +22,7 @@ import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationCon
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 
 /** Extension element to define Deployable configurations for App Engine. */
@@ -34,6 +35,7 @@ public class DeployExtension
   private String bucket;
   private String imageUrl;
   private String projectId;
+  @Deprecated private String project;
   private Boolean promote;
   private String server;
   private Boolean stopPreviousVersion;
@@ -136,5 +138,15 @@ public class DeployExtension
   @Override
   public File getAppEngineDirectory() {
     return appEngineDirectory;
+  }
+
+  public String getProject() {
+    throw new GradleException(
+        "Use of appengine.deploy.project is deprecated, use appengine.deploy.projectId");
+  }
+
+  public void setProject(String project) {
+    throw new GradleException(
+        "Use of appengine.deploy.project is deprecated, use appengine.deploy.projectId");
   }
 }

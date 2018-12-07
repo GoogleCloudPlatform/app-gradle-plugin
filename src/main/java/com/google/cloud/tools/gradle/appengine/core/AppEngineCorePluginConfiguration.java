@@ -223,7 +223,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setDeployExtension(deployExtension);
                   });
             });
   }
@@ -241,7 +241,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setDeployExtension(deployExtension);
                   });
             });
   }
@@ -259,7 +259,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setDeployExtension(deployExtension);
                   });
             });
   }
@@ -277,7 +277,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setDeployExtension(deployExtension);
                   });
             });
   }
@@ -295,7 +295,7 @@ public class AppEngineCorePluginConfiguration {
 
               project.afterEvaluate(
                   project -> {
-                    deployTask.setDeployConfig(deployExtension);
+                    deployTask.setDeployExtension(deployExtension);
                   });
             });
   }

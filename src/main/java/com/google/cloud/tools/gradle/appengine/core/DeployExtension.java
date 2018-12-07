@@ -19,15 +19,14 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 
 /** Extension element to define Deployable configurations for App Engine. */
-public class DeployExtension
-    implements DeployConfiguration, DeployProjectConfigurationConfiguration {
+public class DeployExtension {
 
   // named gradleProject to disambiguate with deploy parameter "project"
   private final Project gradleProject;
@@ -42,28 +41,29 @@ public class DeployExtension
   private String version;
   private File appEngineDirectory;
 
-  @InternalProperty private final ImmutableList<File> deployables;
-
   public DeployExtension(Project gradleProject) {
     this.gradleProject = gradleProject;
-    this.deployables = ImmutableList.of();
   }
 
-  /** Creates and returns a copy of the DeployExtension with specified deployables. */
-  public DeployExtension(DeployExtension deployExtension, List<File> deployables) {
-    this.gradleProject = deployExtension.gradleProject;
-    this.bucket = deployExtension.bucket;
-    this.imageUrl = deployExtension.imageUrl;
-    this.projectId = deployExtension.projectId;
-    this.promote = deployExtension.promote;
-    this.server = deployExtension.server;
-    this.stopPreviousVersion = deployExtension.stopPreviousVersion;
-    this.version = deployExtension.version;
-    this.appEngineDirectory = deployExtension.appEngineDirectory;
-    this.deployables = ImmutableList.copyOf(deployables);
+  DeployConfiguration toDeployConfiguration(List<Path> deployables) {
+    return DeployConfiguration.builder(deployables)
+        .bucket(bucket)
+        .imageUrl(imageUrl)
+        .projectId(projectId)
+        .promote(promote)
+        .server(server)
+        .stopPreviousVersion(stopPreviousVersion)
+        .version(version)
+        .build();
   }
 
-  @Override
+  DeployProjectConfigurationConfiguration toDeployProjectConfigurationConfiguration() {
+    return DeployProjectConfigurationConfiguration.builder(appEngineDirectory.toPath())
+        .projectId(projectId)
+        .server(server)
+        .build();
+  }
+
   public String getBucket() {
     return bucket;
   }
@@ -72,12 +72,6 @@ public class DeployExtension
     this.bucket = bucket;
   }
 
-  @Override
-  public List<File> getDeployables() {
-    return deployables;
-  }
-
-  @Override
   public String getImageUrl() {
     return imageUrl;
   }
@@ -86,7 +80,6 @@ public class DeployExtension
     this.imageUrl = imageUrl;
   }
 
-  @Override
   public String getProjectId() {
     return projectId;
   }
@@ -95,7 +88,6 @@ public class DeployExtension
     this.projectId = projectId;
   }
 
-  @Override
   public Boolean getPromote() {
     return promote;
   }
@@ -104,7 +96,6 @@ public class DeployExtension
     this.promote = promote;
   }
 
-  @Override
   public String getServer() {
     return server;
   }
@@ -113,7 +104,6 @@ public class DeployExtension
     this.server = server;
   }
 
-  @Override
   public Boolean getStopPreviousVersion() {
     return stopPreviousVersion;
   }
@@ -122,7 +112,6 @@ public class DeployExtension
     this.stopPreviousVersion = stopPreviousVersion;
   }
 
-  @Override
   public String getVersion() {
     return version;
   }
@@ -135,7 +124,6 @@ public class DeployExtension
     this.appEngineDirectory = gradleProject.file(appEngineDirectory);
   }
 
-  @Override
   public File getAppEngineDirectory() {
     return appEngineDirectory;
   }

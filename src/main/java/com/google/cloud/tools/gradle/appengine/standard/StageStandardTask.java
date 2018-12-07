@@ -27,16 +27,16 @@ import org.gradle.api.tasks.TaskAction;
 /** Stage App Engine Standard Environment applications for deployment. */
 public class StageStandardTask extends DefaultTask {
 
-  private StageStandardExtension stagingConfig;
+  private StageStandardExtension stageStandardExtension;
   private AppCfg appCfg;
 
   @Nested
-  public StageStandardExtension getStagingConfig() {
-    return stagingConfig;
+  public StageStandardExtension getStageStandardExtension() {
+    return stageStandardExtension;
   }
 
-  public void setStagingConfig(StageStandardExtension stagingConfig) {
-    this.stagingConfig = stagingConfig;
+  public void setStageStandardExtension(StageStandardExtension stageStandardExtension) {
+    this.stageStandardExtension = stageStandardExtension;
   }
 
   public void setAppCfg(AppCfg appCfg) {
@@ -46,9 +46,9 @@ public class StageStandardTask extends DefaultTask {
   /** Task entrypoint : stage the standard app. */
   @TaskAction
   public void stageAction() throws AppEngineException {
-    getProject().delete(stagingConfig.getStagingDirectory());
+    getProject().delete(stageStandardExtension.getStagingDirectory());
     appCfg
         .newStaging(CloudSdkOperations.getDefaultHandler(getLogger()))
-        .stageStandard(stagingConfig);
+        .stageStandard(stageStandardExtension.toStageStandardConfiguration());
   }
 }

@@ -18,18 +18,17 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy datastore index configuration. */
 public class DeployIndexTask extends GcloudTask {
 
-  private DeployProjectConfigurationConfiguration config;
+  private DeployExtension deployExtension;
   private Gcloud gcloud;
 
-  public void setDeployConfig(DeployProjectConfigurationConfiguration config) {
-    this.config = config;
+  public void setDeployExtension(DeployExtension deployExtension) {
+    this.deployExtension = deployExtension;
   }
 
   public void setGcloud(Gcloud gcloud) {
@@ -39,6 +38,8 @@ public class DeployIndexTask extends GcloudTask {
   /** Task entrypoint : deploy index.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
-    gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger())).deployIndex(config);
+    gcloud
+        .newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()))
+        .deployIndex(deployExtension.toDeployProjectConfigurationConfiguration());
   }
 }

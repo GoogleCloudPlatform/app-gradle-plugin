@@ -18,13 +18,14 @@
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
 import com.google.cloud.tools.appengine.api.debug.GenRepoInfoFileConfiguration;
+import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
 
 /** Extension element to define Source Context configurations. */
-public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
+public class GenRepoInfoFileExtension {
 
   private final Project project;
 
@@ -37,7 +38,6 @@ public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
   }
 
   @OutputDirectory
-  @Override
   public File getOutputDirectory() {
     return outputDirectory;
   }
@@ -48,12 +48,18 @@ public class GenRepoInfoFileExtension implements GenRepoInfoFileConfiguration {
   }
 
   @InputDirectory
-  @Override
   public File getSourceDirectory() {
     return sourceDirectory;
   }
 
   public void setSourceDirectory(Object sourceDirectory) {
     this.sourceDirectory = project.file(sourceDirectory);
+  }
+
+  GenRepoInfoFileConfiguration toGenRepoInfoFileConfiguration() {
+    return GenRepoInfoFileConfiguration.builder()
+        .outputDirectory(NullSafe.convert(outputDirectory, File::toPath))
+        .sourceDirectory(NullSafe.convert(outputDirectory, File::toPath))
+        .build();
   }
 }

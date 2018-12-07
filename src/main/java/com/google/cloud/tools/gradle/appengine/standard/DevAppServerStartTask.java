@@ -79,7 +79,9 @@ public class DevAppServerStartTask extends DefaultTask {
             .setExitListener(new NonZeroExceptionExitListener())
             .buildDevAppServerAsync(runConfig.getStartSuccessTimeout());
 
-    serverHelper.getAppServer(localRun, runConfig, processHandler).run(runConfig);
+    serverHelper
+        .getAppServer(localRun, runConfig, processHandler)
+        .run(runConfig.toRunConfiguration());
 
     getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
   }

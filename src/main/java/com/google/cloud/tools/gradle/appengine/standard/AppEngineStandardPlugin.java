@@ -30,7 +30,6 @@ import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.common.base.Strings;
 import java.io.File;
-import java.util.Collections;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -58,6 +57,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private Project project;
   private CloudSdkOperations cloudSdkOperations;
   private AppEngineStandardExtension appengineExtension;
+  private AppEngineCorePluginConfiguration appEngineCorePluginConfiguration;
   private RunExtension runExtension;
   private StageStandardExtension stageExtension;
   private File explodedWarDir;
@@ -69,8 +69,9 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         project.getExtensions().create("appengine", AppEngineStandardExtension.class);
     appengineExtension.createSubExtensions(project);
 
-    new AppEngineCorePluginConfiguration()
-        .configureCoreProperties(project, appengineExtension, APP_ENGINE_STANDARD_TASK_GROUP);
+    appEngineCorePluginConfiguration = new AppEngineCorePluginConfiguration();
+    appEngineCorePluginConfiguration.configureCoreProperties(
+        project, appengineExtension, APP_ENGINE_STANDARD_TASK_GROUP);
 
     explodedWarDir = new File(project.getBuildDir(), "exploded-" + project.getName());
 
@@ -95,11 +96,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
     stageExtension.setSourceDirectory(explodedWarDir);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
 
-    // tools extension required to initialize cloudSdkOperations
-    final ToolsExtension tools = appengineExtension.getTools();
     project.afterEvaluate(
         project -> {
-          // create the sdk builder factory after we know the location of the sdk
+          // tools extension required to initialize cloudSdkOperations
+          ToolsExtension tools = appengineExtension.getTools();
           try {
             cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
           } catch (CloudSdkNotFoundException ex) {
@@ -107,7 +107,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             throw new GradleException("Could not find CloudSDK: ", ex);
           }
 
-          // obtain deploy extension and set defaults
           DeployExtension deploy = appengineExtension.getDeploy();
           if (deploy.getAppEngineDirectory() == null) {
             deploy.setAppEngineDirectory(
@@ -136,15 +135,13 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                       .getTasks()
                       .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME);
           deployAllTask.setStageDirectory(stageExtension.getStagingDirectory());
-          deployAllTask.setDeployConfig(deploy);
+          deployAllTask.setDeployExtension(deploy);
 
           DeployTask deployTask =
               (DeployTask)
                   project.getTasks().getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME);
-          deployTask.setDeployConfig(
-              deploy,
-              Collections.singletonList(
-                  new File(stageExtension.getStagingDirectory(), "app.yaml")));
+          deployTask.setDeployConfig(deploy);
+          deployTask.setAppYaml(stageExtension.getStagingDirectory().toPath().resolve("app.yaml"));
 
           // configure the runExtension's project parameter
           // assign the run project to the deploy project if none is specified
@@ -203,7 +200,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
                   project.afterEvaluate(
                       project -> {
-                        stageTask1.setStagingConfig(stageExtension);
+                        stageTask1.setStageStandardExtension(stageExtension);
                       });
                 });
 

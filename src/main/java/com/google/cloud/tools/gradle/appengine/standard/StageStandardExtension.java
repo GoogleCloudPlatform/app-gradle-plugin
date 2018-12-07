@@ -18,6 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.deploy.StageStandardConfiguration;
+import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
@@ -26,7 +27,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
 /** Extension element to define Stage configurations for App Engine Standard Environments. */
-public class StageStandardExtension implements StageStandardConfiguration {
+public class StageStandardExtension {
 
   private final Project project;
 
@@ -48,7 +49,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.project = project;
   }
 
-  @Override
   @InputDirectory
   public File getSourceDirectory() {
     return sourceDirectory;
@@ -58,7 +58,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.sourceDirectory = project.file(sourceDirectory);
   }
 
-  @Override
   @OutputDirectory
   public File getStagingDirectory() {
     return stagingDirectory;
@@ -68,7 +67,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.stagingDirectory = project.file(stagingDirectory);
   }
 
-  @Override
   @Input
   @Optional
   public File getDockerfile() {
@@ -79,7 +77,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.dockerfile = project.file(dockerfile);
   }
 
-  @Override
   @Input
   @Optional
   public Boolean getEnableQuickstart() {
@@ -90,7 +87,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.enableQuickstart = enableQuickstart;
   }
 
-  @Override
   @Input
   @Optional
   public Boolean getDisableUpdateCheck() {
@@ -101,7 +97,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.disableUpdateCheck = disableUpdateCheck;
   }
 
-  @Override
   @Input
   @Optional
   public Boolean getEnableJarSplitting() {
@@ -112,7 +107,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.enableJarSplitting = enableJarSplitting;
   }
 
-  @Override
   @Input
   @Optional
   public String getJarSplittingExcludes() {
@@ -123,7 +117,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.jarSplittingExcludes = jarSplittingExcludes;
   }
 
-  @Override
   @Input
   @Optional
   public String getCompileEncoding() {
@@ -134,7 +127,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.compileEncoding = compileEncoding;
   }
 
-  @Override
   @Input
   @Optional
   public Boolean getDeleteJsps() {
@@ -145,7 +137,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.deleteJsps = deleteJsps;
   }
 
-  @Override
   @Input
   @Optional
   public Boolean getEnableJarClasses() {
@@ -156,7 +147,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.enableJarClasses = enableJarClasses;
   }
 
-  @Override
   @Input
   @Optional
   public Boolean getDisableJarJsps() {
@@ -167,7 +157,6 @@ public class StageStandardExtension implements StageStandardConfiguration {
     this.disableJarJsps = disableJarJsps;
   }
 
-  @Override
   @Input
   @Optional
   public String getRuntime() {
@@ -176,5 +165,20 @@ public class StageStandardExtension implements StageStandardConfiguration {
 
   public void setRuntime(String runtime) {
     this.runtime = runtime;
+  }
+
+  StageStandardConfiguration toStageStandardConfiguration() {
+    return StageStandardConfiguration.builder(sourceDirectory.toPath(), stagingDirectory.toPath())
+        .compileEncoding(compileEncoding)
+        .deleteJsps(deleteJsps)
+        .disableJarJsps(disableJarJsps)
+        .dockerfile(NullSafe.convert(dockerfile, File::toPath))
+        .disableUpdateCheck(disableUpdateCheck)
+        .enableJarClasses(enableJarClasses)
+        .enableJarSplitting(enableJarSplitting)
+        .enableQuickstart(enableQuickstart)
+        .jarSplittingExcludes(jarSplittingExcludes)
+        .runtime(runtime)
+        .build();
   }
 }

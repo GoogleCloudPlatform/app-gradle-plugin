@@ -18,7 +18,6 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
-import com.google.cloud.tools.appengine.api.devserver.DefaultStopConfiguration;
 import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
@@ -62,17 +61,17 @@ public class DevAppServerHelper {
     String serverVersion = run.getServerVersion();
     validator.validateServerVersion(serverVersion);
 
-    DefaultStopConfiguration stop = new DefaultStopConfiguration();
-
     switch (serverVersion) {
       case V1:
-        stop.setAdminHost(run.getHost());
-        stop.setAdminPort(run.getPort());
-        return stop;
+        return StopConfiguration.builder()
+            .adminHost(run.getHost())
+            .adminPort(run.getPort())
+            .build();
       case V2:
-        stop.setAdminHost(run.getAdminHost());
-        stop.setAdminPort(run.getAdminPort());
-        return stop;
+        return StopConfiguration.builder()
+            .adminHost(run.getAdminHost())
+            .adminPort(run.getAdminPort())
+            .build();
       default:
         throw new AssertionError("Unexpected serverVersion " + run.getServerVersion());
     }

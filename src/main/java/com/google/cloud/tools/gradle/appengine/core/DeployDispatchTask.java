@@ -18,18 +18,17 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy dispatch configuration. */
 public class DeployDispatchTask extends GcloudTask {
 
-  private DeployProjectConfigurationConfiguration config;
+  private DeployExtension deployExtension;
   private Gcloud gcloud;
 
-  public void setDeployConfig(DeployProjectConfigurationConfiguration config) {
-    this.config = config;
+  public void setDeployExtension(DeployExtension deployExtension) {
+    this.deployExtension = deployExtension;
   }
 
   @Override
@@ -40,6 +39,8 @@ public class DeployDispatchTask extends GcloudTask {
   /** Task entrypoint : deploy dispatch.yaml. */
   @TaskAction
   public void deployAction() throws AppEngineException {
-    gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger())).deployDispatch(config);
+    gcloud
+        .newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()))
+        .deployDispatch(deployExtension.toDeployProjectConfigurationConfiguration());
   }
 }

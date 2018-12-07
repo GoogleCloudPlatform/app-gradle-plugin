@@ -18,17 +18,19 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
+import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.ProjectConfigurationException;
 import org.gradle.api.plugins.BasePlugin;
 
 /** Extension element to define Run configurations for App Engine Standard Environments. */
-public class RunExtension implements RunConfiguration {
+public class RunExtension {
 
   private final Project project;
   private int startSuccessTimeout;
@@ -87,7 +89,6 @@ public class RunExtension implements RunConfiguration {
     this.serverVersion = serverVersion;
   }
 
-  @Override
   public String getHost() {
     return host;
   }
@@ -96,7 +97,6 @@ public class RunExtension implements RunConfiguration {
     this.host = host;
   }
 
-  @Override
   public Integer getPort() {
     return port;
   }
@@ -105,7 +105,6 @@ public class RunExtension implements RunConfiguration {
     this.port = port;
   }
 
-  @Override
   public String getAdminHost() {
     return adminHost;
   }
@@ -114,7 +113,6 @@ public class RunExtension implements RunConfiguration {
     this.adminHost = adminHost;
   }
 
-  @Override
   public Integer getAdminPort() {
     return adminPort;
   }
@@ -123,7 +121,6 @@ public class RunExtension implements RunConfiguration {
     this.adminPort = adminPort;
   }
 
-  @Override
   public String getAuthDomain() {
     return authDomain;
   }
@@ -132,7 +129,6 @@ public class RunExtension implements RunConfiguration {
     this.authDomain = authDomain;
   }
 
-  @Override
   public File getStoragePath() {
     return storagePath;
   }
@@ -141,7 +137,6 @@ public class RunExtension implements RunConfiguration {
     this.storagePath = project.file(storagePath);
   }
 
-  @Override
   public String getLogLevel() {
     return logLevel;
   }
@@ -150,7 +145,6 @@ public class RunExtension implements RunConfiguration {
     this.logLevel = logLevel;
   }
 
-  @Override
   public Integer getMaxModuleInstances() {
     return maxModuleInstances;
   }
@@ -159,7 +153,6 @@ public class RunExtension implements RunConfiguration {
     this.maxModuleInstances = maxModuleInstances;
   }
 
-  @Override
   public Boolean getUseMtimeFileWatcher() {
     return useMtimeFileWatcher;
   }
@@ -168,7 +161,6 @@ public class RunExtension implements RunConfiguration {
     this.useMtimeFileWatcher = useMtimeFileWatcher;
   }
 
-  @Override
   public String getThreadsafeOverride() {
     return threadsafeOverride;
   }
@@ -177,7 +169,6 @@ public class RunExtension implements RunConfiguration {
     this.threadsafeOverride = threadsafeOverride;
   }
 
-  @Override
   public String getPythonStartupScript() {
     return pythonStartupScript;
   }
@@ -186,7 +177,6 @@ public class RunExtension implements RunConfiguration {
     this.pythonStartupScript = pythonStartupScript;
   }
 
-  @Override
   public String getPythonStartupArgs() {
     return pythonStartupArgs;
   }
@@ -195,7 +185,6 @@ public class RunExtension implements RunConfiguration {
     this.pythonStartupArgs = pythonStartupArgs;
   }
 
-  @Override
   public List<String> getJvmFlags() {
     return jvmFlags;
   }
@@ -204,7 +193,6 @@ public class RunExtension implements RunConfiguration {
     this.jvmFlags = jvmFlags;
   }
 
-  @Override
   public String getCustomEntrypoint() {
     return customEntrypoint;
   }
@@ -213,7 +201,6 @@ public class RunExtension implements RunConfiguration {
     this.customEntrypoint = customEntrypoint;
   }
 
-  @Override
   public String getRuntime() {
     return runtime;
   }
@@ -222,7 +209,6 @@ public class RunExtension implements RunConfiguration {
     this.runtime = runtime;
   }
 
-  @Override
   public Boolean getAllowSkippedFiles() {
     return allowSkippedFiles;
   }
@@ -231,7 +217,6 @@ public class RunExtension implements RunConfiguration {
     this.allowSkippedFiles = allowSkippedFiles;
   }
 
-  @Override
   public Integer getApiPort() {
     return apiPort;
   }
@@ -240,7 +225,6 @@ public class RunExtension implements RunConfiguration {
     this.apiPort = apiPort;
   }
 
-  @Override
   public Boolean getAutomaticRestart() {
     return automaticRestart;
   }
@@ -249,7 +233,6 @@ public class RunExtension implements RunConfiguration {
     this.automaticRestart = automaticRestart;
   }
 
-  @Override
   public String getDevAppserverLogLevel() {
     return devAppserverLogLevel;
   }
@@ -258,7 +241,6 @@ public class RunExtension implements RunConfiguration {
     this.devAppserverLogLevel = devAppserverLogLevel;
   }
 
-  @Override
   public Boolean getSkipSdkUpdateCheck() {
     return skipSdkUpdateCheck;
   }
@@ -267,7 +249,6 @@ public class RunExtension implements RunConfiguration {
     this.skipSdkUpdateCheck = skipSdkUpdateCheck;
   }
 
-  @Override
   public String getDefaultGcsBucketName() {
     return defaultGcsBucketName;
   }
@@ -276,7 +257,6 @@ public class RunExtension implements RunConfiguration {
     this.defaultGcsBucketName = defaultGcsBucketName;
   }
 
-  @Override
   public Boolean getClearDatastore() {
     return clearDatastore;
   }
@@ -285,7 +265,6 @@ public class RunExtension implements RunConfiguration {
     this.clearDatastore = clearDatastore;
   }
 
-  @Override
   public List<File> getServices() {
     return services;
   }
@@ -326,7 +305,6 @@ public class RunExtension implements RunConfiguration {
         .getSingleFile();
   }
 
-  @Override
   public File getDatastorePath() {
     return datastorePath;
   }
@@ -335,7 +313,6 @@ public class RunExtension implements RunConfiguration {
     this.datastorePath = project.file(datastorePath);
   }
 
-  @Override
   public Map<String, String> getEnvironment() {
     return environment;
   }
@@ -344,7 +321,6 @@ public class RunExtension implements RunConfiguration {
     this.environment = environment;
   }
 
-  @Override
   public List<String> getAdditionalArguments() {
     return additionalArguments;
   }
@@ -354,12 +330,43 @@ public class RunExtension implements RunConfiguration {
         additionalArguments != null ? ImmutableList.copyOf(additionalArguments) : null;
   }
 
-  @Override
   public String getProjectId() {
     return projectId;
   }
 
   public void setProjectId(String projectId) {
     this.projectId = projectId;
+  }
+
+  RunConfiguration toRunConfiguration() {
+    return RunConfiguration.builder(
+            services.stream().map(File::toPath).collect(Collectors.toList()))
+        .additionalArguments(additionalArguments)
+        .adminHost(adminHost)
+        .adminPort(adminPort)
+        .authDomain(authDomain)
+        .allowSkippedFiles(allowSkippedFiles)
+        .apiPort(apiPort)
+        .automaticRestart(automaticRestart)
+        .clearDatastore(clearDatastore)
+        .customEntrypoint(customEntrypoint)
+        .datastorePath(NullSafe.convert(datastorePath, File::toPath))
+        .defaultGcsBucketName(defaultGcsBucketName)
+        .devAppserverLogLevel(devAppserverLogLevel)
+        .environment(environment)
+        .host(host)
+        .jvmFlags(jvmFlags)
+        .logLevel(logLevel)
+        .maxModuleInstances(maxModuleInstances)
+        .port(port)
+        .projectId(projectId)
+        .pythonStartupArgs(pythonStartupArgs)
+        .pythonStartupScript(pythonStartupScript)
+        .runtime(runtime)
+        .skipSdkUpdateCheck(skipSdkUpdateCheck)
+        .storagePath(NullSafe.convert(storagePath, File::toPath))
+        .threadsafeOverride(threadsafeOverride)
+        .useMtimeFileWatcher(useMtimeFileWatcher)
+        .build();
   }
 }

@@ -28,6 +28,7 @@ import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
@@ -49,7 +50,7 @@ public class DeployAllTaskTest {
   @Mock private CloudSdkAppEngineDeployment deploy;
 
   private DeployExtension deployConfig;
-  private ArgumentCaptor<DeployExtension> deployCapture;
+  private ArgumentCaptor<DeployConfiguration> deployCapture;
 
   private DeployAllTask deployAllTask;
 
@@ -60,11 +61,11 @@ public class DeployAllTaskTest {
   public void setup() throws IOException, AppEngineException {
     Project tempProject = ProjectBuilder.builder().build();
     deployConfig = new DeployExtension(tempProject);
-    deployCapture = ArgumentCaptor.forClass(DeployExtension.class);
+    deployCapture = ArgumentCaptor.forClass(DeployConfiguration.class);
     stageDir = tempFolder.newFolder("staging");
 
     deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
-    deployAllTask.setDeployConfig(deployConfig);
+    deployAllTask.setDeployExtension(deployConfig);
     deployAllTask.setGcloud(gcloud);
     deployAllTask.setStageDirectory(stageDir);
 
@@ -75,13 +76,13 @@ public class DeployAllTaskTest {
   public void testDeployAllAction_standard() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
 
-    final File appYaml = tempFolder.newFile("staging/app.yaml");
-    final File cronYaml = tempFolder.newFile("staging/cron.yaml");
-    final File dispatchYaml = tempFolder.newFile("staging/dispatch.yaml");
-    final File dosYaml = tempFolder.newFile("staging/dos.yaml");
-    final File indexYaml = tempFolder.newFile("staging/index.yaml");
-    final File queueYaml = tempFolder.newFile("staging/queue.yaml");
-    final File invalidYaml = tempFolder.newFile("staging/invalid.yaml");
+    final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
+    final Path cronYaml = tempFolder.newFile("staging/cron.yaml").toPath();
+    final Path dispatchYaml = tempFolder.newFile("staging/dispatch.yaml").toPath();
+    final Path dosYaml = tempFolder.newFile("staging/dos.yaml").toPath();
+    final Path indexYaml = tempFolder.newFile("staging/index.yaml").toPath();
+    final Path queueYaml = tempFolder.newFile("staging/queue.yaml").toPath();
+    final Path invalidYaml = tempFolder.newFile("staging/invalid.yaml").toPath();
 
     deployAllTask.deployAllAction();
 
@@ -100,13 +101,13 @@ public class DeployAllTaskTest {
   public void testDeployAllAction_flexible() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
-    final File appYaml = tempFolder.newFile("staging/app.yaml");
-    final File cronYaml = tempFolder.newFile("appengine/cron.yaml");
-    final File dispatchYaml = tempFolder.newFile("appengine/dispatch.yaml");
-    final File dosYaml = tempFolder.newFile("appengine/dos.yaml");
-    final File indexYaml = tempFolder.newFile("appengine/index.yaml");
-    final File queueYaml = tempFolder.newFile("appengine/queue.yaml");
-    final File invalidYaml = tempFolder.newFile("appengine/invalid.yaml");
+    final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
+    final Path cronYaml = tempFolder.newFile("appengine/cron.yaml").toPath();
+    final Path dispatchYaml = tempFolder.newFile("appengine/dispatch.yaml").toPath();
+    final Path dosYaml = tempFolder.newFile("appengine/dos.yaml").toPath();
+    final Path indexYaml = tempFolder.newFile("appengine/index.yaml").toPath();
+    final Path queueYaml = tempFolder.newFile("appengine/queue.yaml").toPath();
+    final Path invalidYaml = tempFolder.newFile("appengine/invalid.yaml").toPath();
 
     deployAllTask.deployAllAction();
 
@@ -126,8 +127,8 @@ public class DeployAllTaskTest {
       throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(stageDir);
 
-    final File appYaml = tempFolder.newFile("staging/app.yaml");
-    final File validInDifferentDirYaml = tempFolder.newFile("queue.yaml");
+    final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
+    final Path validInDifferentDirYaml = tempFolder.newFile("queue.yaml").toPath();
 
     deployAllTask.deployAllAction();
 
@@ -143,8 +144,8 @@ public class DeployAllTaskTest {
     deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
     // Make YAMLS
-    final File appYaml = tempFolder.newFile("staging/app.yaml");
-    final File validInDifferentDirYaml = tempFolder.newFile("queue.yaml");
+    final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
+    final Path validInDifferentDirYaml = tempFolder.newFile("queue.yaml").toPath();
 
     deployAllTask.deployAllAction();
 

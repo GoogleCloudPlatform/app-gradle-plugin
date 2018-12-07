@@ -18,19 +18,25 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
+import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import java.io.File;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
+import java.nio.file.Path;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy App Engine applications. */
 public class DeployTask extends GcloudTask {
 
-  private DeployExtension deployConfig;
+  private DeployExtension deployExtension;
+  private Path appYaml;
   private Gcloud gcloud;
 
-  public void setDeployConfig(DeployExtension deployConfig, List<File> deployables) {
-    this.deployConfig = new DeployExtension(deployConfig, deployables);
+  public void setDeployConfig(DeployExtension deployExtension) {
+    this.deployExtension = deployExtension;
+  }
+
+  public void setAppYaml(Path appYaml) {
+    this.appYaml = appYaml;
   }
 
   public void setGcloud(Gcloud gcloud) {
@@ -40,6 +46,8 @@ public class DeployTask extends GcloudTask {
   /** Task Entrypoint : DeployExtension application (via app.yaml). */
   @TaskAction
   public void deployAction() throws AppEngineException {
+    DeployConfiguration deployConfig =
+        deployExtension.toDeployConfiguration(ImmutableList.of(appYaml));
     gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger())).deploy(deployConfig);
   }
 }

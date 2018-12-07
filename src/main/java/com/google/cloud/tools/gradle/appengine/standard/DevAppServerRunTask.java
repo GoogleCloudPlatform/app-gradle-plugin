@@ -44,6 +44,6 @@ public class DevAppServerRunTask extends DefaultTask {
   public void runAction() throws AppEngineException, ProjectConfigurationException {
     serverHelper
         .getAppServer(localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()))
-        .run(runConfig);
+        .run(runConfig.toRunConfiguration());
   }
 }

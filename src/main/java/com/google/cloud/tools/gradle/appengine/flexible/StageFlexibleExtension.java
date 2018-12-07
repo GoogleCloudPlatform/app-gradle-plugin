@@ -17,7 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.flexible;
 
-import com.google.cloud.tools.appengine.api.deploy.StageFlexibleConfiguration;
+import com.google.cloud.tools.appengine.api.deploy.StageArchiveConfiguration;
+import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
@@ -26,7 +27,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
 /** Extension element to define Stage configurations for App Engine Flexible Environments. */
-public class StageFlexibleExtension implements StageFlexibleConfiguration {
+public class StageFlexibleExtension {
 
   private final Project project;
 
@@ -39,7 +40,6 @@ public class StageFlexibleExtension implements StageFlexibleConfiguration {
     this.project = project;
   }
 
-  @Override
   @InputDirectory
   public File getAppEngineDirectory() {
     return appEngineDirectory;
@@ -49,7 +49,6 @@ public class StageFlexibleExtension implements StageFlexibleConfiguration {
     this.appEngineDirectory = project.file(appEngineDirectory);
   }
 
-  @Override
   @Optional
   @InputDirectory
   public File getDockerDirectory() {
@@ -60,7 +59,6 @@ public class StageFlexibleExtension implements StageFlexibleConfiguration {
     this.dockerDirectory = project.file(dockerDirectory);
   }
 
-  @Override
   @InputFile
   public File getArtifact() {
     return artifact;
@@ -70,7 +68,6 @@ public class StageFlexibleExtension implements StageFlexibleConfiguration {
     this.artifact = project.file(artifact);
   }
 
-  @Override
   @OutputDirectory
   public File getStagingDirectory() {
     return stagingDirectory;
@@ -78,5 +75,12 @@ public class StageFlexibleExtension implements StageFlexibleConfiguration {
 
   public void setStagingDirectory(Object stagingDirectory) {
     this.stagingDirectory = project.file(stagingDirectory);
+  }
+
+  StageArchiveConfiguration toStageArchiveConfiguration() {
+    return StageArchiveConfiguration.builder(
+            appEngineDirectory.toPath(), artifact.toPath(), stagingDirectory.toPath())
+        .dockerDirectory(NullSafe.convert(dockerDirectory, File::toPath))
+        .build();
   }
 }

@@ -48,6 +48,6 @@ public class GenRepoInfoFileTask extends DefaultTask {
   public void generateRepositoryInfoFile() throws AppEngineException {
     gcloud
         .newGenRepoInfo(CloudSdkOperations.getDefaultHandler(getLogger()))
-        .generate(configuration);
+        .generate(configuration.toGenRepoInfoFileConfiguration());
   }
 }

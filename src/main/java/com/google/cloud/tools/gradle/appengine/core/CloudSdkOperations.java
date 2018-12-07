@@ -25,6 +25,7 @@ import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
 import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
 import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
+import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.logging.Logger;
 
@@ -49,7 +50,7 @@ public class CloudSdkOperations {
     localRun = LocalRun.builder(cloudSdk).build();
     gcloud =
         Gcloud.builder(cloudSdk)
-            .setCredentialFile(credentialFile)
+            .setCredentialFile(NullSafe.convert(credentialFile, File::toPath))
             .setMetricsEnvironment(
                 getClass().getPackage().getImplementationTitle(),
                 getClass().getPackage().getImplementationVersion())

@@ -18,8 +18,11 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
+import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
 import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.gradle.api.GradleException;
@@ -27,12 +30,12 @@ import org.gradle.api.tasks.TaskAction;
 
 public class DeployAllTask extends GcloudTask {
 
-  private DeployExtension deployConfig;
+  private DeployExtension deployExtension;
   private Gcloud gcloud;
   private File stageDirectory;
 
-  public void setDeployConfig(DeployExtension deployConfig) {
-    this.deployConfig = deployConfig;
+  public void setDeployExtension(DeployExtension deployExtension) {
+    this.deployExtension = deployExtension;
   }
 
   public void setGcloud(Gcloud gcloud) {
@@ -46,11 +49,11 @@ public class DeployAllTask extends GcloudTask {
   /** Task Entrypoint : Deploys the app and all of its config files. */
   @TaskAction
   public void deployAllAction() throws AppEngineException {
-    List<File> deployables = new ArrayList<>();
+    List<Path> deployables = new ArrayList<>();
 
     // Look for app.yaml
-    File appYaml = stageDirectory.toPath().resolve("app.yaml").toFile();
-    if (!appYaml.exists()) {
+    Path appYaml = stageDirectory.toPath().resolve("app.yaml");
+    if (!Files.isRegularFile(appYaml)) {
       throw new GradleException("Failed to deploy all: app.yaml not found.");
     }
     addDeployable(deployables, appYaml);
@@ -58,8 +61,8 @@ public class DeployAllTask extends GcloudTask {
     // Look for configuration yamls
     String[] validYamls = {"cron.yaml", "dispatch.yaml", "dos.yaml", "index.yaml", "queue.yaml"};
     for (String yamlName : validYamls) {
-      File yaml = deployConfig.getAppEngineDirectory().toPath().resolve(yamlName).toFile();
-      if (yaml.exists()) {
+      Path yaml = deployExtension.getAppEngineDirectory().toPath().resolve(yamlName);
+      if (Files.isRegularFile(yaml)) {
         addDeployable(deployables, yaml);
       }
     }
@@ -67,11 +70,13 @@ public class DeployAllTask extends GcloudTask {
     // Deploy
     AppEngineDeployment deploy =
         gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()));
-    deploy.deploy(new DeployExtension(deployConfig, deployables));
+
+    DeployConfiguration deployConfig = deployExtension.toDeployConfiguration(deployables);
+    deploy.deploy(deployConfig);
   }
 
-  private void addDeployable(List<File> deployables, File yaml) {
-    getLogger().info("appengineDeployAll: Preparing to deploy " + yaml.getName());
+  private void addDeployable(List<Path> deployables, Path yaml) {
+    getLogger().info("appengineDeployAll: Preparing to deploy " + yaml.getFileName());
     deployables.add(yaml);
   }
 }

@@ -36,5 +36,4 @@ public class NullSafeTest {
     File expectedResult = testPath.toFile();
     Assert.assertEquals(expectedResult, NullSafe.convert(testPath, Path::toFile));
   }
-
 }

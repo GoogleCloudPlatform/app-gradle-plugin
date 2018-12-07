@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 public class NullSafe {
 
-  public static <S,R> R convert(S source, Function<S, R> converter) {
+  public static <S, R> R convert(S source, Function<S, R> converter) {
     return (source == null) ? null : converter.apply(source);
   }
 }

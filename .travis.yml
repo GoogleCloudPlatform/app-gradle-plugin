@@ -17,8 +17,8 @@ install:
   # https://github.com/travis-ci/travis-ci/issues/8408
   - unset _JAVA_OPTIONS
 
-  # travis auto creates cache directories, so remove it
-  # run install script
+  # check if cloud SDK was installed (/bin exists)
+  # travis auto creates cache directories, so remove it before install
   - if [ ! -d $HOME/google-cloud-sdk/bin ]; then
       rm -rf $HOME/google-cloud-sdk;
       curl https://sdk.cloud.google.com | bash;
@@ -31,4 +31,4 @@ install:
   - gcloud components install app-engine-java --quiet
 
 script:
-  - ./gradlew check
+  - ./gradlew clean check

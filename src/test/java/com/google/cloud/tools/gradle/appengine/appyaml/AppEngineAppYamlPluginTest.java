@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
@@ -40,17 +40,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/** Test App Engine Flexible Plugin configuration. */
-public class AppEngineFlexiblePluginTest {
+/** Test App Engine AppYaml Plugin configuration. */
+public class AppEngineAppYamlPluginTest {
 
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
   private TestProject createTestProject() throws IOException {
-    return new TestProject(testProjectDir.getRoot()).addFlexibleBuildFile();
+    return new TestProject(testProjectDir.getRoot()).addAppYamlBuildFile();
   }
 
   private TestProject createTestProjectWithHome() throws IOException {
-    return new TestProject(testProjectDir.getRoot()).addFlexibleBuildFileWithHome();
+    return new TestProject(testProjectDir.getRoot()).addAppYamlBuildFileWithHome();
   }
 
   @Test
@@ -167,11 +167,11 @@ public class AppEngineFlexiblePluginTest {
 
   @Test
   public void testDefaultConfiguration() throws IOException {
-    Project p = new TestProject(testProjectDir.getRoot()).applyFlexibleWarProjectBuilder();
+    Project p = new TestProject(testProjectDir.getRoot()).applyAppYamlWarProjectBuilder();
 
-    AppEngineFlexibleExtension ext = p.getExtensions().getByType(AppEngineFlexibleExtension.class);
+    AppEngineAppYamlExtension ext = p.getExtensions().getByType(AppEngineAppYamlExtension.class);
     DeployExtension deployExt = ext.getDeploy();
-    StageFlexibleExtension stageExt = ext.getStage();
+    StageAppYamlExtension stageExt = ext.getStage();
 
     assertEquals(new File(p.getBuildDir(), "staged-app"), stageExt.getStagingDirectory());
     assertEquals(
@@ -190,10 +190,10 @@ public class AppEngineFlexiblePluginTest {
   @Test
   public void testDefaultConfigurationAlternative() throws IOException {
     Project p =
-        new TestProject(testProjectDir.getRoot()).addDockerDir().applyFlexibleProjectBuilder();
+        new TestProject(testProjectDir.getRoot()).addDockerDir().applyAppYamlProjectBuilder();
 
-    AppEngineFlexibleExtension ext = p.getExtensions().getByType(AppEngineFlexibleExtension.class);
-    StageFlexibleExtension stageExt = ext.getStage();
+    AppEngineAppYamlExtension ext = p.getExtensions().getByType(AppEngineAppYamlExtension.class);
+    StageAppYamlExtension stageExt = ext.getStage();
 
     assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     assertEquals((((Jar) p.getProperties().get("jar")).getArchivePath()), stageExt.getArtifact());
@@ -201,13 +201,13 @@ public class AppEngineFlexiblePluginTest {
 
   @Test
   public void testAppEngineTaskGroupAssignment() throws IOException {
-    Project p = new TestProject(testProjectDir.getRoot()).applyFlexibleProjectBuilder();
+    Project p = new TestProject(testProjectDir.getRoot()).applyAppYamlProjectBuilder();
 
     p.getTasks()
         .matching(task -> task.getName().startsWith("appengine"))
         .all(
             task ->
                 assertEquals(
-                    AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP, task.getGroup()));
+                    AppEngineAppYamlPlugin.APP_ENGINE_APPYAML_TASK_GROUP, task.getGroup()));
   }
 }

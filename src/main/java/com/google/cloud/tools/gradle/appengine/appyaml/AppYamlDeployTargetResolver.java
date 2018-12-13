@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
@@ -24,11 +24,31 @@ import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import org.gradle.api.GradleException;
 
-public class FlexibleDeployTargetResolver {
+public class AppYamlDeployTargetResolver {
+
+  static final String PROJECT_ERROR =
+      "Deployment projectId must be defined or configured to read from system state\n"
+          + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
+          + "2. Set appengine.deploy.projectId = '"
+          + GCLOUD_CONFIG
+          + "' to use project from gcloud config.\n"
+          + "3. Using "
+          + APPENGINE_CONFIG
+          + " is not allowed for app.yaml based projects";
+
+  static final String VERSION_ERROR =
+      "Deployment version must be defined or configured to read from system state\n"
+          + "1. Set appengine.deploy.version = 'my-version'\n"
+          + "2. Set appengine.deploy.version = '"
+          + GCLOUD_CONFIG
+          + "' to have gcloud generate a version for you.\n"
+          + "3. Using "
+          + APPENGINE_CONFIG
+          + " is not allowed for app.yaml based projects";
 
   private final Gcloud gcloud;
 
-  public FlexibleDeployTargetResolver(Gcloud gcloud) {
+  public AppYamlDeployTargetResolver(Gcloud gcloud) {
     this.gcloud = gcloud;
   }
 
@@ -41,15 +61,7 @@ public class FlexibleDeployTargetResolver {
     if (configString == null
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
-      throw new GradleException(
-          "Deployment projectId must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
-              + "2. Set appengine.deploy.projectId = '"
-              + GCLOUD_CONFIG
-              + "' to use project from gcloud config.\n"
-              + "3. Using "
-              + APPENGINE_CONFIG
-              + " is not allowed for flexible environment projects");
+      throw new GradleException(PROJECT_ERROR);
     } else if (configString.equals(GCLOUD_CONFIG)) {
       return ConfigReader.getProject(gcloud);
     } else {
@@ -66,15 +78,7 @@ public class FlexibleDeployTargetResolver {
     if (configString == null
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
-      throw new GradleException(
-          "Deployment version must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.version = 'my-version'\n"
-              + "2. Set appengine.deploy.version = '"
-              + GCLOUD_CONFIG
-              + "' to have gcloud generate a version for you.\n"
-              + "3. Using "
-              + APPENGINE_CONFIG
-              + " is not allowed for flexible environment projects");
+      throw new GradleException(VERSION_ERROR);
     } else if (configString.equals(GCLOUD_CONFIG)) {
       // can be null to allow gcloud to generate this
       return null;

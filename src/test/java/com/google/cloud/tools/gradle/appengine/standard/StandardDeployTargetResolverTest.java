@@ -103,16 +103,7 @@ public class StandardDeployTargetResolverTest {
       String result = deployTargetResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals(
-          "Deployment projectId must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
-              + "2. Set appengine.deploy.projectId = '"
-              + ConfigReader.APPENGINE_CONFIG
-              + "' to use <application> from appengine-web.xml\n"
-              + "3. Set appengine.deploy.projectId = '"
-              + ConfigReader.GCLOUD_CONFIG
-              + "' to use project from gcloud config",
-          ex.getMessage());
+      Assert.assertEquals(StandardDeployTargetResolver.PROJECT_ERROR, ex.getMessage());
     }
   }
 
@@ -148,16 +139,7 @@ public class StandardDeployTargetResolverTest {
       deployTargetResolver.getVersion(null);
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals(
-          "Deployment version must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.version = 'my-version'\n"
-              + "2. Set appengine.deploy.version = '"
-              + ConfigReader.APPENGINE_CONFIG
-              + "' to use <version> from appengine-web.xml\n"
-              + "3. Set appengine.deploy.version = '"
-              + ConfigReader.GCLOUD_CONFIG
-              + "' to have gcloud generate a version for you.",
-          ex.getMessage());
+      Assert.assertEquals(StandardDeployTargetResolver.VERSION_ERROR, ex.getMessage());
     }
   }
 }

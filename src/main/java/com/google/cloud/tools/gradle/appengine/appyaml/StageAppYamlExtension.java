@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import com.google.cloud.tools.appengine.api.deploy.StageArchiveConfiguration;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
@@ -26,8 +26,8 @@ import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
-/** Extension element to define Stage configurations for App Engine Flexible Environments. */
-public class StageFlexibleExtension {
+/** Extension element to define Stage configurations for app.yaml base projects. */
+public class StageAppYamlExtension {
 
   private final Project project;
 
@@ -35,8 +35,9 @@ public class StageFlexibleExtension {
   private File dockerDirectory;
   private File artifact;
   private File stagingDirectory;
+  private File extraFilesDirectory;
 
-  public StageFlexibleExtension(Project project) {
+  public StageAppYamlExtension(Project project) {
     this.project = project;
   }
 
@@ -77,10 +78,21 @@ public class StageFlexibleExtension {
     this.stagingDirectory = project.file(stagingDirectory);
   }
 
+  @Optional
+  @InputDirectory
+  public File getExtraFilesDirectory() {
+    return extraFilesDirectory;
+  }
+
+  public void setExtraFilesDirectory(Object extraFilesDirectory) {
+    this.extraFilesDirectory = project.file(extraFilesDirectory);
+  }
+
   StageArchiveConfiguration toStageArchiveConfiguration() {
     return StageArchiveConfiguration.builder(
             appEngineDirectory.toPath(), artifact.toPath(), stagingDirectory.toPath())
         .dockerDirectory(NullSafe.convert(dockerDirectory, File::toPath))
+        .extraFilesDirectory(NullSafe.convert(extraFilesDirectory, File::toPath))
         .build();
   }
 }

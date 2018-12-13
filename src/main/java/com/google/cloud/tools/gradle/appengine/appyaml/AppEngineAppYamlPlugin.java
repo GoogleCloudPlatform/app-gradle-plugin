@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
@@ -34,28 +34,28 @@ import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
 
-/** Plugin definition for App Engine flexible environments. */
-public class AppEngineFlexiblePlugin implements Plugin<Project> {
+/** Plugin definition for App Engine app.yaml based projects. */
+public class AppEngineAppYamlPlugin implements Plugin<Project> {
 
-  public static final String APP_ENGINE_FLEXIBLE_TASK_GROUP = "App Engine Flexible environment";
+  public static final String APP_ENGINE_APPYAML_TASK_GROUP = "App Engine app.yaml based projects";
   private static final String STAGE_TASK_NAME = "appengineStage";
 
   private static final String STAGED_APP_DIR_NAME = "staged-app";
 
   private Project project;
-  private AppEngineFlexibleExtension appengineExtension;
+  private AppEngineAppYamlExtension appengineExtension;
   private CloudSdkOperations cloudSdkOperations;
-  private StageFlexibleExtension stageExtension;
+  private StageAppYamlExtension stageExtension;
 
   @Override
   public void apply(Project project) {
     this.project = project;
     appengineExtension =
-        project.getExtensions().create("appengine", AppEngineFlexibleExtension.class);
+        project.getExtensions().create("appengine", AppEngineAppYamlExtension.class);
     appengineExtension.createSubExtensions(project);
 
     new AppEngineCorePluginConfiguration()
-        .configureCoreProperties(project, appengineExtension, APP_ENGINE_FLEXIBLE_TASK_GROUP);
+        .configureCoreProperties(project, appengineExtension, APP_ENGINE_APPYAML_TASK_GROUP);
 
     configureExtensions();
     createStageTask();
@@ -63,7 +63,7 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
 
   private void configureExtensions() {
 
-    // create the flexible stage extension and set defaults.
+    // create the app.yaml staging extension and set defaults.
     stageExtension = appengineExtension.getStage();
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
@@ -107,8 +107,8 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
             deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
           }
 
-          FlexibleDeployTargetResolver resolver =
-              new FlexibleDeployTargetResolver(cloudSdkOperations.getGcloud());
+          AppYamlDeployTargetResolver resolver =
+              new AppYamlDeployTargetResolver(cloudSdkOperations.getGcloud());
           deploy.setProjectId(resolver.getProject(deploy.getProjectId()));
           deploy.setVersion(resolver.getVersion(deploy.getVersion()));
 
@@ -129,16 +129,16 @@ public class AppEngineFlexiblePlugin implements Plugin<Project> {
   }
 
   private void createStageTask() {
-    StageFlexibleTask stageTask =
+    StageAppYamlTask stageTask =
         project
             .getTasks()
             .create(
                 STAGE_TASK_NAME,
-                StageFlexibleTask.class,
+                StageAppYamlTask.class,
                 stageTask1 -> {
-                  stageTask1.setGroup(APP_ENGINE_FLEXIBLE_TASK_GROUP);
+                  stageTask1.setGroup(APP_ENGINE_APPYAML_TASK_GROUP);
                   stageTask1.setDescription(
-                      "Stage an App Engine flexible environment application for deployment");
+                      "Stage an App Engine app.yaml based project for deployment");
                   stageTask1.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
 
                   project.afterEvaluate(project -> stageTask1.setStagingConfig(stageExtension));

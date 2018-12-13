@@ -54,7 +54,7 @@ public class AppEngineCorePluginConfiguration {
   private ManagedCloudSdk managedCloudSdk;
   private String taskGroup;
 
-  /** Configure core tasks for appengine flexible and standard project plugins. */
+  /** Configure core tasks for appengine app.yaml and appengine-web.xml based project plugins. */
   public void configureCoreProperties(
       Project project,
       AppEngineCoreExtensionProperties appEngineCoreExtensionProperties,
@@ -206,7 +206,7 @@ public class AppEngineCorePluginConfiguration {
             deployTask -> {
               deployTask.setGroup(taskGroup);
               deployTask.setDescription("Deploy an App Engine application");
-              // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
+              // deployConfig is set in AppEngineStandardPlugin and AppEngineAppYamlPlugin
             });
   }
 
@@ -312,7 +312,7 @@ public class AppEngineCorePluginConfiguration {
               deployAllTask.setDescription(
                   "Deploy an App Engine application and all of its config files");
 
-              // deployConfig is set in AppEngineStandardPlugin and AppEngineFlexiblePlugin
+              // deployConfig is set in AppEngineStandardPlugin and AppEngineAppYamlPlugin
             });
   }
 

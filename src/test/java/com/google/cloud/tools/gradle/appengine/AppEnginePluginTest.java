@@ -23,8 +23,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
-import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.IOException;
 import org.gradle.api.Project;
@@ -76,11 +76,11 @@ public class AppEnginePluginTest {
         containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP));
     assertThat(
         buildResult.getOutput(),
-        not(containsString(AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP)));
+        not(containsString(AppEngineAppYamlPlugin.APP_ENGINE_APPYAML_TASK_GROUP)));
   }
 
   @Test
-  public void testDetectFlexible_withGradleRunner() throws IOException {
+  public void testDetectAppYaml_withGradleRunner() throws IOException {
     BuildResult buildResult =
         new TestProject(testProjectRoot.getRoot())
             .addAutoDownloadingBuildFile()
@@ -88,7 +88,7 @@ public class AppEnginePluginTest {
 
     assertThat(
         buildResult.getOutput(),
-        containsString(AppEngineFlexiblePlugin.APP_ENGINE_FLEXIBLE_TASK_GROUP));
+        containsString(AppEngineAppYamlPlugin.APP_ENGINE_APPYAML_TASK_GROUP));
     assertThat(
         buildResult.getOutput(),
         not(containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP)));
@@ -105,10 +105,10 @@ public class AppEnginePluginTest {
   }
 
   @Test
-  public void testDetectFlexible_withProjectBuilder() throws IOException {
+  public void testDetectAppYaml_withProjectBuilder() throws IOException {
     Project p = new TestProject(testProjectRoot.getRoot()).applyAutoDetectingProjectBuilder();
 
-    assertFlexible(p);
+    assertAppYaml(p);
   }
 
   @Test
@@ -122,25 +122,25 @@ public class AppEnginePluginTest {
   }
 
   @Test
-  public void testDetectFlexible_withFallbackNegative() throws IOException {
+  public void testDetectAppYaml_withFallbackNegative() throws IOException {
     Project p =
         new TestProject(testProjectRoot.getRoot())
             .applyAutoDetectingProjectBuilderWithFallbackTrigger();
 
-    assertFlexible(p);
+    assertAppYaml(p);
   }
 
   private void assertStandard(Project p) {
     assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
 
     assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
-    assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
+    assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-appyaml"));
   }
 
-  private void assertFlexible(Project p) {
+  private void assertAppYaml(Project p) {
     assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine"));
 
-    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-flexible"));
+    assertTrue(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-appyaml"));
     assertFalse(p.getPluginManager().hasPlugin("com.google.cloud.tools.appengine-standard"));
   }
 }

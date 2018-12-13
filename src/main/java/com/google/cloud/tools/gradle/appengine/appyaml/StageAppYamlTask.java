@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import com.google.cloud.tools.appengine.api.AppEngineException;
 import com.google.cloud.tools.appengine.api.deploy.AppEngineArchiveStaging;
@@ -24,27 +24,27 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 
-/** Stage App Engine Flexible Environment applications for deployment. */
-public class StageFlexibleTask extends DefaultTask {
+/** Stage App Engine app.yaml based applications for deployment. */
+public class StageAppYamlTask extends DefaultTask {
 
-  private StageFlexibleExtension flexibleExtension;
+  private StageAppYamlExtension appYamlExtension;
 
   @Nested
-  public StageFlexibleExtension getStagingExtension() {
-    return flexibleExtension;
+  public StageAppYamlExtension getStagingExtension() {
+    return appYamlExtension;
   }
 
-  public void setStagingConfig(StageFlexibleExtension stagingConfig) {
-    this.flexibleExtension = stagingConfig;
+  public void setStagingConfig(StageAppYamlExtension stagingConfig) {
+    this.appYamlExtension = stagingConfig;
   }
 
-  /** Task entrypoint : Stage the flexible application. */
+  /** Task entrypoint : Stage the app.yaml based application. */
   @TaskAction
   public void stageAction() throws AppEngineException {
-    getProject().delete(flexibleExtension.getStagingDirectory());
-    getProject().mkdir(flexibleExtension.getStagingDirectory().getAbsolutePath());
+    getProject().delete(appYamlExtension.getStagingDirectory());
+    getProject().mkdir(appYamlExtension.getStagingDirectory().getAbsolutePath());
 
     AppEngineArchiveStaging staging = new CloudSdkAppEngineArchiveStaging();
-    staging.stageArchive(flexibleExtension.toStageArchiveConfiguration());
+    staging.stageArchive(appYamlExtension.toStageArchiveConfiguration());
   }
 }

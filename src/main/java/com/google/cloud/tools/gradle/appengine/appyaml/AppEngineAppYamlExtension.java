@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
@@ -25,14 +25,14 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 
-public class AppEngineFlexibleExtension implements AppEngineCoreExtensionProperties {
+public class AppEngineAppYamlExtension implements AppEngineCoreExtensionProperties {
   @InternalProperty private static final String TOOLS_EXT = "tools";
   @InternalProperty private static final String DEPLOY_EXT = "deploy";
   @InternalProperty private static final String STAGE_EXT = "stage";
 
   @InternalProperty private ToolsExtension tools;
   @InternalProperty private DeployExtension deploy;
-  @InternalProperty private StageFlexibleExtension stage;
+  @InternalProperty private StageAppYamlExtension stage;
 
   /** Create nested configuration blocks as Extensions. */
   public void createSubExtensions(Project project) {
@@ -43,7 +43,7 @@ public class AppEngineFlexibleExtension implements AppEngineCoreExtensionPropert
     stage =
         ((ExtensionAware) this)
             .getExtensions()
-            .create(STAGE_EXT, StageFlexibleExtension.class, project);
+            .create(STAGE_EXT, StageAppYamlExtension.class, project);
   }
 
   public void tools(Action<? super ToolsExtension> action) {
@@ -54,7 +54,7 @@ public class AppEngineFlexibleExtension implements AppEngineCoreExtensionPropert
     action.execute(deploy);
   }
 
-  public void stage(Action<? super StageFlexibleExtension> action) {
+  public void stage(Action<? super StageAppYamlExtension> action) {
     action.execute(stage);
   }
 
@@ -68,7 +68,7 @@ public class AppEngineFlexibleExtension implements AppEngineCoreExtensionPropert
     return deploy;
   }
 
-  public StageFlexibleExtension getStage() {
+  public StageAppYamlExtension getStage() {
     return stage;
   }
 }

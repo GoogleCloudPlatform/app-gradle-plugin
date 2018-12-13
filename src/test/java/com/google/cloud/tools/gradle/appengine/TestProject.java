@@ -19,8 +19,8 @@ package com.google.cloud.tools.gradle.appengine;
 
 import static com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration.APPENGINE_EXTENSION;
 
+import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
-import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import com.google.common.base.Charsets;
 import java.io.File;
@@ -65,15 +65,15 @@ public class TestProject {
     return this;
   }
 
-  /** Add a flexible appengine-gradle-plugin build file. */
-  public TestProject addFlexibleBuildFile() throws IOException {
-    addBuildFile("projects/AppEnginePluginTest/build-flexible.gradle");
+  /** Add a appyaml based appengine-gradle-plugin build file. */
+  public TestProject addAppYamlBuildFile() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-appyaml.gradle");
     return this;
   }
 
-  /** Add a flexible appengine-gradle-plugin build file that specifies sdk home and version. */
-  public TestProject addFlexibleBuildFileWithHome() throws IOException {
-    addBuildFile("projects/AppEnginePluginTest/build-flexible-home.gradle");
+  /** Add a appyaml based appengine-gradle-plugin build file that specifies sdk home and version. */
+  public TestProject addAppYamlBuildFileWithHome() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-appyaml-home.gradle");
     return this;
   }
 
@@ -132,13 +132,13 @@ public class TestProject {
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyFlexibleProjectBuilder() throws IOException {
-    return applyProjectBuilder(JavaPlugin.class, AppEngineFlexiblePlugin.class);
+  public Project applyAppYamlProjectBuilder() throws IOException {
+    return applyProjectBuilder(JavaPlugin.class, AppEngineAppYamlPlugin.class);
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyFlexibleWarProjectBuilder() throws IOException {
-    return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineFlexiblePlugin.class);
+  public Project applyAppYamlWarProjectBuilder() throws IOException {
+    return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineAppYamlPlugin.class);
   }
 
   /** Run the project builder and return an evaluated project. */

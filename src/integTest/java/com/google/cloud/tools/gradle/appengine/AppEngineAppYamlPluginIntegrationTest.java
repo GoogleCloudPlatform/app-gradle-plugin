@@ -38,8 +38,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.Timeout;
 
-/** End to end tests for flexible environment projects. */
-public class AppEngineFlexiblePluginIntegrationTest {
+/** End to end tests for app.yaml based projects. */
+public class AppEngineAppYamlPluginIntegrationTest {
 
   @Rule public Timeout globalTimeout = Timeout.seconds(900);
 
@@ -48,7 +48,7 @@ public class AppEngineFlexiblePluginIntegrationTest {
   @Before
   public void setUp() throws IOException {
     FileUtils.copyDirectory(
-        new File("src/integTest/resources/projects/flexible-project"), testProjectDir.getRoot());
+        new File("src/integTest/resources/projects/appyaml-project"), testProjectDir.getRoot());
   }
 
   @Test
@@ -65,8 +65,7 @@ public class AppEngineFlexiblePluginIntegrationTest {
             .build();
 
     Assert.assertThat(
-        buildResult.getOutput(),
-        CoreMatchers.containsString("Deployed service [flexible-project]"));
+        buildResult.getOutput(), CoreMatchers.containsString("Deployed service [appyaml-project]"));
 
     deleteProject();
   }
@@ -85,8 +84,7 @@ public class AppEngineFlexiblePluginIntegrationTest {
             .build();
 
     Assert.assertThat(
-        buildResult.getOutput(),
-        CoreMatchers.containsString("Deployed service [flexible-project]"));
+        buildResult.getOutput(), CoreMatchers.containsString("Deployed service [appyaml-project]"));
     Assert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Custom routings have been updated."));
     Assert.assertThat(
@@ -109,6 +107,6 @@ public class AppEngineFlexiblePluginIntegrationTest {
     CloudSdk cloudSdk = new CloudSdk.Builder().sdkPath(sdkHome).build();
     Gcloud.builder(cloudSdk)
         .build()
-        .runCommand(Arrays.asList("app", "services", "delete", "flexible-project", "--quiet"));
+        .runCommand(Arrays.asList("app", "services", "delete", "appyaml-project", "--quiet"));
   }
 }

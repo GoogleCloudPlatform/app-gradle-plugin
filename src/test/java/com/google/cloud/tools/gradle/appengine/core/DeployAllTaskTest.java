@@ -98,7 +98,7 @@ public class DeployAllTaskTest {
   }
 
   @Test
-  public void testDeployAllAction_flexible() throws AppEngineException, IOException {
+  public void testDeployAllAction_appyaml() throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
     final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
@@ -139,7 +139,7 @@ public class DeployAllTaskTest {
   }
 
   @Test
-  public void testDeployAllAction_validFileNotInDirFlexible()
+  public void testDeployAllAction_validFileNotInDirAppYaml()
       throws AppEngineException, IOException {
     deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 

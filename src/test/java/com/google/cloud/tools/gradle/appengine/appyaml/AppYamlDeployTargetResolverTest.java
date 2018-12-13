@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.cloud.tools.gradle.appengine.flexible;
+package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
@@ -37,7 +37,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FlexibleDeployTargetResolverTest {
+public class AppYamlDeployTargetResolverTest {
   private static final String PROJECT_XML = "project-xml";
   private static final String VERSION_XML = "version-xml";
   private static final String PROJECT_GCLOUD = "project-gcloud";
@@ -56,109 +56,73 @@ public class FlexibleDeployTargetResolverTest {
 
   @Test
   public void testGetProject_buildConfig() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     String result = deployTargetResolver.getProject("some-project");
     Assert.assertEquals("some-project", result);
   }
 
   @Test
   public void testGetProject_appengineConfig() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     try {
       deployTargetResolver.getProject(ConfigReader.APPENGINE_CONFIG);
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals(
-          "Deployment projectId must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
-              + "2. Set appengine.deploy.projectId = '"
-              + ConfigReader.GCLOUD_CONFIG
-              + "' to use project from gcloud config.\n"
-              + "3. Using "
-              + ConfigReader.APPENGINE_CONFIG
-              + " is not allowed for flexible environment projects",
-          ex.getMessage());
+      Assert.assertEquals(AppYamlDeployTargetResolver.PROJECT_ERROR, ex.getMessage());
     }
   }
 
   @Test
   public void testGetProject_gcloudConfig() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     String result = deployTargetResolver.getProject(ConfigReader.GCLOUD_CONFIG);
     Assert.assertEquals(PROJECT_GCLOUD, result);
   }
 
   @Test
   public void testGetProject_nothingSet() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     try {
       deployTargetResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals(
-          "Deployment projectId must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.projectId = 'my-project-id'\n"
-              + "2. Set appengine.deploy.projectId = '"
-              + ConfigReader.GCLOUD_CONFIG
-              + "' to use project from gcloud config.\n"
-              + "3. Using "
-              + ConfigReader.APPENGINE_CONFIG
-              + " is not allowed for flexible environment projects",
-          ex.getMessage());
+      Assert.assertEquals(AppYamlDeployTargetResolver.PROJECT_ERROR, ex.getMessage());
     }
   }
 
   @Test
   public void testGetVersion_buildConfig() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     String result = deployTargetResolver.getVersion("some-version");
     Assert.assertEquals("some-version", result);
   }
 
   @Test
   public void testGetVersion_appengineConfig() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     try {
       deployTargetResolver.getVersion(ConfigReader.APPENGINE_CONFIG);
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals(
-          "Deployment version must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.version = 'my-version'\n"
-              + "2. Set appengine.deploy.version = '"
-              + ConfigReader.GCLOUD_CONFIG
-              + "' to have gcloud generate a version for you.\n"
-              + "3. Using "
-              + ConfigReader.APPENGINE_CONFIG
-              + " is not allowed for flexible environment projects",
-          ex.getMessage());
+      Assert.assertEquals(AppYamlDeployTargetResolver.VERSION_ERROR, ex.getMessage());
     }
   }
 
   @Test
   public void testGetVersion_gcloudConfig() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     String result = deployTargetResolver.getVersion(ConfigReader.GCLOUD_CONFIG);
     Assert.assertNull(result);
   }
 
   @Test
   public void testGetVersion_nothingSet() {
-    FlexibleDeployTargetResolver deployTargetResolver = new FlexibleDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
     try {
       deployTargetResolver.getVersion(null);
       Assert.fail();
     } catch (GradleException ex) {
-      Assert.assertEquals(
-          "Deployment version must be defined or configured to read from system state\n"
-              + "1. Set appengine.deploy.version = 'my-version'\n"
-              + "2. Set appengine.deploy.version = '"
-              + ConfigReader.GCLOUD_CONFIG
-              + "' to have gcloud generate a version for you.\n"
-              + "3. Using "
-              + ConfigReader.APPENGINE_CONFIG
-              + " is not allowed for flexible environment projects",
-          ex.getMessage());
+      Assert.assertEquals(AppYamlDeployTargetResolver.VERSION_ERROR, ex.getMessage());
     }
   }
 }

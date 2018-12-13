@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine;
 
-import com.google.cloud.tools.gradle.appengine.flexible.AppEngineFlexiblePlugin;
+import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +30,7 @@ import org.gradle.util.GradleVersion;
 
 /**
  * This is a getting-started plugin that auto detects the user's configuration and assigns it a
- * standard or flexible environment build.
+ * appengine-web.xml or app.yaml based build.
  */
 public class AppEnginePlugin implements Plugin<Project> {
 
@@ -42,7 +42,7 @@ public class AppEnginePlugin implements Plugin<Project> {
     if (isAppEngineStandard(project)) {
       project.getPluginManager().apply(AppEngineStandardPlugin.class);
     } else {
-      project.getPluginManager().apply(AppEngineFlexiblePlugin.class);
+      project.getPluginManager().apply(AppEngineAppYamlPlugin.class);
     }
   }
 

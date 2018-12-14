@@ -208,6 +208,6 @@ public class AppEngineAppYamlPluginTest {
         .all(
             task ->
                 assertEquals(
-                    AppEngineAppYamlPlugin.APP_ENGINE_APPYAML_TASK_GROUP, task.getGroup()));
+                    AppEngineAppYamlPlugin.APP_ENGINE_APP_YAML_TASK_GROUP, task.getGroup()));
   }
 }

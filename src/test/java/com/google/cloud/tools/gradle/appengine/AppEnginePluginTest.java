@@ -76,7 +76,7 @@ public class AppEnginePluginTest {
         containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP));
     assertThat(
         buildResult.getOutput(),
-        not(containsString(AppEngineAppYamlPlugin.APP_ENGINE_APPYAML_TASK_GROUP)));
+        not(containsString(AppEngineAppYamlPlugin.APP_ENGINE_APP_YAML_TASK_GROUP)));
   }
 
   @Test
@@ -88,7 +88,7 @@ public class AppEnginePluginTest {
 
     assertThat(
         buildResult.getOutput(),
-        containsString(AppEngineAppYamlPlugin.APP_ENGINE_APPYAML_TASK_GROUP));
+        containsString(AppEngineAppYamlPlugin.APP_ENGINE_APP_YAML_TASK_GROUP));
     assertThat(
         buildResult.getOutput(),
         not(containsString(AppEngineStandardPlugin.APP_ENGINE_STANDARD_TASK_GROUP)));

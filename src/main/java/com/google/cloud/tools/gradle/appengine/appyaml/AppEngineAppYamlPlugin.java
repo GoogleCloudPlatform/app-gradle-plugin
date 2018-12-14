@@ -37,7 +37,7 @@ import org.gradle.api.tasks.bundling.War;
 /** Plugin definition for App Engine app.yaml based projects. */
 public class AppEngineAppYamlPlugin implements Plugin<Project> {
 
-  public static final String APP_ENGINE_APPYAML_TASK_GROUP = "App Engine app.yaml based projects";
+  public static final String APP_ENGINE_APP_YAML_TASK_GROUP = "App Engine app.yaml based projects";
   private static final String STAGE_TASK_NAME = "appengineStage";
 
   private static final String STAGED_APP_DIR_NAME = "staged-app";
@@ -55,7 +55,7 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
     appengineExtension.createSubExtensions(project);
 
     new AppEngineCorePluginConfiguration()
-        .configureCoreProperties(project, appengineExtension, APP_ENGINE_APPYAML_TASK_GROUP);
+        .configureCoreProperties(project, appengineExtension, APP_ENGINE_APP_YAML_TASK_GROUP);
 
     configureExtensions();
     createStageTask();
@@ -136,7 +136,7 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
                 STAGE_TASK_NAME,
                 StageAppYamlTask.class,
                 stageTask1 -> {
-                  stageTask1.setGroup(APP_ENGINE_APPYAML_TASK_GROUP);
+                  stageTask1.setGroup(APP_ENGINE_APP_YAML_TASK_GROUP);
                   stageTask1.setDescription(
                       "Stage an App Engine app.yaml based project for deployment");
                   stageTask1.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);

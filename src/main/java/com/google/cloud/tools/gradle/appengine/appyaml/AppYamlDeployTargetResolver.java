@@ -54,8 +54,8 @@ public class AppYamlDeployTargetResolver {
 
   /**
    * Process user configuration of "projectId". If not configured or set to APPENGINE_CONFIG (not
-   * allowed for flex), show usage. If set to GCLOUD_CONFIG then read from gcloud's global state. If
-   * set but not a keyword then just return the set value.
+   * allowed for app.yaml based projects), show usage. If set to GCLOUD_CONFIG then read from
+   * gcloud's global state. If set but not a keyword then just return the set value.
    */
   public String getProject(String configString) {
     if (configString == null
@@ -71,8 +71,8 @@ public class AppYamlDeployTargetResolver {
 
   /**
    * Process user configuration of "version". If not configured or set to APPENGINE_CONFIG (not
-   * allowed for flex), show usage. If set to GCLOUD_CONFIG then allow gcloud to generate a version.
-   * If set but not a keyword then just return the set value.
+   * allowed for app.yaml based deployments), show usage. If set to GCLOUD_CONFIG then allow gcloud
+   * to generate a version. If set but not a keyword then just return the set value.
    */
   public String getVersion(String configString) {
     if (configString == null

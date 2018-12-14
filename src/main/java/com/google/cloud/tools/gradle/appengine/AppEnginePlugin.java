@@ -39,14 +39,14 @@ public class AppEnginePlugin implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     checkGradleVersion();
-    if (isAppEngineStandard(project)) {
+    if (isAppEngineWebXmlBased(project)) {
       project.getPluginManager().apply(AppEngineStandardPlugin.class);
     } else {
       project.getPluginManager().apply(AppEngineAppYamlPlugin.class);
     }
   }
 
-  private boolean isAppEngineStandard(Project project) {
+  private boolean isAppEngineWebXmlBased(Project project) {
 
     // ask the war plugin if it has appengine-web.xml
     if (project.getPlugins().hasPlugin(WarPlugin.class)) {

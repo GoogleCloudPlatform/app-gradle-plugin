@@ -1,10 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-rc4
+### Changed
+* Add deprecated error for `appengine.deploy.project` ([#295](../../pull/295))
+* Old flex build path is now used for all app.yaml (standard and flex) based builds ([#310](../../pull/310))
+* Update appengine-plugins-core to 0.7.1 ([#308](../../pull/308))
+
 ## 2.0.0-rc3
 ### Changed
-* Changed appengine.deploy.project -> appengine.deploy.projectId ([#286](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/286)).
-* New appengine.run.projectId to set project for devserver runs. ([#286](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/286)).
+* Changed `appengine.deploy.project` -> `appengine.deploy.projectId` ([#286](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/286)).
+* New `appengine.run.projectId` to set project for devserver runs. ([#286](https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/286)).
 
 
 ## 2.0.0-rc2

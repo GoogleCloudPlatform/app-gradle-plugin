@@ -34,8 +34,6 @@ public class CloudSdkOperations {
 
   private final CloudSdk cloudSdk;
   private final Gcloud gcloud;
-  private final LocalRun localRun;
-  private final AppCfg appcfg;
 
   /**
    * Operations factory for Cloud Sdk based actions.
@@ -47,7 +45,6 @@ public class CloudSdkOperations {
   public CloudSdkOperations(File cloudSdkHome, File credentialFile)
       throws CloudSdkNotFoundException {
     cloudSdk = new CloudSdk.Builder().sdkPath(cloudSdkHome.toPath()).build();
-    localRun = LocalRun.builder(cloudSdk).build();
     gcloud =
         Gcloud.builder(cloudSdk)
             .setCredentialFile(NullSafe.convert(credentialFile, File::toPath))
@@ -55,7 +52,6 @@ public class CloudSdkOperations {
                 getClass().getPackage().getImplementationTitle(),
                 getClass().getPackage().getImplementationVersion())
             .build();
-    appcfg = AppCfg.builder(cloudSdk).build();
   }
 
   public CloudSdk getCloudSdk() {
@@ -66,12 +62,20 @@ public class CloudSdkOperations {
     return gcloud;
   }
 
+  /**
+   * LocalRun isn't initialized at construction time, because we optionally download the appengine
+   * component for appengine-web.xml based applications
+   */
   public LocalRun getLocalRun() {
-    return localRun;
+    return LocalRun.builder(cloudSdk).build();
   }
 
+  /**
+   * AppCfg isn't initialized at construction time, because we optionally download the appengine
+   * component for appengine-web.xml based applications
+   */
   public AppCfg getAppcfg() {
-    return appcfg;
+    return AppCfg.builder(cloudSdk).build();
   }
 
   /** Create a return a new default configured process handler. */

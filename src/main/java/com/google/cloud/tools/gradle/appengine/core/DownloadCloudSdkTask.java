@@ -37,9 +37,14 @@ import org.gradle.api.tasks.TaskAction;
 public class DownloadCloudSdkTask extends DefaultTask {
 
   private ManagedCloudSdk managedCloudSdk;
+  private boolean requiresAppEngineJava;
 
   public void setManagedCloudSdk(ManagedCloudSdk managedCloudSdk) {
     this.managedCloudSdk = managedCloudSdk;
+  }
+
+  public void requiresAppEngineJava(boolean requiresAppEngineJava) {
+    this.requiresAppEngineJava = requiresAppEngineJava;
   }
 
   /** Task entrypoint : Download/update Cloud SDK. */
@@ -62,11 +67,13 @@ public class DownloadCloudSdkTask extends DefaultTask {
       installer.install(progressListener, consoleListener);
     }
 
-    // Install app engine component
-    if (!managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)) {
-      SdkComponentInstaller componentInstaller = managedCloudSdk.newComponentInstaller();
-      componentInstaller.installComponent(
-          SdkComponent.APP_ENGINE_JAVA, progressListener, consoleListener);
+    // optionally Install app engine component
+    if (requiresAppEngineJava) {
+      if (!managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)) {
+        SdkComponentInstaller componentInstaller = managedCloudSdk.newComponentInstaller();
+        componentInstaller.installComponent(
+            SdkComponent.APP_ENGINE_JAVA, progressListener, consoleListener);
+      }
     }
 
     // If version is set to LATEST, update Cloud SDK

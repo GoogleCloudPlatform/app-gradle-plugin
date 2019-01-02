@@ -22,7 +22,6 @@ import com.google.cloud.tools.appengine.operations.cloudsdk.AppEngineJavaCompone
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkVersionFileException;
-import com.google.cloud.tools.appengine.operations.cloudsdk.InvalidJavaSdkException;
 import com.google.common.base.Strings;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -32,6 +31,7 @@ public class CheckCloudSdkTask extends DefaultTask {
 
   private CloudSdk cloudSdk;
   private String version;
+  private boolean requiresAppEngineJava;
 
   public void setVersion(String version) {
     this.version = version;
@@ -41,11 +41,15 @@ public class CheckCloudSdkTask extends DefaultTask {
     this.cloudSdk = cloudSdk;
   }
 
+  public void requiresAppEngineJava(boolean requiresAppEngineJava) {
+    this.requiresAppEngineJava = requiresAppEngineJava;
+  }
+
   /** Task entrypoint : Verify Cloud SDK installation. */
   @TaskAction
   public void checkCloudSdkAction()
-      throws CloudSdkNotFoundException, CloudSdkVersionFileException, InvalidJavaSdkException,
-          CloudSdkOutOfDateException, AppEngineJavaComponentsNotInstalledException {
+      throws CloudSdkNotFoundException, CloudSdkVersionFileException, CloudSdkOutOfDateException,
+          AppEngineJavaComponentsNotInstalledException {
     // These properties are only set by AppEngineCorePluginConfiguration if the correct config
     // params are set in the tools extension.
     if (Strings.isNullOrEmpty(version) || cloudSdk == null) {
@@ -63,6 +67,8 @@ public class CheckCloudSdkTask extends DefaultTask {
     }
 
     cloudSdk.validateCloudSdk();
-    cloudSdk.validateAppEngineJavaComponents();
+    if (requiresAppEngineJava) {
+      cloudSdk.validateAppEngineJavaComponents();
+    }
   }
 }

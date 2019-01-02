@@ -97,11 +97,25 @@ public class DownloadCloudSdkTaskTest {
           InterruptedException, CommandExecutionException, SdkInstallerException, IOException,
           CommandExitException {
     downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
+    downloadCloudSdkTask.requiresAppEngineJava(true);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
     when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(managedCloudSdk, never()).newInstaller();
     verify(managedCloudSdk).newComponentInstaller();
+  }
+
+  @Test
+  public void testDownloadCloudSdkAction_skipInstallComponent()
+      throws ManagedSdkVerificationException, ManagedSdkVersionMismatchException,
+          InterruptedException, CommandExecutionException, SdkInstallerException, IOException,
+          CommandExitException {
+    downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
+    downloadCloudSdkTask.requiresAppEngineJava(false);
+    when(managedCloudSdk.isInstalled()).thenReturn(true);
+    downloadCloudSdkTask.downloadCloudSdkAction();
+    verify(managedCloudSdk, never()).newInstaller();
+    verify(managedCloudSdk, never()).newComponentInstaller();
   }
 
   @Test
@@ -111,7 +125,6 @@ public class DownloadCloudSdkTaskTest {
           CommandExitException {
     downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
     when(managedCloudSdk.isInstalled()).thenReturn(true);
-    when(managedCloudSdk.hasComponent(SdkComponent.APP_ENGINE_JAVA)).thenReturn(true);
     when(managedCloudSdk.isUpToDate()).thenReturn(false);
     downloadCloudSdkTask.downloadCloudSdkAction();
     verify(managedCloudSdk, never()).newInstaller();

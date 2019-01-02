@@ -52,13 +52,15 @@ public class AppEngineCorePluginConfiguration {
   private ToolsExtension toolsExtension;
   private CloudSdkOperations cloudSdkOperations;
   private ManagedCloudSdk managedCloudSdk;
+  private boolean requiresAppEngineJava;
   private String taskGroup;
 
   /** Configure core tasks for appengine app.yaml and appengine-web.xml based project plugins. */
   public void configureCoreProperties(
       Project project,
       AppEngineCoreExtensionProperties appEngineCoreExtensionProperties,
-      String taskGroup) {
+      String taskGroup,
+      boolean requiresAppEngineJava) {
     project
         .getLogger()
         .warn(
@@ -78,6 +80,7 @@ public class AppEngineCorePluginConfiguration {
     this.taskGroup = taskGroup;
     this.toolsExtension = appEngineCoreExtensionProperties.getTools();
     this.deployExtension = appEngineCoreExtensionProperties.getDeploy();
+    this.requiresAppEngineJava = requiresAppEngineJava;
     configureFactories();
 
     createDownloadCloudSdkTask();
@@ -134,6 +137,7 @@ public class AppEngineCorePluginConfiguration {
             downloadCloudSdkTask -> {
               downloadCloudSdkTask.setGroup(taskGroup);
               downloadCloudSdkTask.setDescription("Download the Cloud SDK");
+              downloadCloudSdkTask.requiresAppEngineJava(requiresAppEngineJava);
 
               project.afterEvaluate(
                   p -> {
@@ -162,6 +166,7 @@ public class AppEngineCorePluginConfiguration {
                     if (managedCloudSdk == null && toolsExtension.getCloudSdkVersion() != null) {
                       checkCloudSdkTask.setVersion(toolsExtension.getCloudSdkVersion());
                       checkCloudSdkTask.setCloudSdk(cloudSdkOperations.getCloudSdk());
+                      checkCloudSdkTask.requiresAppEngineJava(requiresAppEngineJava);
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(checkCloudSdkTask));

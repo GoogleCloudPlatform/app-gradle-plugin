@@ -71,7 +71,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
     appEngineCorePluginConfiguration = new AppEngineCorePluginConfiguration();
     appEngineCorePluginConfiguration.configureCoreProperties(
-        project, appengineExtension, APP_ENGINE_STANDARD_TASK_GROUP);
+        project, appengineExtension, APP_ENGINE_STANDARD_TASK_GROUP, true);
 
     explodedWarDir = new File(project.getBuildDir(), "exploded-" + project.getName());
 

@@ -55,7 +55,8 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
     appengineExtension.createSubExtensions(project);
 
     new AppEngineCorePluginConfiguration()
-        .configureCoreProperties(project, appengineExtension, APP_ENGINE_APP_YAML_TASK_GROUP);
+        .configureCoreProperties(
+            project, appengineExtension, APP_ENGINE_APP_YAML_TASK_GROUP, false);
 
     configureExtensions();
     createStageTask();

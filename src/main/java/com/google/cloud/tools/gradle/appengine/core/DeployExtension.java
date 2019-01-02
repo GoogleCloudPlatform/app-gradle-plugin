@@ -17,8 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
-import com.google.cloud.tools.appengine.api.deploy.DeployProjectConfigurationConfiguration;
+import com.google.cloud.tools.appengine.configuration.DeployConfiguration;
+import com.google.cloud.tools.appengine.configuration.DeployProjectConfigurationConfiguration;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;

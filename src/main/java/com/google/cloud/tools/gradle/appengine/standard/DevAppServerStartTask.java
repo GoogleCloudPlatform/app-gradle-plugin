@@ -17,11 +17,11 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
-import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
-import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.LegacyProcessHandler;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.NonZeroExceptionExitListener;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
 import com.google.cloud.tools.gradle.appengine.util.io.FileOutputLineListener;
 import java.io.File;
 import java.io.IOException;

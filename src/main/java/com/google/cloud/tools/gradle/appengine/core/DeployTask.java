@@ -17,9 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.configuration.DeployConfiguration;
+import com.google.cloud.tools.appengine.operations.Gcloud;
 import com.google.common.collect.ImmutableList;
 import java.nio.file.Path;
 import org.gradle.api.tasks.TaskAction;

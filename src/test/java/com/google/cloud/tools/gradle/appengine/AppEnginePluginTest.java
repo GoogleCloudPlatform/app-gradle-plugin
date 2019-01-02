@@ -27,6 +27,7 @@ import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin;
 import java.io.IOException;
+import org.gradle.api.JavaVersion;
 import org.gradle.api.Project;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.UnexpectedBuildFailure;
@@ -61,6 +62,7 @@ public class AppEnginePluginTest {
                   + AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION
                   + " or higher."));
     }
+    JavaVersion.current().isJava9Compatible();
   }
 
   @Test

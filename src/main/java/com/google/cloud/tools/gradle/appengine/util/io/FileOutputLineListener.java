@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.util.io;
 
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessOutputLineListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;

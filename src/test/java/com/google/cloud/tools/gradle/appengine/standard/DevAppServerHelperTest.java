@@ -22,11 +22,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
-import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
+import com.google.cloud.tools.appengine.configuration.StopConfiguration;
+import com.google.cloud.tools.appengine.operations.CloudSdk;
+import com.google.cloud.tools.appengine.operations.DevServer;
+import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
 import com.google.cloud.tools.gradle.appengine.standard.DevAppServerHelper.Validator;
 import org.gradle.api.ProjectConfigurationException;
 import org.junit.Assert;
@@ -48,8 +48,8 @@ public class DevAppServerHelperTest {
   @Mock private RunExtension run;
   @Spy private Validator validator;
 
-  @Mock private AppEngineDevServer v1Server;
-  @Mock private AppEngineDevServer v2Server;
+  @Mock private DevServer v1Server;
+  @Mock private DevServer v2Server;
 
   @InjectMocks private DevAppServerHelper helper = new DevAppServerHelper();
 

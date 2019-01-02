@@ -17,12 +17,12 @@
 
 package com.google.cloud.tools.gradle.appengine.appyaml;
 
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkVersionFileException;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandlerException;
-import com.google.cloud.tools.appengine.cloudsdk.serialization.CloudSdkConfig;
+import com.google.cloud.tools.appengine.operations.Gcloud;
+import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkOutOfDateException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkVersionFileException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandlerException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.serialization.CloudSdkConfig;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import java.io.IOException;
 import org.gradle.api.GradleException;

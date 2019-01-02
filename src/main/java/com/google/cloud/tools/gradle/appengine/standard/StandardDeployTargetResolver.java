@@ -20,7 +20,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
 
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.operations.Gcloud;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import java.io.File;
 import org.gradle.api.GradleException;

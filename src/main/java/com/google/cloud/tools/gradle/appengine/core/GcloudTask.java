@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.operations.Gcloud;
 import org.gradle.api.DefaultTask;
 
 public abstract class GcloudTask extends DefaultTask {

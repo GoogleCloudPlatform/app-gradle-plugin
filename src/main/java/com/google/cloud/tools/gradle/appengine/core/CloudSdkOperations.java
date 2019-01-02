@@ -17,14 +17,14 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.cloudsdk.AppCfg;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
-import com.google.cloud.tools.appengine.cloudsdk.process.LegacyProcessHandler;
-import com.google.cloud.tools.appengine.cloudsdk.process.NonZeroExceptionExitListener;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
+import com.google.cloud.tools.appengine.operations.AppCfg;
+import com.google.cloud.tools.appengine.operations.CloudSdk;
+import com.google.cloud.tools.appengine.operations.Gcloud;
+import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.LegacyProcessHandler;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.NonZeroExceptionExitListener;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.logging.Logger;

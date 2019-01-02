@@ -17,8 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.operations.Gcloud;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy datastore index configuration. */

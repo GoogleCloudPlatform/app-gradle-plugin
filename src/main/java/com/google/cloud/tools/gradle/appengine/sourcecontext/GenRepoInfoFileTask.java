@@ -17,8 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.operations.Gcloud;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;

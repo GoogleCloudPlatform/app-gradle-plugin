@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.util.io;
 
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessOutputLineListener;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 

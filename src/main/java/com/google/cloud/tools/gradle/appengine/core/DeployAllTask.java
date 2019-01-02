@@ -16,10 +16,10 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.AppEngineDeployment;
-import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.configuration.DeployConfiguration;
+import com.google.cloud.tools.appengine.operations.Deployment;
+import com.google.cloud.tools.appengine.operations.Gcloud;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,8 +68,7 @@ public class DeployAllTask extends GcloudTask {
     }
 
     // Deploy
-    AppEngineDeployment deploy =
-        gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()));
+    Deployment deploy = gcloud.newDeployment(CloudSdkOperations.getDefaultHandler(getLogger()));
 
     DeployConfiguration deployConfig = deployExtension.toDeployConfiguration(deployables);
     deploy.deploy(deployConfig);

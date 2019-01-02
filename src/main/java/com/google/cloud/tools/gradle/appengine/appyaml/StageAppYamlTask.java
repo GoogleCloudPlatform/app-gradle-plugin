@@ -17,9 +17,8 @@
 
 package com.google.cloud.tools.gradle.appengine.appyaml;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.AppEngineArchiveStaging;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineArchiveStaging;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.operations.AppYamlProjectStaging;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
@@ -44,7 +43,7 @@ public class StageAppYamlTask extends DefaultTask {
     getProject().delete(appYamlExtension.getStagingDirectory());
     getProject().mkdir(appYamlExtension.getStagingDirectory().getAbsolutePath());
 
-    AppEngineArchiveStaging staging = new CloudSdkAppEngineArchiveStaging();
+    AppYamlProjectStaging staging = new AppYamlProjectStaging();
     staging.stageArchive(appYamlExtension.toStageArchiveConfiguration());
   }
 }

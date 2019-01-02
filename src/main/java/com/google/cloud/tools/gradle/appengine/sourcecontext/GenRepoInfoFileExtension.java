@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
-import com.google.cloud.tools.appengine.api.debug.GenRepoInfoFileConfiguration;
+import com.google.cloud.tools.appengine.configuration.GenRepoInfoFileConfiguration;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.Project;

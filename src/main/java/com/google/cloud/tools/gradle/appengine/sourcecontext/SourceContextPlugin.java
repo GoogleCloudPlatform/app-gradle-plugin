@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.sourcecontext;
 
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCoreExtensionProperties;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;

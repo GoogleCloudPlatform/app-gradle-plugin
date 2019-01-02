@@ -17,10 +17,10 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.appengine.api.devserver.AppEngineDevServer;
-import com.google.cloud.tools.appengine.api.devserver.StopConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.LocalRun;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
+import com.google.cloud.tools.appengine.configuration.StopConfiguration;
+import com.google.cloud.tools.appengine.operations.DevServer;
+import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class DevAppServerHelper {
   private Validator validator = new Validator();
 
   /** Return an appserver based on serverVersion. */
-  public AppEngineDevServer getAppServer(
+  public DevServer getAppServer(
       LocalRun localRun, RunExtension run, ProcessHandler processHandler) {
 
     String serverVersion = run.getServerVersion();

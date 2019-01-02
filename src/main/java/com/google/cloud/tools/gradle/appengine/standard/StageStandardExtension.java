@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.appengine.api.deploy.StageStandardConfiguration;
+import com.google.cloud.tools.appengine.configuration.AppEngineWebXmlProjectStageConfiguration;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import org.gradle.api.Project;
@@ -167,8 +167,9 @@ public class StageStandardExtension {
     this.runtime = runtime;
   }
 
-  StageStandardConfiguration toStageStandardConfiguration() {
-    return StageStandardConfiguration.builder(sourceDirectory.toPath(), stagingDirectory.toPath())
+  AppEngineWebXmlProjectStageConfiguration toStageStandardConfiguration() {
+    return AppEngineWebXmlProjectStageConfiguration.builder(
+            sourceDirectory.toPath(), stagingDirectory.toPath())
         .compileEncoding(compileEncoding)
         .deleteJsps(deleteJsps)
         .disableJarJsps(disableJarJsps)

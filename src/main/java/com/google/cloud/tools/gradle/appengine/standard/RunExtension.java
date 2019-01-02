@@ -17,7 +17,7 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
+import com.google.cloud.tools.appengine.configuration.RunConfiguration;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import com.google.common.collect.ImmutableList;
 import java.io.File;

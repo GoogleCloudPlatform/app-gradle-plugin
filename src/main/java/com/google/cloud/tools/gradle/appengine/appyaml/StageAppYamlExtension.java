@@ -17,9 +17,12 @@
 
 package com.google.cloud.tools.gradle.appengine.appyaml;
 
-import com.google.cloud.tools.appengine.api.deploy.StageArchiveConfiguration;
+import com.google.cloud.tools.appengine.configuration.AppYamlProjectStageConfiguration;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
@@ -35,7 +38,7 @@ public class StageAppYamlExtension {
   private File dockerDirectory;
   private File artifact;
   private File stagingDirectory;
-  private File extraFilesDirectory;
+  private List<File> extraFilesDirectory;
 
   public StageAppYamlExtension(Project project) {
     this.project = project;
@@ -80,19 +83,20 @@ public class StageAppYamlExtension {
 
   @Optional
   @InputDirectory
-  public File getExtraFilesDirectory() {
+  public List<File> getExtraFilesDirectory() {
     return extraFilesDirectory;
   }
 
   public void setExtraFilesDirectory(Object extraFilesDirectory) {
-    this.extraFilesDirectory = project.file(extraFilesDirectory);
+    this.extraFilesDirectory = new ArrayList<>(project.files(extraFilesDirectory).getFiles());
   }
 
-  StageArchiveConfiguration toStageArchiveConfiguration() {
-    return StageArchiveConfiguration.builder(
+  AppYamlProjectStageConfiguration toStageArchiveConfiguration() {
+    return AppYamlProjectStageConfiguration.builder(
             appEngineDirectory.toPath(), artifact.toPath(), stagingDirectory.toPath())
         .dockerDirectory(NullSafe.convert(dockerDirectory, File::toPath))
-        .extraFilesDirectory(NullSafe.convert(extraFilesDirectory, File::toPath))
+        .extraFilesDirectories(
+            extraFilesDirectory.stream().map(File::toPath).collect(Collectors.toList()))
         .build();
   }
 }

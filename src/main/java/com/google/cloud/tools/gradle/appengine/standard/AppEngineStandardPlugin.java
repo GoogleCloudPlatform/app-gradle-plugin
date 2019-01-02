@@ -20,7 +20,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
 
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;

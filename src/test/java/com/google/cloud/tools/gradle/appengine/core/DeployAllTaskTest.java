@@ -21,11 +21,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.cloud.tools.appengine.api.AppEngineException;
-import com.google.cloud.tools.appengine.api.deploy.DeployConfiguration;
-import com.google.cloud.tools.appengine.cloudsdk.CloudSdkAppEngineDeployment;
-import com.google.cloud.tools.appengine.cloudsdk.Gcloud;
-import com.google.cloud.tools.appengine.cloudsdk.process.ProcessHandler;
+import com.google.cloud.tools.appengine.AppEngineException;
+import com.google.cloud.tools.appengine.configuration.DeployConfiguration;
+import com.google.cloud.tools.appengine.operations.Deployment;
+import com.google.cloud.tools.appengine.operations.Gcloud;
+import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,7 +47,7 @@ public class DeployAllTaskTest {
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Mock private Gcloud gcloud;
-  @Mock private CloudSdkAppEngineDeployment deploy;
+  @Mock private Deployment deploy;
 
   private DeployExtension deployConfig;
   private ArgumentCaptor<DeployConfiguration> deployCapture;

@@ -62,7 +62,6 @@ public class AppEnginePluginTest {
                   + AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION
                   + " or higher."));
     }
-    JavaVersion.current().isJava9Compatible();
   }
 
   @Test

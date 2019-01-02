@@ -173,7 +173,6 @@ public class AppEngineStandardPluginIntegrationTest {
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
             .withPluginClasspath()
-            .withDebug(true)
             .withArguments("appengineDeploy", "--stacktrace")
             .build();
 
@@ -192,7 +191,6 @@ public class AppEngineStandardPluginIntegrationTest {
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
             .withPluginClasspath()
-            .withDebug(true)
             .withArguments("appengineDeployAll")
             .build();
 

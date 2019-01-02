@@ -60,7 +60,6 @@ public class AppEngineAppYamlPluginIntegrationTest {
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
             .withPluginClasspath()
-            .withDebug(true)
             .withArguments("appengineDeploy")
             .build();
 
@@ -79,7 +78,6 @@ public class AppEngineAppYamlPluginIntegrationTest {
         GradleRunner.create()
             .withProjectDir(testProjectDir.getRoot())
             .withPluginClasspath()
-            .withDebug(true)
             .withArguments("appengineDeployAll")
             .build();
 

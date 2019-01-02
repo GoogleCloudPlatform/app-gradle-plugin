@@ -22,10 +22,11 @@ import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.gradle.api.Project;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
@@ -38,7 +39,7 @@ public class StageAppYamlExtension {
   private File dockerDirectory;
   private File artifact;
   private File stagingDirectory;
-  private List<File> extraFilesDirectory;
+  private List<File> extraFilesDirectories;
 
   public StageAppYamlExtension(Project project) {
     this.project = project;
@@ -81,22 +82,37 @@ public class StageAppYamlExtension {
     this.stagingDirectory = project.file(stagingDirectory);
   }
 
+  /** This method is purely for incremental build calculations. */
   @Optional
-  @InputDirectory
-  public List<File> getExtraFilesDirectory() {
-    return extraFilesDirectory;
+  @InputFiles
+  public FileCollection calculateExtraFiles() {
+    if (extraFilesDirectories == null) {
+      return null;
+    }
+    FileCollection files = project.files();
+    for (File f : extraFilesDirectories) {
+      files = files.plus(project.fileTree(f));
+    }
+    return files;
   }
 
-  public void setExtraFilesDirectory(Object extraFilesDirectory) {
-    this.extraFilesDirectory = new ArrayList<>(project.files(extraFilesDirectory).getFiles());
+  /**
+   * extraFilesDirectory accessor, with {@code @InputFiles} for incremental builds configured on
+   * {@link StageAppYamlExtension#calculateExtraFiles()}.
+   */
+  public List<File> getExtraFilesDirectories() {
+    return extraFilesDirectories;
+  }
+
+  public void setExtraFilesDirectories(Object extraFilesDirectories) {
+    this.extraFilesDirectories = new ArrayList<>(project.files(extraFilesDirectories).getFiles());
   }
 
   AppYamlProjectStageConfiguration toStageArchiveConfiguration() {
     return AppYamlProjectStageConfiguration.builder(
             appEngineDirectory.toPath(), artifact.toPath(), stagingDirectory.toPath())
         .dockerDirectory(NullSafe.convert(dockerDirectory, File::toPath))
-        .extraFilesDirectories(
-            extraFilesDirectory.stream().map(File::toPath).collect(Collectors.toList()))
+        .extraFilesDirectories(NullSafe.convert(extraFilesDirectories, File::toPath))
         .build();
   }
 }

@@ -169,5 +169,6 @@ checkstyle {
   config = resources.text.fromArchiveEntry(configurations.checkstyle[0], 'google_checks.xml')
   maxErrors = 0
   maxWarnings = 0
+  checkstyleTest.enabled = false
 }
 /* FORMATTING */

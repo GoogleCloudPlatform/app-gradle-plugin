@@ -34,11 +34,17 @@ public class NullSafe {
    * @param converter the map function to apply
    * @param <S> type to convert from
    * @param <R> type to convert to
-   * @return A converted List with null values stripped out, or null if source is null
+   * @return A converted List with all pre-conversion and post-conversion null values removed. Can
+   *     return an empty list. Will return null if source is null.
    */
   public static <S, R> List<R> convert(List<S> source, Function<S, R> converter) {
     return (source == null)
         ? null
-        : source.stream().filter(Objects::nonNull).map(converter).collect(Collectors.toList());
+        : source
+            .stream()
+            .filter(Objects::nonNull)
+            .map(converter)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
   }
 }

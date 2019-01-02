@@ -85,20 +85,20 @@ public class StageAppYamlExtension {
   /** This method is purely for incremental build calculations. */
   @Optional
   @InputFiles
-  public FileCollection calculateExtraFiles() {
+  private FileCollection convertExtraFilesDirectoriesToInputFiles() {
     if (extraFilesDirectories == null) {
       return null;
     }
     FileCollection files = project.files();
-    for (File f : extraFilesDirectories) {
-      files = files.plus(project.fileTree(f));
+    for (File directory : extraFilesDirectories) {
+      files = files.plus(project.fileTree(directory));
     }
     return files;
   }
 
   /**
    * extraFilesDirectory accessor, with {@code @InputFiles} for incremental builds configured on
-   * {@link StageAppYamlExtension#calculateExtraFiles()}.
+   * {@link StageAppYamlExtension#convertExtraFilesDirectoriesToInputFiles()}.
    */
   public List<File> getExtraFilesDirectories() {
     return extraFilesDirectories;

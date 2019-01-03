@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
@@ -39,8 +40,13 @@ public class AppEnginePluginTest {
 
   @Rule public TemporaryFolder testProjectRoot = new TemporaryFolder();
 
+  private boolean isJava8Runtime() {
+    return System.getProperty("java.version").startsWith("1.8");
+  }
+
   @Test
   public void testCheckGradleVersion_pass() {
+    assumeTrue(isJava8Runtime());
     new TestProject(testProjectRoot.getRoot())
         .applyGradleRunnerWithGradleVersion(
             AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION.getVersion());
@@ -49,6 +55,7 @@ public class AppEnginePluginTest {
 
   @Test
   public void testCheckGradleVersion_fail() throws IOException {
+    assumeTrue(isJava8Runtime());
     try {
       new TestProject(testProjectRoot.getRoot())
           .addAutoDownloadingBuildFile()
@@ -105,7 +112,7 @@ public class AppEnginePluginTest {
   }
 
   @Test
-  public void testDetectAppYaml_withProjectBuilder() throws IOException {
+  public void testDetectAppYaml_withProjectBuilder() {
     Project p = new TestProject(testProjectRoot.getRoot()).applyAutoDetectingProjectBuilder();
 
     assertAppYaml(p);
@@ -122,7 +129,7 @@ public class AppEnginePluginTest {
   }
 
   @Test
-  public void testDetectAppYaml_withFallbackNegative() throws IOException {
+  public void testDetectAppYaml_withFallbackNegative() {
     Project p =
         new TestProject(testProjectRoot.getRoot())
             .applyAutoDetectingProjectBuilderWithFallbackTrigger();

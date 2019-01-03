@@ -96,11 +96,11 @@ public class StandardDeployTargetResolverTest {
   }
 
   @Test
-  public void testGetProject_nothingSet() throws IOException {
+  public void testGetProject_nothingSet() {
     StandardDeployTargetResolver deployTargetResolver =
         new StandardDeployTargetResolver(appengineWebXml, gcloud);
     try {
-      String result = deployTargetResolver.getProject(null);
+      deployTargetResolver.getProject(null);
       Assert.fail();
     } catch (GradleException ex) {
       Assert.assertEquals(StandardDeployTargetResolver.PROJECT_ERROR, ex.getMessage());
@@ -132,7 +132,7 @@ public class StandardDeployTargetResolverTest {
   }
 
   @Test
-  public void testGetVersion_nothingSet() throws IOException {
+  public void testGetVersion_nothingSet() {
     StandardDeployTargetResolver deployTargetResolver =
         new StandardDeployTargetResolver(appengineWebXml, gcloud);
     try {

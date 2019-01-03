@@ -58,7 +58,7 @@ public class DeployAllTaskTest {
 
   /** Setup DeployAllTaskTest. */
   @Before
-  public void setup() throws IOException, AppEngineException {
+  public void setup() throws IOException {
     Project tempProject = ProjectBuilder.builder().build();
     deployConfig = new DeployExtension(tempProject);
     deployCapture = ArgumentCaptor.forClass(DeployConfiguration.class);

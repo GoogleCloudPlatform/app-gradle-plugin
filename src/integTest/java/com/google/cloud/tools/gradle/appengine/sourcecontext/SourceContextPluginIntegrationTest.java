@@ -30,7 +30,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.util.FileUtils;
-import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -46,7 +45,7 @@ public class SourceContextPluginIntegrationTest {
   public void setUpTestProject() throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
 
-    Path src = Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
+    Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
     InputStream buildFileContent =
         getClass()
             .getClassLoader()
@@ -89,12 +88,11 @@ public class SourceContextPluginIntegrationTest {
   @Test
   public void testCreateSourceContext() throws IOException {
     setUpTestProject();
-    BuildResult buildResult =
-        GradleRunner.create()
-            .withProjectDir(testProjectDir.getRoot())
-            .withPluginClasspath()
-            .withArguments(":assemble")
-            .build();
+    GradleRunner.create()
+        .withProjectDir(testProjectDir.getRoot())
+        .withPluginClasspath()
+        .withArguments(":assemble")
+        .build();
 
     String commitHash = "9a282640c4a91769d328bbf23e8d8b2b5dcbbb5b";
 

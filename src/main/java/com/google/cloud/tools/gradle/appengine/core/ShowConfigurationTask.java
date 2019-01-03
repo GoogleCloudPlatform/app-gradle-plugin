@@ -121,11 +121,11 @@ public class ShowConfigurationTask extends DefaultTask {
     if (genericType != null && genericType instanceof ParameterizedType) {
       for (Type t : ((ParameterizedType) genericType).getActualTypeArguments()) {
         if (t instanceof ParameterizedType) {
-          String nestedGeneric = ((Class) ((ParameterizedType) t).getRawType()).getSimpleName();
+          String nestedGeneric = ((Class<?>) ((ParameterizedType) t).getRawType()).getSimpleName();
           nestedGeneric += getGenericTypeData(t);
           types.add(nestedGeneric);
         } else {
-          types.add(((Class) t).getSimpleName());
+          types.add(((Class<?>) t).getSimpleName());
         }
       }
     }

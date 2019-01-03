@@ -52,7 +52,7 @@ public class SourceContextPluginTest {
   private void setUpTestProject() throws IOException {
     Path buildFile = testProjectDir.getRoot().toPath().resolve("build.gradle");
 
-    Path src = Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
+    Files.createDirectory(testProjectDir.getRoot().toPath().resolve("src"));
     InputStream buildFileContent =
         getClass()
             .getClassLoader()

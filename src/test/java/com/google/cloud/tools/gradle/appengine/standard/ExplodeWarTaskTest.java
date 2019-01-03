@@ -21,7 +21,6 @@ import com.google.cloud.tools.gradle.appengine.TestProject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.gradle.testkit.runner.BuildResult;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,11 +32,10 @@ public class ExplodeWarTaskTest {
 
   @Test
   public void testSyncTask() throws IOException {
-    BuildResult buildResult =
-        new TestProject(testProjectDir.getRoot())
-            .addStandardBuildFile()
-            .addAppEngineWebXml()
-            .applyGradleRunner("explodeWar");
+    new TestProject(testProjectDir.getRoot())
+        .addStandardBuildFile()
+        .addAppEngineWebXml()
+        .applyGradleRunner("explodeWar");
 
     Path explodedApp =
         testProjectDir

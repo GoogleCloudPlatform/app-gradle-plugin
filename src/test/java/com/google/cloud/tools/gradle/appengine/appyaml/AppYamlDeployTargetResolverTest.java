@@ -38,8 +38,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppYamlDeployTargetResolverTest {
-  private static final String PROJECT_XML = "project-xml";
-  private static final String VERSION_XML = "version-xml";
   private static final String PROJECT_GCLOUD = "project-gcloud";
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();

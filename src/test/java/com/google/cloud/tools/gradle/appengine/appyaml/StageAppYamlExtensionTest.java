@@ -17,7 +17,6 @@
 package com.google.cloud.tools.gradle.appengine.appyaml;
 
 import com.google.cloud.tools.appengine.configuration.AppYamlProjectStageConfiguration;
-import com.google.cloud.tools.appengine.operations.AppYamlProjectStaging;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Assert;
 import org.junit.Before;
@@ -65,7 +63,8 @@ public class StageAppYamlExtensionTest {
     extension.setDockerDirectory(dockerDirectory);
     extension.setExtraFilesDirectories(extraFilesDirectories);
 
-    AppYamlProjectStageConfiguration generatedConfig = extension.toAppYamlProjectStageConfiguration();
+    AppYamlProjectStageConfiguration generatedConfig =
+        extension.toAppYamlProjectStageConfiguration();
     Assert.assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
     Assert.assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
     Assert.assertEquals(artifact.toPath(), generatedConfig.getArtifact());
@@ -85,7 +84,8 @@ public class StageAppYamlExtensionTest {
     extension.setDockerDirectory(dockerDirectory);
     // extraFilesDirectories is not set (default = null)
 
-    AppYamlProjectStageConfiguration generatedConfig = extension.toAppYamlProjectStageConfiguration();
+    AppYamlProjectStageConfiguration generatedConfig =
+        extension.toAppYamlProjectStageConfiguration();
     Assert.assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
     Assert.assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
     Assert.assertEquals(artifact.toPath(), generatedConfig.getArtifact());
@@ -103,12 +103,12 @@ public class StageAppYamlExtensionTest {
     extension.setDockerDirectory(dockerDirectory);
     extension.setExtraFilesDirectories(Collections.emptyList());
 
-    AppYamlProjectStageConfiguration generatedConfig = extension.toAppYamlProjectStageConfiguration();
+    AppYamlProjectStageConfiguration generatedConfig =
+        extension.toAppYamlProjectStageConfiguration();
     Assert.assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
     Assert.assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
     Assert.assertEquals(artifact.toPath(), generatedConfig.getArtifact());
     Assert.assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
     Assert.assertEquals(0, generatedConfig.getExtraFilesDirectory().size());
   }
-
 }

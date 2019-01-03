@@ -86,7 +86,7 @@ public class StageAppYamlExtension {
   /** This method is purely for incremental build calculations. */
   @Optional
   @InputFiles
-  private FileCollection getExtraFilesDirectoriesAsInputFiles() {
+  public FileCollection getExtraFilesDirectoriesAsInputFiles() {
     if (extraFilesDirectories == null) {
       return null;
     }

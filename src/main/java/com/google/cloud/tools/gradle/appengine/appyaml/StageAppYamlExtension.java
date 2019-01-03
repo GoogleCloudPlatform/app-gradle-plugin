@@ -27,6 +27,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
@@ -85,7 +86,7 @@ public class StageAppYamlExtension {
   /** This method is purely for incremental build calculations. */
   @Optional
   @InputFiles
-  private FileCollection convertExtraFilesDirectoriesToInputFiles() {
+  private FileCollection getExtraFilesDirectoriesAsInputFiles() {
     if (extraFilesDirectories == null) {
       return null;
     }
@@ -96,10 +97,7 @@ public class StageAppYamlExtension {
     return files;
   }
 
-  /**
-   * extraFilesDirectory accessor, with {@code @InputFiles} for incremental builds configured on
-   * {@link StageAppYamlExtension#convertExtraFilesDirectoriesToInputFiles()}.
-   */
+  @Internal("covered by getExtraFilesDirectoriesAsInputFiles")
   public List<File> getExtraFilesDirectories() {
     return extraFilesDirectories;
   }
@@ -108,7 +106,7 @@ public class StageAppYamlExtension {
     this.extraFilesDirectories = new ArrayList<>(project.files(extraFilesDirectories).getFiles());
   }
 
-  AppYamlProjectStageConfiguration toStageArchiveConfiguration() {
+  AppYamlProjectStageConfiguration toAppYamlProjectStageConfiguration() {
     return AppYamlProjectStageConfiguration.builder(
             appEngineDirectory.toPath(), artifact.toPath(), stagingDirectory.toPath())
         .dockerDirectory(NullSafe.convert(dockerDirectory, File::toPath))

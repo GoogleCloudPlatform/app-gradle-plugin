@@ -44,6 +44,6 @@ public class StageAppYamlTask extends DefaultTask {
     getProject().mkdir(appYamlExtension.getStagingDirectory().getAbsolutePath());
 
     AppYamlProjectStaging staging = new AppYamlProjectStaging();
-    staging.stageArchive(appYamlExtension.toStageArchiveConfiguration());
+    staging.stageArchive(appYamlExtension.toAppYamlProjectStageConfiguration());
   }
 }

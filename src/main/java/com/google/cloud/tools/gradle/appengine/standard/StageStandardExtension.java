@@ -23,6 +23,7 @@ import java.io.File;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
@@ -67,7 +68,7 @@ public class StageStandardExtension {
     this.stagingDirectory = project.file(stagingDirectory);
   }
 
-  @Input
+  @InputFile
   @Optional
   public File getDockerfile() {
     return dockerfile;

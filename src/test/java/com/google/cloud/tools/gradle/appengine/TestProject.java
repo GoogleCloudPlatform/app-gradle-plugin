@@ -77,6 +77,14 @@ public class TestProject {
     return this;
   }
 
+  /** Add a appyaml based appengine-gradle-plugin build file that specifies sdk home and version. */
+  public TestProject addAppYamlBuildFileWithExtraFilesDirectories() throws IOException {
+    addBuildFile("projects/AppEnginePluginTest/build-appyaml-extraFilesDirectories.gradle");
+    Files.createDirectories(
+        getProjectRoot().toPath().resolve("src").resolve("main").resolve("extras"));
+    return this;
+  }
+
   /** Add an generic appengine-gradle-plugin build file (for auto downloading sdk cases). */
   public TestProject addAutoDownloadingBuildFile() throws IOException {
     addBuildFile("projects/AppEnginePluginTest/build-auto.gradle");
@@ -93,9 +101,18 @@ public class TestProject {
   public TestProject addAppEngineWebXml() throws IOException {
     Path webInf = projectRoot.toPath().resolve("src/main/webapp/WEB-INF");
     Files.createDirectories(webInf);
-    File appengineWebXml = Files.createFile(webInf.resolve("appengine-web.xml")).toFile();
-    Files.write(appengineWebXml.toPath(), "<appengine-web-app/>".getBytes(Charsets.UTF_8));
+    Path appengineWebXml = Files.createFile(webInf.resolve("appengine-web.xml"));
+    Files.write(appengineWebXml, "<appengine-web-app/>".getBytes(Charsets.UTF_8));
 
+    return this;
+  }
+
+  /** Add a minimal app.yaml file to the standard location. */
+  public TestProject addAppYaml(String runtime) throws IOException {
+    Path appengineDir = projectRoot.toPath().resolve("src").resolve("main").resolve("appengine");
+    Files.createDirectories(appengineDir);
+    Path appyaml = Files.createFile(appengineDir.resolve("app.yaml"));
+    Files.write(appyaml, ("runtime: " + runtime).getBytes(Charsets.UTF_8));
     return this;
   }
 
@@ -166,5 +183,9 @@ public class TestProject {
     ((ProjectInternal) p).evaluate();
 
     return p;
+  }
+
+  public File getProjectRoot() {
+    return projectRoot;
   }
 }

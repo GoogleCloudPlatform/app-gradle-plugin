@@ -23,6 +23,7 @@ import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkOutOfDateExc
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkVersionFileException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandlerException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.serialization.CloudSdkConfig;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import java.io.IOException;
 import org.gradle.api.GradleException;
@@ -42,26 +43,30 @@ public class AppYamlDeployTargetResolverTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   @Mock Gcloud gcloud;
+  @Mock CloudSdkOperations cloudSdkOperations;
   @Mock CloudSdkConfig cloudSdkConfig;
 
   @Before
   public void setup()
       throws CloudSdkNotFoundException, ProcessHandlerException, CloudSdkOutOfDateException,
           CloudSdkVersionFileException, IOException {
+    Mockito.when(cloudSdkOperations.getGcloud()).thenReturn(gcloud);
     Mockito.when(gcloud.getConfig()).thenReturn(cloudSdkConfig);
     Mockito.when(cloudSdkConfig.getProject()).thenReturn(PROJECT_GCLOUD);
   }
 
   @Test
   public void testGetProject_buildConfig() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     String result = deployTargetResolver.getProject("some-project");
     Assert.assertEquals("some-project", result);
   }
 
   @Test
   public void testGetProject_appengineConfig() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     try {
       deployTargetResolver.getProject(ConfigReader.APPENGINE_CONFIG);
       Assert.fail();
@@ -72,14 +77,16 @@ public class AppYamlDeployTargetResolverTest {
 
   @Test
   public void testGetProject_gcloudConfig() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     String result = deployTargetResolver.getProject(ConfigReader.GCLOUD_CONFIG);
     Assert.assertEquals(PROJECT_GCLOUD, result);
   }
 
   @Test
   public void testGetProject_nothingSet() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     try {
       deployTargetResolver.getProject(null);
       Assert.fail();
@@ -90,14 +97,16 @@ public class AppYamlDeployTargetResolverTest {
 
   @Test
   public void testGetVersion_buildConfig() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     String result = deployTargetResolver.getVersion("some-version");
     Assert.assertEquals("some-version", result);
   }
 
   @Test
   public void testGetVersion_appengineConfig() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     try {
       deployTargetResolver.getVersion(ConfigReader.APPENGINE_CONFIG);
       Assert.fail();
@@ -108,14 +117,16 @@ public class AppYamlDeployTargetResolverTest {
 
   @Test
   public void testGetVersion_gcloudConfig() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     String result = deployTargetResolver.getVersion(ConfigReader.GCLOUD_CONFIG);
     Assert.assertNull(result);
   }
 
   @Test
   public void testGetVersion_nothingSet() {
-    AppYamlDeployTargetResolver deployTargetResolver = new AppYamlDeployTargetResolver(gcloud);
+    AppYamlDeployTargetResolver deployTargetResolver =
+        new AppYamlDeployTargetResolver(cloudSdkOperations);
     try {
       deployTargetResolver.getVersion(null);
       Assert.fail();

@@ -28,6 +28,8 @@ import org.gradle.api.Project;
 /** Extension element to define Deployable configurations for App Engine. */
 public class DeployExtension {
 
+  @InternalProperty private DeployTargetResolver deployTargetResolver;
+
   // named gradleProject to disambiguate with deploy parameter "project"
   private final Project gradleProject;
 
@@ -45,21 +47,28 @@ public class DeployExtension {
     this.gradleProject = gradleProject;
   }
 
+  public void setDeployTargetResolver(DeployTargetResolver deployTargetResolver) {
+    this.deployTargetResolver = deployTargetResolver;
+  }
+
   DeployConfiguration toDeployConfiguration(List<Path> deployables) {
+    String processedProjectId = deployTargetResolver.getProject(projectId);
+    String processedVersion = deployTargetResolver.getProject(version);
     return DeployConfiguration.builder(deployables)
         .bucket(bucket)
         .imageUrl(imageUrl)
-        .projectId(projectId)
+        .projectId(processedProjectId)
         .promote(promote)
         .server(server)
         .stopPreviousVersion(stopPreviousVersion)
-        .version(version)
+        .version(processedVersion)
         .build();
   }
 
   DeployProjectConfigurationConfiguration toDeployProjectConfigurationConfiguration() {
+    String processedProjectId = deployTargetResolver.getProject(projectId);
     return DeployProjectConfigurationConfiguration.builder(appEngineDirectory.toPath())
-        .projectId(projectId)
+        .projectId(processedProjectId)
         .server(server)
         .build();
   }

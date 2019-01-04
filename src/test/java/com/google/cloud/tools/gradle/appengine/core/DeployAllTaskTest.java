@@ -48,8 +48,9 @@ public class DeployAllTaskTest {
 
   @Mock private Gcloud gcloud;
   @Mock private Deployment deploy;
+  @Mock private DeployTargetResolver deployTargetResolver;
 
-  private DeployExtension deployConfig;
+  private DeployExtension deployExtension;
   private ArgumentCaptor<DeployConfiguration> deployCapture;
 
   private DeployAllTask deployAllTask;
@@ -60,12 +61,13 @@ public class DeployAllTaskTest {
   @Before
   public void setup() throws IOException {
     Project tempProject = ProjectBuilder.builder().build();
-    deployConfig = new DeployExtension(tempProject);
+    deployExtension = new DeployExtension(tempProject);
+    deployExtension.setDeployTargetResolver(deployTargetResolver);
     deployCapture = ArgumentCaptor.forClass(DeployConfiguration.class);
     stageDir = tempFolder.newFolder("staging");
 
     deployAllTask = tempProject.getTasks().create("tempDeployAllTask", DeployAllTask.class);
-    deployAllTask.setDeployExtension(deployConfig);
+    deployAllTask.setDeployExtension(deployExtension);
     deployAllTask.setGcloud(gcloud);
     deployAllTask.setStageDirectory(stageDir);
 
@@ -74,7 +76,7 @@ public class DeployAllTaskTest {
 
   @Test
   public void testDeployAllAction_standard() throws AppEngineException, IOException {
-    deployConfig.setAppEngineDirectory(stageDir);
+    deployExtension.setAppEngineDirectory(stageDir);
 
     final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
     final Path cronYaml = tempFolder.newFile("staging/cron.yaml").toPath();
@@ -99,7 +101,7 @@ public class DeployAllTaskTest {
 
   @Test
   public void testDeployAllAction_appyaml() throws AppEngineException, IOException {
-    deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
+    deployExtension.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
     final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
     final Path cronYaml = tempFolder.newFile("appengine/cron.yaml").toPath();
@@ -125,7 +127,7 @@ public class DeployAllTaskTest {
   @Test
   public void testDeployAllAction_validFileNotInDirStandard()
       throws AppEngineException, IOException {
-    deployConfig.setAppEngineDirectory(stageDir);
+    deployExtension.setAppEngineDirectory(stageDir);
 
     final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();
     final Path validInDifferentDirYaml = tempFolder.newFile("queue.yaml").toPath();
@@ -141,7 +143,7 @@ public class DeployAllTaskTest {
   @Test
   public void testDeployAllAction_validFileNotInDirAppYaml()
       throws AppEngineException, IOException {
-    deployConfig.setAppEngineDirectory(tempFolder.newFolder("appengine"));
+    deployExtension.setAppEngineDirectory(tempFolder.newFolder("appengine"));
 
     // Make YAMLS
     final Path appYaml = tempFolder.newFile("staging/app.yaml").toPath();

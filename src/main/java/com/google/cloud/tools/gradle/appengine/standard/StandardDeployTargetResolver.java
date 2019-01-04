@@ -20,12 +20,13 @@ package com.google.cloud.tools.gradle.appengine.standard;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
 
-import com.google.cloud.tools.appengine.operations.Gcloud;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
+import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
 import java.io.File;
 import org.gradle.api.GradleException;
 
-public class StandardDeployTargetResolver {
+public class StandardDeployTargetResolver implements DeployTargetResolver {
 
   static final String PROJECT_ERROR =
       "Deployment projectId must be defined or configured to read from system state\n"
@@ -48,11 +49,11 @@ public class StandardDeployTargetResolver {
           + "' to have gcloud generate a version for you.";
 
   private final File appengineWebXml;
-  private final Gcloud gcloud;
+  private final CloudSdkOperations cloudSdkOperations;
 
-  public StandardDeployTargetResolver(File appengineWebXml, Gcloud gcloud) {
+  public StandardDeployTargetResolver(File appengineWebXml, CloudSdkOperations cloudSdkOperations) {
     this.appengineWebXml = appengineWebXml;
-    this.gcloud = gcloud;
+    this.cloudSdkOperations = cloudSdkOperations;
   }
 
   /**
@@ -60,13 +61,14 @@ public class StandardDeployTargetResolver {
    * APPENGINE_CONFIG then read from appengine-web.xml. If set to GCLOUD_CONFIG then read from
    * gcloud's config state. If set but not a keyword then just return the set value.
    */
+  @Override
   public String getProject(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(PROJECT_ERROR);
     } else if (configString.equals(APPENGINE_CONFIG)) {
       return ConfigReader.getProject(appengineWebXml);
     } else if (configString.equals(GCLOUD_CONFIG)) {
-      return ConfigReader.getProject(gcloud);
+      return ConfigReader.getProject(cloudSdkOperations.getGcloud());
     } else {
       return configString;
     }
@@ -77,6 +79,7 @@ public class StandardDeployTargetResolver {
    * APPENGINE_CONFIG then read from appengine-web.xml. If set to GCLOUD_CONFIG then allow gcloud to
    * generate a version. If set but not a keyword then just return the set value.
    */
+  @Override
   public String getVersion(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(VERSION_ERROR);

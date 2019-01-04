@@ -23,6 +23,7 @@ import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkOutOfDateExc
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkVersionFileException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandlerException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.serialization.CloudSdkConfig;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -49,6 +50,7 @@ public class StandardDeployTargetResolverTest {
   private File appengineWebXml;
 
   @Mock Gcloud gcloud;
+  @Mock CloudSdkOperations cloudSdkOperations;
   @Mock CloudSdkConfig cloudSdkConfig;
 
   /** Setup PropertyResolverTest. */
@@ -57,6 +59,7 @@ public class StandardDeployTargetResolverTest {
       throws IOException, CloudSdkNotFoundException, ProcessHandlerException,
           CloudSdkOutOfDateException, CloudSdkVersionFileException {
     appengineWebXml = new File(temporaryFolder.newFolder("source", "WEB-INF"), "appengine-web.xml");
+    Mockito.when(cloudSdkOperations.getGcloud()).thenReturn(gcloud);
     Mockito.when(gcloud.getConfig()).thenReturn(cloudSdkConfig);
     Mockito.when(cloudSdkConfig.getProject()).thenReturn(PROJECT_GCLOUD);
 
@@ -74,7 +77,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetProject_buildConfig() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     String result = deployTargetResolver.getProject("some-project");
     Assert.assertEquals("some-project", result);
   }
@@ -82,7 +85,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetProject_appengineConfig() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     String result = deployTargetResolver.getProject(ConfigReader.APPENGINE_CONFIG);
     Assert.assertEquals(PROJECT_XML, result);
   }
@@ -90,7 +93,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetProject_gcloudConfig() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     String result = deployTargetResolver.getProject(ConfigReader.GCLOUD_CONFIG);
     Assert.assertEquals(PROJECT_GCLOUD, result);
   }
@@ -98,7 +101,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetProject_nothingSet() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     try {
       deployTargetResolver.getProject(null);
       Assert.fail();
@@ -110,7 +113,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetVersion_buildConfig() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     String result = deployTargetResolver.getVersion("some-version");
     Assert.assertEquals("some-version", result);
   }
@@ -118,7 +121,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetVersion_appengineConfig() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     String result = deployTargetResolver.getVersion(ConfigReader.APPENGINE_CONFIG);
     Assert.assertEquals(VERSION_XML, result);
   }
@@ -126,7 +129,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetVersion_gcloudConfig() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     String result = deployTargetResolver.getVersion(ConfigReader.GCLOUD_CONFIG);
     Assert.assertNull(result);
   }
@@ -134,7 +137,7 @@ public class StandardDeployTargetResolverTest {
   @Test
   public void testGetVersion_nothingSet() {
     StandardDeployTargetResolver deployTargetResolver =
-        new StandardDeployTargetResolver(appengineWebXml, gcloud);
+        new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
     try {
       deployTargetResolver.getVersion(null);
       Assert.fail();

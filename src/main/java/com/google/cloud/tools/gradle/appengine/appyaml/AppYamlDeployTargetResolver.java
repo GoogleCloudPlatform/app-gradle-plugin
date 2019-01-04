@@ -20,11 +20,12 @@ package com.google.cloud.tools.gradle.appengine.appyaml;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
 import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
 
-import com.google.cloud.tools.appengine.operations.Gcloud;
+import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
+import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
 import org.gradle.api.GradleException;
 
-public class AppYamlDeployTargetResolver {
+public class AppYamlDeployTargetResolver implements DeployTargetResolver {
 
   static final String PROJECT_ERROR =
       "Deployment projectId must be defined or configured to read from system state\n"
@@ -46,10 +47,10 @@ public class AppYamlDeployTargetResolver {
           + APPENGINE_CONFIG
           + " is not allowed for app.yaml based projects";
 
-  private final Gcloud gcloud;
+  private final CloudSdkOperations cloudSdkOperations;
 
-  public AppYamlDeployTargetResolver(Gcloud gcloud) {
-    this.gcloud = gcloud;
+  public AppYamlDeployTargetResolver(CloudSdkOperations cloudSdkOperations) {
+    this.cloudSdkOperations = cloudSdkOperations;
   }
 
   /**
@@ -57,13 +58,14 @@ public class AppYamlDeployTargetResolver {
    * allowed for app.yaml based projects), show usage. If set to GCLOUD_CONFIG then read from
    * gcloud's global state. If set but not a keyword then just return the set value.
    */
+  @Override
   public String getProject(String configString) {
     if (configString == null
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
       throw new GradleException(PROJECT_ERROR);
     } else if (configString.equals(GCLOUD_CONFIG)) {
-      return ConfigReader.getProject(gcloud);
+      return ConfigReader.getProject(cloudSdkOperations.getGcloud());
     } else {
       return configString;
     }
@@ -74,6 +76,7 @@ public class AppYamlDeployTargetResolver {
    * allowed for app.yaml based deployments), show usage. If set to GCLOUD_CONFIG then allow gcloud
    * to generate a version. If set but not a keyword then just return the set value.
    */
+  @Override
   public String getVersion(String configString) {
     if (configString == null
         || configString.trim().isEmpty()

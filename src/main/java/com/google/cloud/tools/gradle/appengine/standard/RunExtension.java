@@ -18,6 +18,8 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.configuration.RunConfiguration;
+import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
+import com.google.cloud.tools.gradle.appengine.core.InternalProperty;
 import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -31,6 +33,8 @@ import org.gradle.api.plugins.BasePlugin;
 
 /** Extension element to define Run configurations for App Engine Standard Environments. */
 public class RunExtension {
+
+  @InternalProperty private DeployTargetResolver deployTargetResolver;
 
   private final Project project;
   private int startSuccessTimeout;
@@ -71,6 +75,10 @@ public class RunExtension {
    */
   public RunExtension(Project project) {
     this.project = project;
+  }
+
+  public void setDeployTargetResolver(DeployTargetResolver deployTargetResolver) {
+    this.deployTargetResolver = deployTargetResolver;
   }
 
   public int getStartSuccessTimeout() {
@@ -339,6 +347,7 @@ public class RunExtension {
   }
 
   RunConfiguration toRunConfiguration() {
+    String processedProjectId = deployTargetResolver.getProject(projectId);
     return RunConfiguration.builder(
             services.stream().map(File::toPath).collect(Collectors.toList()))
         .additionalArguments(additionalArguments)
@@ -359,7 +368,7 @@ public class RunExtension {
         .logLevel(logLevel)
         .maxModuleInstances(maxModuleInstances)
         .port(port)
-        .projectId(projectId)
+        .projectId(processedProjectId)
         .pythonStartupArgs(pythonStartupArgs)
         .pythonStartupScript(pythonStartupScript)
         .runtime(runtime)

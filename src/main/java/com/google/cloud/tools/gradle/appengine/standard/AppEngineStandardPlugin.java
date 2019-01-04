@@ -17,13 +17,9 @@
 
 package com.google.cloud.tools.gradle.appengine.standard;
 
-import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.APPENGINE_CONFIG;
-import static com.google.cloud.tools.gradle.appengine.core.ConfigReader.GCLOUD_CONFIG;
-
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
-import com.google.cloud.tools.gradle.appengine.core.ConfigReader;
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
@@ -123,11 +119,9 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                   .resolve("appengine-web.xml")
                   .toFile();
 
-          // configure the deploy extensions's project/version parameters
-          StandardDeployTargetResolver resolver =
-              new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations.getGcloud());
-          deploy.setProjectId(resolver.getProject(deploy.getProjectId()));
-          deploy.setVersion(resolver.getVersion(deploy.getVersion()));
+          // configure the supplier for project/version parameters
+          deploy.setDeployTargetResolver(
+              new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations));
 
           DeployAllTask deployAllTask =
               (DeployAllTask)
@@ -148,11 +142,8 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           if (Strings.isNullOrEmpty(runExtension.getProjectId())) {
             runExtension.setProjectId(deploy.getProjectId());
           }
-          if (runExtension.getProjectId().equals(GCLOUD_CONFIG)) {
-            runExtension.setProjectId(ConfigReader.getProject(cloudSdkOperations.getGcloud()));
-          } else if (runExtension.getProjectId().equals(APPENGINE_CONFIG)) {
-            runExtension.setProjectId(ConfigReader.getProject(appengineWebXml));
-          }
+          runExtension.setDeployTargetResolver(
+              new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations));
         });
   }
 

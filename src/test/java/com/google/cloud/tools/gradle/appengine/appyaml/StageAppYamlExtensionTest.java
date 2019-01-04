@@ -122,9 +122,10 @@ public class StageAppYamlExtensionTest {
 
   @Test
   public void testGetExtraFilesDirectoriesAsInputFiles_indirectFunctional() throws IOException {
-    TestProject testProject = new TestProject(testProjectDir.getRoot())
-        .addAppYamlBuildFileWithExtraFilesDirectories()
-        .addAppYaml("java11");
+    TestProject testProject =
+        new TestProject(testProjectDir.getRoot())
+            .addAppYamlBuildFileWithExtraFilesDirectories()
+            .addAppYaml("java11");
     Files.write(
         testProject.getProjectRoot().toPath().resolve("src/main/extras/test1.txt"),
         "hello".getBytes(Charsets.UTF_8));
@@ -142,5 +143,4 @@ public class StageAppYamlExtensionTest {
     BuildResult runWithNewFileAdded = testProject.applyGradleRunner("appengineStage");
     assertEquals(SUCCESS, runWithNewFileAdded.task(":appengineStage").getOutcome());
   }
-
 }

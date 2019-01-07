@@ -117,7 +117,7 @@ public class TestProject {
   }
 
   /** Add an empty docker directory. */
-  public TestProject addDockerDir() throws IOException {
+  public TestProject addDockerDir() {
     File dockerDir = new File(projectRoot, "src/main/docker");
     if (!dockerDir.mkdirs()) {
       throw new RuntimeException("Test failed due to directory creation error");
@@ -144,31 +144,31 @@ public class TestProject {
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyStandardProjectBuilder() throws IOException {
+  public Project applyStandardProjectBuilder() {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineStandardPlugin.class);
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyAppYamlProjectBuilder() throws IOException {
+  public Project applyAppYamlProjectBuilder() {
     return applyProjectBuilder(JavaPlugin.class, AppEngineAppYamlPlugin.class);
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyAppYamlWarProjectBuilder() throws IOException {
+  public Project applyAppYamlWarProjectBuilder() {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEngineAppYamlPlugin.class);
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyAutoDetectingProjectBuilder() throws IOException {
+  public Project applyAutoDetectingProjectBuilder() {
     return applyProjectBuilder(JavaPlugin.class, WarPlugin.class, AppEnginePlugin.class);
   }
 
   /** Run the project builder and return an evaluated project. */
-  public Project applyAutoDetectingProjectBuilderWithFallbackTrigger() throws IOException {
+  public Project applyAutoDetectingProjectBuilderWithFallbackTrigger() {
     return applyProjectBuilder(JavaPlugin.class, AppEnginePlugin.class, WarPlugin.class);
   }
 
-  private Project applyProjectBuilder(Class<?>... plugins) throws IOException {
+  private Project applyProjectBuilder(Class<?>... plugins) {
     Project p = ProjectBuilder.builder().withProjectDir(projectRoot).build();
     for (Class<?> clazz : plugins) {
       p.getPluginManager().apply(clazz);

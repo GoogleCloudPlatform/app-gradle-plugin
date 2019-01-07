@@ -1,6 +1,10 @@
 language: java
-jdk:
-  - oraclejdk8
+matrix:
+  include:
+    - name: Oracle JDK 8
+      jdk: oraclejdk8
+    - name: OpenJDK 11
+      jdk: openjdk11
 
 before_cache:
   - rm -rf $HOME/.gradle/caches/modules-2/modules-2.lock

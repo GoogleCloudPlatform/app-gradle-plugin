@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
 
 import com.google.cloud.tools.gradle.appengine.BuildResultFilter;
 import com.google.cloud.tools.gradle.appengine.TestProject;
@@ -43,6 +44,10 @@ public class AppEngineStandardPluginTest {
 
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
+  private static boolean isJava8Runtime() {
+    return System.getProperty("java.version").startsWith("1.8");
+  }
+
   private TestProject createTestProject() throws IOException {
     return new TestProject(testProjectDir.getRoot()).addStandardBuildFile().addAppEngineWebXml();
   }
@@ -61,6 +66,7 @@ public class AppEngineStandardPluginTest {
 
   @Test
   public void testCheckGradleVersion_pass() throws IOException {
+    assumeTrue(isJava8Runtime());
     createTestProject()
         .applyGradleRunnerWithGradleVersion(
             AppEngineCorePluginConfiguration.GRADLE_MIN_VERSION.getVersion());
@@ -69,6 +75,7 @@ public class AppEngineStandardPluginTest {
 
   @Test
   public void testCheckGradleVersion_fail() throws IOException {
+    assumeTrue(isJava8Runtime());
     try {
       createTestProject().applyGradleRunnerWithGradleVersion("2.8");
     } catch (UnexpectedBuildFailure ex) {

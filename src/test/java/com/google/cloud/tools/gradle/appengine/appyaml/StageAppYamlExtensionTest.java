@@ -16,10 +16,6 @@
 
 package com.google.cloud.tools.gradle.appengine.appyaml;
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
-import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE;
-import static org.junit.Assert.assertEquals;
-
 import com.google.cloud.tools.appengine.configuration.AppYamlProjectStageConfiguration;
 import com.google.cloud.tools.gradle.appengine.TestProject;
 import com.google.common.base.Charsets;
@@ -33,6 +29,7 @@ import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -73,11 +70,11 @@ public class StageAppYamlExtensionTest {
 
     AppYamlProjectStageConfiguration generatedConfig =
         extension.toAppYamlProjectStageConfiguration();
-    assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
-    assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
-    assertEquals(artifact.toPath(), generatedConfig.getArtifact());
-    assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
-    assertEquals(
+    Assert.assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
+    Assert.assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
+    Assert.assertEquals(artifact.toPath(), generatedConfig.getArtifact());
+    Assert.assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
+    Assert.assertEquals(
         extraFilesDirectories.stream().map(File::toPath).collect(Collectors.toList()),
         generatedConfig.getExtraFilesDirectory());
   }
@@ -94,10 +91,10 @@ public class StageAppYamlExtensionTest {
 
     AppYamlProjectStageConfiguration generatedConfig =
         extension.toAppYamlProjectStageConfiguration();
-    assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
-    assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
-    assertEquals(artifact.toPath(), generatedConfig.getArtifact());
-    assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
+    Assert.assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
+    Assert.assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
+    Assert.assertEquals(artifact.toPath(), generatedConfig.getArtifact());
+    Assert.assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
     Assert.assertNull(generatedConfig.getExtraFilesDirectory());
   }
 
@@ -113,11 +110,11 @@ public class StageAppYamlExtensionTest {
 
     AppYamlProjectStageConfiguration generatedConfig =
         extension.toAppYamlProjectStageConfiguration();
-    assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
-    assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
-    assertEquals(artifact.toPath(), generatedConfig.getArtifact());
-    assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
-    assertEquals(0, generatedConfig.getExtraFilesDirectory().size());
+    Assert.assertEquals(appEngineDirectory.toPath(), generatedConfig.getAppEngineDirectory());
+    Assert.assertEquals(stagingDirectory.toPath(), generatedConfig.getStagingDirectory());
+    Assert.assertEquals(artifact.toPath(), generatedConfig.getArtifact());
+    Assert.assertEquals(dockerDirectory.toPath(), generatedConfig.getDockerDirectory());
+    Assert.assertEquals(0, generatedConfig.getExtraFilesDirectory().size());
   }
 
   @Test
@@ -131,16 +128,18 @@ public class StageAppYamlExtensionTest {
         "hello".getBytes(Charsets.UTF_8));
 
     BuildResult firstRun = testProject.applyGradleRunner("appengineStage");
-    assertEquals(SUCCESS, firstRun.task(":appengineStage").getOutcome());
+    Assert.assertEquals(TaskOutcome.SUCCESS, firstRun.task(":appengineStage").getOutcome());
 
     BuildResult secondRunNoChange = testProject.applyGradleRunner("appengineStage");
-    assertEquals(UP_TO_DATE, secondRunNoChange.task(":appengineStage").getOutcome());
+    Assert.assertEquals(
+        TaskOutcome.UP_TO_DATE, secondRunNoChange.task(":appengineStage").getOutcome());
 
     Files.write(
         testProject.getProjectRoot().toPath().resolve("src/main/extras/test2.txt"),
         "hello".getBytes(Charsets.UTF_8));
 
     BuildResult runWithNewFileAdded = testProject.applyGradleRunner("appengineStage");
-    assertEquals(SUCCESS, runWithNewFileAdded.task(":appengineStage").getOutcome());
+    Assert.assertEquals(
+        TaskOutcome.SUCCESS, runWithNewFileAdded.task(":appengineStage").getOutcome());
   }
 }

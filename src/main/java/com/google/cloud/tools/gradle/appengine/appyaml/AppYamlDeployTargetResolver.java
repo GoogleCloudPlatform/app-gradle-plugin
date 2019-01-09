@@ -64,11 +64,11 @@ public class AppYamlDeployTargetResolver implements DeployTargetResolver {
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
       throw new GradleException(PROJECT_ERROR);
-    } else if (configString.equals(GCLOUD_CONFIG)) {
-      return ConfigReader.getProject(cloudSdkOperations.getGcloud());
-    } else {
-      return configString;
     }
+    if (configString.equals(GCLOUD_CONFIG)) {
+      return ConfigReader.getProject(cloudSdkOperations.getGcloud());
+    }
+    return configString;
   }
 
   /**
@@ -82,11 +82,11 @@ public class AppYamlDeployTargetResolver implements DeployTargetResolver {
         || configString.trim().isEmpty()
         || configString.equals(APPENGINE_CONFIG)) {
       throw new GradleException(VERSION_ERROR);
-    } else if (configString.equals(GCLOUD_CONFIG)) {
+    }
+    if (configString.equals(GCLOUD_CONFIG)) {
       // can be null to allow gcloud to generate this
       return null;
-    } else {
-      return configString;
     }
+    return configString;
   }
 }

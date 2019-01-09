@@ -65,13 +65,14 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
   public String getProject(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(PROJECT_ERROR);
-    } else if (configString.equals(APPENGINE_CONFIG)) {
-      return ConfigReader.getProject(appengineWebXml);
-    } else if (configString.equals(GCLOUD_CONFIG)) {
-      return ConfigReader.getProject(cloudSdkOperations.getGcloud());
-    } else {
-      return configString;
     }
+    if (configString.equals(APPENGINE_CONFIG)) {
+      return ConfigReader.getProject(appengineWebXml);
+    }
+    if (configString.equals(GCLOUD_CONFIG)) {
+      return ConfigReader.getProject(cloudSdkOperations.getGcloud());
+    }
+    return configString;
   }
 
   /**
@@ -83,13 +84,14 @@ public class StandardDeployTargetResolver implements DeployTargetResolver {
   public String getVersion(String configString) {
     if (configString == null || configString.trim().isEmpty()) {
       throw new GradleException(VERSION_ERROR);
-    } else if (configString.equals(APPENGINE_CONFIG)) {
+    }
+    if (configString.equals(APPENGINE_CONFIG)) {
       return ConfigReader.getVersion(appengineWebXml);
-    } else if (configString.equals(GCLOUD_CONFIG)) {
+    }
+    if (configString.equals(GCLOUD_CONFIG)) {
       // can be null to allow gcloud to generate this
       return null;
-    } else {
-      return configString;
     }
+    return configString;
   }
 }

@@ -53,7 +53,7 @@ public class DeployExtension {
 
   DeployConfiguration toDeployConfiguration(List<Path> deployables) {
     String processedProjectId = deployTargetResolver.getProject(projectId);
-    String processedVersion = deployTargetResolver.getProject(version);
+    String processedVersion = deployTargetResolver.getVersion(version);
     return DeployConfiguration.builder(deployables)
         .bucket(bucket)
         .imageUrl(imageUrl)

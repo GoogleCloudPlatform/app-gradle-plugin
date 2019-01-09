@@ -49,9 +49,9 @@ public class StandardDeployTargetResolverTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private File appengineWebXml;
 
-  @Mock Gcloud gcloud;
-  @Mock CloudSdkOperations cloudSdkOperations;
-  @Mock CloudSdkConfig cloudSdkConfig;
+  @Mock private Gcloud gcloud;
+  @Mock private CloudSdkOperations cloudSdkOperations;
+  @Mock private CloudSdkConfig cloudSdkConfig;
 
   /** Setup PropertyResolverTest. */
   @Before

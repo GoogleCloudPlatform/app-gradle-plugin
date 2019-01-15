@@ -19,7 +19,7 @@ package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.AppEngineException;
 import com.google.cloud.tools.appengine.operations.DevServer;
-import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.DevServers;
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -28,15 +28,15 @@ import org.gradle.api.tasks.TaskAction;
 public class DevAppServerStopTask extends DefaultTask {
 
   private RunExtension runConfig;
-  private LocalRun localRun;
+  private DevServers devServers;
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
   }
 
-  public void setLocalRun(LocalRun localRun) {
-    this.localRun = localRun;
+  public void setDevServers(DevServers devServers) {
+    this.devServers = devServers;
   }
 
   /** Task entrypoint : Stop the dev appserver (get StopConfiguration from helper). */
@@ -44,7 +44,7 @@ public class DevAppServerStopTask extends DefaultTask {
   public void stopAction() {
     DevServer server =
         serverHelper.getAppServer(
-            localRun, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()));
+            devServers, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()));
     try {
       server.stop(serverHelper.getStopConfiguration(runConfig));
     } catch (AppEngineException ex) {

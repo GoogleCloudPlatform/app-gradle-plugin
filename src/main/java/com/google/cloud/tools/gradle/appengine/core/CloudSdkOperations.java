@@ -19,8 +19,8 @@ package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.operations.AppCfg;
 import com.google.cloud.tools.appengine.operations.CloudSdk;
+import com.google.cloud.tools.appengine.operations.DevServers;
 import com.google.cloud.tools.appengine.operations.Gcloud;
-import com.google.cloud.tools.appengine.operations.LocalRun;
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.LegacyProcessHandler;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.NonZeroExceptionExitListener;
@@ -63,11 +63,11 @@ public class CloudSdkOperations {
   }
 
   /**
-   * LocalRun isn't initialized at construction time, because we optionally download the appengine
+   * DevServers isn't initialized at construction time, because we optionally download the appengine
    * component for appengine-web.xml based applications
    */
-  public LocalRun getLocalRun() {
-    return LocalRun.builder(cloudSdk).build();
+  public DevServers getDevServers() {
+    return DevServers.builder(cloudSdk).build();
   }
 
   /**

@@ -241,7 +241,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     runTask.setRunConfig(runExtension);
-                    runTask.setLocalRun(cloudSdkOperations.getLocalRun());
+                    runTask.setDevServers(cloudSdkOperations.getDevServers());
                   });
             });
 
@@ -259,7 +259,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     startTask.setRunConfig(runExtension);
-                    startTask.setLocalRun(cloudSdkOperations.getLocalRun());
+                    startTask.setDevServers(cloudSdkOperations.getDevServers());
                     startTask.setDevAppServerLoggingDir(
                         new File(project.getBuildDir(), DEV_APP_SERVER_OUTPUT_DIR_NAME));
                   });
@@ -278,7 +278,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     stopTask.setRunConfig(runExtension);
-                    stopTask.setLocalRun(cloudSdkOperations.getLocalRun());
+                    stopTask.setDevServers(cloudSdkOperations.getDevServers());
                   });
             });
   }

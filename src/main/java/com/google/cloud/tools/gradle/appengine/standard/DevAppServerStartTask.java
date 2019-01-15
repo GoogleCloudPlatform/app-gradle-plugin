@@ -18,7 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.AppEngineException;
-import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.DevServers;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.LegacyProcessHandler;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.NonZeroExceptionExitListener;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
@@ -34,7 +34,7 @@ import org.gradle.api.tasks.TaskAction;
 public class DevAppServerStartTask extends DefaultTask {
 
   private RunExtension runConfig;
-  private LocalRun localRun;
+  private DevServers devServers;
   private DevAppServerHelper serverHelper = new DevAppServerHelper();
   private File devAppServerLoggingDir;
 
@@ -47,8 +47,8 @@ public class DevAppServerStartTask extends DefaultTask {
     this.runConfig = runConfig;
   }
 
-  public void setLocalRun(LocalRun localRun) {
-    this.localRun = localRun;
+  public void setDevServers(DevServers devServers) {
+    this.devServers = devServers;
   }
 
   public void setDevAppServerLoggingDir(File devAppServerLoggingDir) {
@@ -80,7 +80,7 @@ public class DevAppServerStartTask extends DefaultTask {
             .buildDevAppServerAsync(runConfig.getStartSuccessTimeout());
 
     serverHelper
-        .getAppServer(localRun, runConfig, processHandler)
+        .getAppServer(devServers, runConfig, processHandler)
         .run(runConfig.toRunConfiguration());
 
     getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());

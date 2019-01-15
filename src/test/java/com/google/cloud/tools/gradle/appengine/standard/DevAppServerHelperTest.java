@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.tools.appengine.configuration.StopConfiguration;
 import com.google.cloud.tools.appengine.operations.CloudSdk;
 import com.google.cloud.tools.appengine.operations.DevServer;
-import com.google.cloud.tools.appengine.operations.LocalRun;
+import com.google.cloud.tools.appengine.operations.DevServers;
 import com.google.cloud.tools.appengine.operations.cloudsdk.process.ProcessHandler;
 import com.google.cloud.tools.gradle.appengine.standard.DevAppServerHelper.Validator;
 import org.gradle.api.ProjectConfigurationException;
@@ -43,7 +43,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class DevAppServerHelperTest {
 
   @Mock private CloudSdk cloudSdk;
-  @Mock private LocalRun localRun;
+  @Mock private DevServers devServers;
   @Mock private ProcessHandler processHandler;
   @Mock private RunExtension run;
   @Spy private Validator validator;
@@ -55,21 +55,21 @@ public class DevAppServerHelperTest {
 
   @Before
   public void setUp() {
-    Mockito.when(localRun.newDevAppServer1(processHandler)).thenReturn(v1Server);
-    Mockito.when(localRun.newDevAppServer2(processHandler)).thenReturn(v2Server);
+    Mockito.when(devServers.newDevAppServer1(processHandler)).thenReturn(v1Server);
+    Mockito.when(devServers.newDevAppServer2(processHandler)).thenReturn(v2Server);
   }
 
   @Test
   public void testGetAppServer_v1() {
     when(run.getServerVersion()).thenReturn("1");
-    Assert.assertEquals(v1Server, helper.getAppServer(localRun, run, processHandler));
+    Assert.assertEquals(v1Server, helper.getAppServer(devServers, run, processHandler));
     verify(validator, times(1)).validateServerVersion(run.getServerVersion());
   }
 
   @Test
   public void testGetAppServer_v2() {
     when(run.getServerVersion()).thenReturn("2-alpha");
-    Assert.assertEquals(v2Server, helper.getAppServer(localRun, run, processHandler));
+    Assert.assertEquals(v2Server, helper.getAppServer(devServers, run, processHandler));
     verify(validator, times(1)).validateServerVersion(run.getServerVersion());
   }
 
@@ -77,7 +77,7 @@ public class DevAppServerHelperTest {
   public void testGetAppServer_badValue() {
     when(run.getServerVersion()).thenReturn("nonsense");
     try {
-      helper.getAppServer(localRun, run, processHandler);
+      helper.getAppServer(devServers, run, processHandler);
       fail();
     } catch (ProjectConfigurationException ex) {
       Assert.assertEquals(

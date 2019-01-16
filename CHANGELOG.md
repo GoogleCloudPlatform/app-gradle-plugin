@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-rc5
+### Changed
+* Update appengine-plugins-core to 0.7.3 ([#322](../../pull/322))
+* Resolve `GCLOUD_CONFIG`,`APPENGINE_CONFIG` late ([#321](../../pull/321))
+* Fix `UP-TO-DATE` configuration on some tasks ([#320](../../pull/320))
+* Only download appengine components of cloud sdk when running compat projects ([#317](../../pull/317))
+* `extraFilesDirectory`-> `ExtraFilesDirectories` ([#315](../../pull/315)), ([#316](../../pull/316))
+
 ## 2.0.0-rc4
 ### Changed
 * Add deprecated error for `appengine.deploy.project` ([#295](../../pull/295))

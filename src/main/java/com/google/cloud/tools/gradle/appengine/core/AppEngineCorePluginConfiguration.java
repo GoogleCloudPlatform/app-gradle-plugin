@@ -125,6 +125,8 @@ public class AppEngineCorePluginConfiguration {
             // but we don't use that mechanism anymore.
             throw new AssertionError("Failed when attempting to discover SDK: ", ex);
           }
+
+          deployExtension.setDeployTargetResolver(new DeployTargetResolver(cloudSdkOperations));
         });
   }
 

@@ -51,6 +51,10 @@ public class DeployExtension {
     this.deployTargetResolver = deployTargetResolver;
   }
 
+  public DeployTargetResolver getDeployTargetResolver() {
+    return deployTargetResolver;
+  }
+
   DeployConfiguration toDeployConfiguration(List<Path> deployables) {
     String processedProjectId = deployTargetResolver.getProject(projectId);
     String processedVersion = deployTargetResolver.getVersion(version);

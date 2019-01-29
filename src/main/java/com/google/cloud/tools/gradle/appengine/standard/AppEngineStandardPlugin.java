@@ -22,7 +22,6 @@ import com.google.cloud.tools.gradle.appengine.core.AppEngineCorePluginConfigura
 import com.google.cloud.tools.gradle.appengine.core.CloudSdkOperations;
 import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
-import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.common.base.Strings;
@@ -120,11 +119,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                   .resolve("appengine-web.xml")
                   .toFile();
 
-          // configure the resolver for projectId/version parameters
-          DeployTargetResolver standardResolver =
-              new StandardDeployTargetResolver(appengineWebXml, cloudSdkOperations);
-          deploy.setDeployTargetResolver(standardResolver);
-
           DeployAllTask deployAllTask =
               (DeployAllTask)
                   project
@@ -144,7 +138,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
           if (Strings.isNullOrEmpty(runExtension.getProjectId())) {
             runExtension.setProjectId(deploy.getProjectId());
           }
-          runExtension.setDeployTargetResolver(standardResolver);
+          runExtension.setDeployTargetResolver(deploy.getDeployTargetResolver());
         });
   }
 

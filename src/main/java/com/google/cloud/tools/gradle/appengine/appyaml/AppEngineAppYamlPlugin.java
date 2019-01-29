@@ -108,8 +108,6 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
             deploy.setAppEngineDirectory(stageExtension.getAppEngineDirectory());
           }
 
-          deploy.setDeployTargetResolver(new AppYamlDeployTargetResolver(cloudSdkOperations));
-
           DeployAllTask deployAllTask =
               (DeployAllTask)
                   project

@@ -47,12 +47,8 @@ public class DeployExtension {
     this.gradleProject = gradleProject;
   }
 
-  public void setDeployTargetResolver(DeployTargetResolver deployTargetResolver) {
+  void setDeployTargetResolver(DeployTargetResolver deployTargetResolver) {
     this.deployTargetResolver = deployTargetResolver;
-  }
-
-  public DeployTargetResolver getDeployTargetResolver() {
-    return deployTargetResolver;
   }
 
   DeployConfiguration toDeployConfiguration(List<Path> deployables) {

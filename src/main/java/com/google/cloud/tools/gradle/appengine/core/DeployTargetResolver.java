@@ -50,7 +50,7 @@ public class DeployTargetResolver {
 
   private final CloudSdkOperations cloudSdkOperations;
 
-  DeployTargetResolver(CloudSdkOperations cloudSdkOperations) {
+  public DeployTargetResolver(CloudSdkOperations cloudSdkOperations) {
     this.cloudSdkOperations = cloudSdkOperations;
   }
 

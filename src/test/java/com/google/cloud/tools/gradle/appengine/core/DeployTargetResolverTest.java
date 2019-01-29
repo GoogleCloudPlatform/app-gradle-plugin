@@ -78,6 +78,48 @@ public class DeployTargetResolverTest {
   }
 
   @Test
+  public void testGetProject_gcloudProjectEmpty() {
+    Mockito.when(cloudSdkConfig.getProject()).thenReturn(" ");
+
+    DeployTargetResolver deployTargetResolver = new DeployTargetResolver(cloudSdkOperations);
+    try {
+      deployTargetResolver.getProject(DeployTargetResolver.GCLOUD_CONFIG);
+      Assert.fail();
+    } catch (GradleException expected) {
+      Assert.assertEquals("Project was not found in gcloud config", expected.getMessage());
+    }
+  }
+
+  @Test
+  public void testGetProject_gcloudProjectNull() {
+    Mockito.when(cloudSdkConfig.getProject()).thenReturn(null);
+
+    DeployTargetResolver deployTargetResolver = new DeployTargetResolver(cloudSdkOperations);
+    try {
+      deployTargetResolver.getProject(DeployTargetResolver.GCLOUD_CONFIG);
+      Assert.fail();
+    } catch (GradleException expected) {
+      Assert.assertEquals("Project was not found in gcloud config", expected.getMessage());
+    }
+  }
+
+  @Test
+  public void testGetProject_getConfigException() throws Exception {
+    IOException forcedException = new IOException();
+    Mockito.when(gcloud.getConfig()).thenThrow(forcedException);
+
+    DeployTargetResolver deployTargetResolver = new DeployTargetResolver(cloudSdkOperations);
+    try {
+      deployTargetResolver.getProject(DeployTargetResolver.GCLOUD_CONFIG);
+      Assert.fail();
+    } catch (GradleException expected) {
+      Assert.assertEquals("Failed to read project from gcloud config", expected.getMessage());
+      Assert.assertEquals(forcedException, expected.getCause());
+    }
+
+  }
+
+  @Test
   public void testGetProject_nothingSet() {
     DeployTargetResolver deployTargetResolver = new DeployTargetResolver(cloudSdkOperations);
     try {

@@ -116,7 +116,6 @@ public class DeployTargetResolverTest {
       Assert.assertEquals("Failed to read project from gcloud config", expected.getMessage());
       Assert.assertEquals(forcedException, expected.getCause());
     }
-
   }
 
   @Test

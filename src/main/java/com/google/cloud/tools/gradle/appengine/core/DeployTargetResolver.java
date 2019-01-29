@@ -34,7 +34,7 @@ public class DeployTargetResolver {
           + "2. Set appengine.deploy.projectId = '"
           + GCLOUD_CONFIG
           + "' to use project from gcloud config.\n"
-          + "3. Using '"
+          + "3. Using appengine.deploy.projectId = '"
           + APPENGINE_CONFIG
           + "' has been deprecated.";
 
@@ -44,7 +44,7 @@ public class DeployTargetResolver {
           + "2. Set appengine.deploy.version = '"
           + GCLOUD_CONFIG
           + "' to have gcloud generate a version for you.\n"
-          + "3. Using '"
+          + "3. Using appengine.deploy.version = '"
           + APPENGINE_CONFIG
           + "' has been deprecated";
 

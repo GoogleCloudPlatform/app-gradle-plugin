@@ -23,7 +23,9 @@ plugins {
   id 'com.github.sherter.google-java-format' version '0.8'
   id 'checkstyle'
 }
-
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 repositories {
   mavenCentral()
 }
@@ -37,7 +39,9 @@ dependencies {
   compile localGroovy()
   compile gradleApi()
   compile 'com.google.cloud.tools:appengine-plugins-core:0.7.3'
-
+dependencies {
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
+}
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'junit:junit:4.12'
   testCompile 'org.hamcrest:hamcrest-library:1.3'

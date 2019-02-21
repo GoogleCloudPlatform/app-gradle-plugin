@@ -17,16 +17,16 @@ buildscript {
   }
 }
 
-apply plaugin: "com.google.cloud.tool.appengine" // for automatic environment determination
+apply plugin: "com.google.cloud.tool.appengine" // for automatic environment determination
 // or
 apply plugin: "com.google.cloud.tools.appengine-appenginewebxml"
 // or
 apply plugin: "com.google.cloud.tools.appengine-appyaml"
 ```
 
-When you use the `com.google.cloud.tools.appengine` plugin that will automatically determine
+When you use the `com.google.cloud.tools.appengine` plugin it will automatically determine
 your environment based on the presence of an `appengine-web.xml`
-in `src/main/webapp/WEB-INF/`, _appenginewebxml_ if present, _appyaml_ otherwise.
+in `src/main/webapp/WEB-INF/`. It will enable _`appengine-appenginewebxml`_ if present, _`appengine-appyaml`_ otherwise.
 
 The [Cloud SDK](https://cloud.google.com/sdk) is required for this plugin to
 function. Download and install it before running any tasks.
@@ -209,8 +209,8 @@ Use the following tasks :
 The deployment source directory can be overridden by setting the `appEngineDirectory` parameter
 in the deploy configuration.
 
-For appengine-web.xml based projects it defaults to `${buildDir}/staged-app/WEB-INF/appengine-generated`,
-you should not change this configuration, this is the location that your xml configs are converted
+For appengine-web.xml based projects, it defaults to `${buildDir}/staged-app/WEB-INF/appengine-generated`.
+You should not change this configuration; this is the location that your xml configs are converted
 into yaml for deployment.
 
 ```groovy

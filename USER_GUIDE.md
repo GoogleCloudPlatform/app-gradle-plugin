@@ -17,7 +17,7 @@ buildscript {
   }
 }
 
-apply plugin: "com.google.cloud.tool.appengine" // for automatic environment determination
+apply plugin: "com.google.cloud.tools.appengine" // for automatic environment determination
 // or
 apply plugin: "com.google.cloud.tools.appengine-appenginewebxml"
 // or

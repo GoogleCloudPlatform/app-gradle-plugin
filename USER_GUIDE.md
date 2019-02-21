@@ -5,7 +5,7 @@
 | The behavior of the appengine-gradle-plugin has changed since v1.+; please see the [CHANGELOG](CHANGELOG.md) for a full list of changes. If you are having trouble using or updating your plugin, please file a [new issue](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues).|
 
 ## Applying the Plugin
-Include the plugin jar in your buildscript classpath and apply the appropriate Standard or Flexible plugin:
+Include the plugin jar in your buildscript classpath and apply the appropriate plugin:
 
 ```groovy
 buildscript {
@@ -17,24 +17,26 @@ buildscript {
   }
 }
 
-apply plugin: "com.google.cloud.tools.appengine-standard"
+apply plaugin: "com.google.cloud.tool.appengine" // for automatic environment determination
 // or
-apply plugin: "com.google.cloud.tools.appengine-flexible"
+apply plugin: "com.google.cloud.tools.appengine-appenginewebxml"
+// or
+apply plugin: "com.google.cloud.tools.appengine-appyaml"
 ```
 
-You can also use the `com.google.cloud.tools.appengine` plugin that will automatically determine
+When you use the `com.google.cloud.tools.appengine` plugin that will automatically determine
 your environment based on the presence of an `appengine-web.xml`
-in `src/main/webapp/WEB-INF/`, _Standard_ if present, _Flexible_ otherwise.
+in `src/main/webapp/WEB-INF/`, _appenginewebxml_ if present, _appyaml_ otherwise.
 
 The [Cloud SDK](https://cloud.google.com/sdk) is required for this plugin to
 function. Download and install it before running any tasks.
 
 ---
 
-## App Engine Standard
+## App Engine `appengine-web.xml` based projects
 
 ### Tasks
-For App Engine standard, the plugin exposes the following tasks :
+The plugin exposes the following tasks :
 
 #### Local Run
 
@@ -61,7 +63,7 @@ For App Engine standard, the plugin exposes the following tasks :
 | Task                         | Description |
 | ---------------------------- | ----------- |
 | `appengineCloudSdkLogin`     | Launch the Cloud SDK login webflow and set the global Cloud SDK auth state. |
-| `appengineShowConfiguration` | Print out the appengine standard gradle plugin configuration. |
+| `appengineShowConfiguration` | Print out the plugin configuration. |
 
 ### Configuration
 Once you've [initialized](https://cloud.google.com/sdk/docs/initializing) `gcloud` you can run and deploy
@@ -71,7 +73,7 @@ your application using the defaults provided by the plugin. To view the default 
 $ ./gradlew appengineShowConfiguration
 ```
 
-If you wish to customize the plugin further, the standard plugin can be configured using the `appengine`
+If you wish to customize the plugin further, the plugin can be configured using the `appengine`
 configuration closure.
 
 ```groovy
@@ -176,7 +178,7 @@ The `stage` configuration has the following parameters :
 
 ##### Deploy
 The `deploy` configuration has the following parameters :
-Deploy has some Flexible environment only parameters that are not listed here and will just be ignored.
+Deploy has some extra parameters for app.yaml based projects that are not listed here and will just be ignored.
 
 | Parameter             | Description |
 | --------------------- | ----------- |
@@ -195,7 +197,7 @@ Deploy has some Flexible environment only parameters that are not listed here an
 
 ### How do I deploy my project Configuration Files?
 
-You can now deploy index.yaml/dos.yaml/etc for both flexible and standard environments.
+You can now deploy index.yaml/dos.yaml/etc for all environments.
 
 Use the following tasks :
 * `appengineDeployCron`
@@ -207,9 +209,9 @@ Use the following tasks :
 The deployment source directory can be overridden by setting the `appEngineDirectory` parameter
 in the deploy configuration.
 
-For standard it defaults to `${buildDir}/staged-app/WEB-INF/appengine-generated`, you should probably
-not change this configuration, for standard configured projects, this is the location that your
-xml configs are converted into yaml for deployment.
+For appengine-web.xml based projects it defaults to `${buildDir}/staged-app/WEB-INF/appengine-generated`,
+you should not change this configuration, this is the location that your xml configs are converted
+into yaml for deployment.
 
 ```groovy
 appengine {
@@ -258,7 +260,7 @@ appengine {
 ### How do I run multiple modules on the Dev App Server v1?
 
 Multimodule support can be done by adding all the runnable modules to a single runner's configuration (which currently
-must be an appengine-standard application), and using a helper method to tie everything together.
+must be an appengine-web.xml based application), and using a helper method to tie everything together.
 ```groovy
 appengine {
   run {
@@ -288,10 +290,10 @@ appengine {
 
 ---
 
-## App Engine Flexible
+## App Engine `app.yaml` based projects
 
 ### Tasks
-For App Engine flexible, the plugin exposes the following tasks :
+The plugin exposes the following tasks :
 
 #### Deployment
 
@@ -309,7 +311,7 @@ For App Engine flexible, the plugin exposes the following tasks :
 
 | Task                         | Description |
 | ---------------------------- | ----------- |
-| `appengineShowConfiguration` | Print out the appengine flexible gradle plugin configuration |
+| `appengineShowConfiguration` | Print out the plugin configuration |
 
 ### Configuration
 Once you've [initialized](https://cloud.google.com/sdk/docs/initializing) `gcloud` you can deploy
@@ -319,7 +321,7 @@ your application using the defaults provided by the plugin. To view the default 
 $ ./gradlew appengineShowConfiguration
 ```
 
-If you wish to customize the plugin further, the standard plugin can be configured using the `appengine`
+If you wish to customize the plugin further, the plugin can be configured using the `appengine`
 configuration closure.
 
 ```groovy

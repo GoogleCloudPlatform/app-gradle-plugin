@@ -190,8 +190,7 @@ Deploy has some extra parameters for app.yaml based projects that are not listed
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |
 | `version`             | The version of the app that will be created or replaced by this deployment. This also can be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
 
-\* setting a property to `GCLOUD_CONFIG` will deploy using the gcloud settings for the property.
-\* setting a property to `APPENGINE_CONFIG` will deploy using the value read from `appengine-web.xml`.
+\* Setting a property to `GCLOUD_CONFIG` will deploy using the gcloud settings for the property. Setting a property to `APPENGINE_CONFIG` will deploy using the value read from `appengine-web.xml`.
 
 ---
 

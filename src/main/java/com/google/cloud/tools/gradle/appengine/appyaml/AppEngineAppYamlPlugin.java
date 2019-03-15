@@ -44,7 +44,6 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
 
   private Project project;
   private AppEngineAppYamlExtension appengineExtension;
-  private CloudSdkOperations cloudSdkOperations;
   private StageAppYamlExtension stageExtension;
 
   @Override
@@ -81,7 +80,7 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
         project -> {
           // create the sdk builder factory after we know the location of the sdk
           try {
-            cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
+            new CloudSdkOperations(tools.getCloudSdkHome(), null);
           } catch (CloudSdkNotFoundException ex) {
             // this should be caught in AppEngineCorePluginConfig before it can ever reach here.
             throw new GradleException("Could not find CloudSDK: ", ex);

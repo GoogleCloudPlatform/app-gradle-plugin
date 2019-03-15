@@ -32,7 +32,6 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.WarPlugin;
-import org.gradle.api.plugins.WarPluginConvention;
 import org.gradle.api.tasks.bundling.War;
 
 /** Plugin definition for App Engine standard environments. */
@@ -109,16 +108,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
             deploy.setAppEngineDirectory(
                 new File(stageExtension.getStagingDirectory(), "WEB-INF/appengine-generated"));
           }
-
-          File appengineWebXml =
-              project
-                  .getConvention()
-                  .getPlugin(WarPluginConvention.class)
-                  .getWebAppDir()
-                  .toPath()
-                  .resolve("WEB-INF")
-                  .resolve("appengine-web.xml")
-                  .toFile();
 
           DeployAllTask deployAllTask =
               (DeployAllTask)

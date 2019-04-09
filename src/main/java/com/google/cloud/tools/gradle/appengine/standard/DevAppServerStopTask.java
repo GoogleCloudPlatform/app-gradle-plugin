@@ -29,7 +29,6 @@ public class DevAppServerStopTask extends DefaultTask {
 
   private RunExtension runConfig;
   private DevServers devServers;
-  private DevAppServerHelper serverHelper = new DevAppServerHelper();
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
@@ -43,10 +42,9 @@ public class DevAppServerStopTask extends DefaultTask {
   @TaskAction
   public void stopAction() {
     DevServer server =
-        serverHelper.getAppServer(
-            devServers, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()));
+        devServers.newDevAppServer(CloudSdkOperations.getDefaultHandler(getLogger()));
     try {
-      server.stop(serverHelper.getStopConfiguration(runConfig));
+      server.stop(runConfig.toStopConfiguration());
     } catch (AppEngineException ex) {
       getLogger().error("Failed to stop server: " + ex.getMessage());
     }

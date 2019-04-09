@@ -35,7 +35,6 @@ public class DevAppServerStartTask extends DefaultTask {
 
   private RunExtension runConfig;
   private DevServers devServers;
-  private DevAppServerHelper serverHelper = new DevAppServerHelper();
   private File devAppServerLoggingDir;
 
   public DevAppServerStartTask() {
@@ -79,9 +78,7 @@ public class DevAppServerStartTask extends DefaultTask {
             .setExitListener(new NonZeroExceptionExitListener())
             .buildDevAppServerAsync(runConfig.getStartSuccessTimeout());
 
-    serverHelper
-        .getAppServer(devServers, runConfig, processHandler)
-        .run(runConfig.toRunConfiguration());
+    devServers.newDevAppServer(processHandler).run(runConfig.toRunConfiguration());
 
     getLogger().lifecycle("Dev App Server output written to : " + logFile.getAbsolutePath());
   }

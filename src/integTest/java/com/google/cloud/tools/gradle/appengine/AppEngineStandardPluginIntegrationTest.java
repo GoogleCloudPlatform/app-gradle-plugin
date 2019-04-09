@@ -38,34 +38,25 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
 
 /** End to end tests for standard projects. */
-@RunWith(Parameterized.class)
 public class AppEngineStandardPluginIntegrationTest {
 
   /** Parameterize the project source for the test. */
-  @Parameters
-  public static Object[] data() {
-    return new Object[][] {
-      {"src/integTest/resources/projects/standard-project", "Dev App Server is now running"},
-      {"src/integTest/resources/projects/standard-project-java8", "INFO:oejs.Server:main: Started"}
-    };
-  }
-
-  @Rule public Timeout globalTimeout = Timeout.seconds(180);
+  // @Parameters
+  // public static Object[] data() {
+  //   return new Object[][] {
+  //     {"src/integTest/resources/projects/standard-project", "Dev App Server is now running"},
+  //     {"src/integTest/resources/projects/standard-project-java8", "INFO:oejs.Server:main:
+  // Started"}
+  //   };
+  // }
 
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder();
 
-  @Parameter(0)
-  public String testProjectSrcDirectory;
-
-  @Parameter(1)
-  public String devAppServerStartedString;
+  private String testProjectSrcDirectory =
+      "src/integTest/resources/projects/standard-project-java8";
+  private String devAppServerStartedString = "INFO:oejs.Server:main: Started";
 
   // Used to fail tests when assertion fails outside of main thread
   private volatile Throwable threadException;

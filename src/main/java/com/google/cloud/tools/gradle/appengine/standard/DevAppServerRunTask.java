@@ -29,7 +29,6 @@ public class DevAppServerRunTask extends DefaultTask {
 
   private RunExtension runConfig;
   private DevServers devServers;
-  private DevAppServerHelper serverHelper = new DevAppServerHelper();
 
   public void setRunConfig(RunExtension runConfig) {
     this.runConfig = runConfig;
@@ -42,8 +41,8 @@ public class DevAppServerRunTask extends DefaultTask {
   /** Task entrypoint : run the devappserver (blocking). */
   @TaskAction
   public void runAction() throws AppEngineException, ProjectConfigurationException {
-    serverHelper
-        .getAppServer(devServers, runConfig, CloudSdkOperations.getDefaultHandler(getLogger()))
+    devServers
+        .newDevAppServer(CloudSdkOperations.getDefaultHandler(getLogger()))
         .run(runConfig.toRunConfiguration());
   }
 }

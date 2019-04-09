@@ -18,9 +18,9 @@
 package com.google.cloud.tools.gradle.appengine.standard;
 
 import com.google.cloud.tools.appengine.configuration.RunConfiguration;
+import com.google.cloud.tools.appengine.configuration.StopConfiguration;
 import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
 import com.google.cloud.tools.gradle.appengine.core.InternalProperty;
-import com.google.cloud.tools.gradle.appengine.util.NullSafe;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
@@ -43,27 +43,9 @@ public class RunExtension {
   private List<File> services;
   private String host;
   private Integer port;
-  private String adminHost;
-  private Integer adminPort;
-  private String authDomain;
-  private File storagePath;
-  private String logLevel;
-  private Integer maxModuleInstances;
-  private Boolean useMtimeFileWatcher;
-  private String threadsafeOverride;
-  private String pythonStartupScript;
-  private String pythonStartupArgs;
   private List<String> jvmFlags;
-  private String customEntrypoint;
-  private String runtime;
-  private Boolean allowSkippedFiles;
-  private Integer apiPort;
   private Boolean automaticRestart;
-  private String devAppserverLogLevel;
-  private Boolean skipSdkUpdateCheck;
   private String defaultGcsBucketName;
-  private Boolean clearDatastore;
-  private File datastorePath;
   private Map<String, String> environment;
   private List<String> additionalArguments;
   private String projectId;
@@ -113,124 +95,12 @@ public class RunExtension {
     this.port = port;
   }
 
-  public String getAdminHost() {
-    return adminHost;
-  }
-
-  public void setAdminHost(String adminHost) {
-    this.adminHost = adminHost;
-  }
-
-  public Integer getAdminPort() {
-    return adminPort;
-  }
-
-  public void setAdminPort(Integer adminPort) {
-    this.adminPort = adminPort;
-  }
-
-  public String getAuthDomain() {
-    return authDomain;
-  }
-
-  public void setAuthDomain(String authDomain) {
-    this.authDomain = authDomain;
-  }
-
-  public File getStoragePath() {
-    return storagePath;
-  }
-
-  public void setStoragePath(File storagePath) {
-    this.storagePath = project.file(storagePath);
-  }
-
-  public String getLogLevel() {
-    return logLevel;
-  }
-
-  public void setLogLevel(String logLevel) {
-    this.logLevel = logLevel;
-  }
-
-  public Integer getMaxModuleInstances() {
-    return maxModuleInstances;
-  }
-
-  public void setMaxModuleInstances(Integer maxModuleInstances) {
-    this.maxModuleInstances = maxModuleInstances;
-  }
-
-  public Boolean getUseMtimeFileWatcher() {
-    return useMtimeFileWatcher;
-  }
-
-  public void setUseMtimeFileWatcher(Boolean useMtimeFileWatcher) {
-    this.useMtimeFileWatcher = useMtimeFileWatcher;
-  }
-
-  public String getThreadsafeOverride() {
-    return threadsafeOverride;
-  }
-
-  public void setThreadsafeOverride(String threadsafeOverride) {
-    this.threadsafeOverride = threadsafeOverride;
-  }
-
-  public String getPythonStartupScript() {
-    return pythonStartupScript;
-  }
-
-  public void setPythonStartupScript(String pythonStartupScript) {
-    this.pythonStartupScript = pythonStartupScript;
-  }
-
-  public String getPythonStartupArgs() {
-    return pythonStartupArgs;
-  }
-
-  public void setPythonStartupArgs(String pythonStartupArgs) {
-    this.pythonStartupArgs = pythonStartupArgs;
-  }
-
   public List<String> getJvmFlags() {
     return jvmFlags;
   }
 
   public void setJvmFlags(List<String> jvmFlags) {
     this.jvmFlags = jvmFlags;
-  }
-
-  public String getCustomEntrypoint() {
-    return customEntrypoint;
-  }
-
-  public void setCustomEntrypoint(String customEntrypoint) {
-    this.customEntrypoint = customEntrypoint;
-  }
-
-  public String getRuntime() {
-    return runtime;
-  }
-
-  public void setRuntime(String runtime) {
-    this.runtime = runtime;
-  }
-
-  public Boolean getAllowSkippedFiles() {
-    return allowSkippedFiles;
-  }
-
-  public void setAllowSkippedFiles(Boolean allowSkippedFiles) {
-    this.allowSkippedFiles = allowSkippedFiles;
-  }
-
-  public Integer getApiPort() {
-    return apiPort;
-  }
-
-  public void setApiPort(Integer apiPort) {
-    this.apiPort = apiPort;
   }
 
   public Boolean getAutomaticRestart() {
@@ -241,36 +111,12 @@ public class RunExtension {
     this.automaticRestart = automaticRestart;
   }
 
-  public String getDevAppserverLogLevel() {
-    return devAppserverLogLevel;
-  }
-
-  public void setDevAppserverLogLevel(String devAppserverLogLevel) {
-    this.devAppserverLogLevel = devAppserverLogLevel;
-  }
-
-  public Boolean getSkipSdkUpdateCheck() {
-    return skipSdkUpdateCheck;
-  }
-
-  public void setSkipSdkUpdateCheck(Boolean skipSdkUpdateCheck) {
-    this.skipSdkUpdateCheck = skipSdkUpdateCheck;
-  }
-
   public String getDefaultGcsBucketName() {
     return defaultGcsBucketName;
   }
 
   public void setDefaultGcsBucketName(String defaultGcsBucketName) {
     this.defaultGcsBucketName = defaultGcsBucketName;
-  }
-
-  public Boolean getClearDatastore() {
-    return clearDatastore;
-  }
-
-  public void setClearDatastore(Boolean clearDatastore) {
-    this.clearDatastore = clearDatastore;
   }
 
   public List<File> getServices() {
@@ -313,14 +159,6 @@ public class RunExtension {
         .getSingleFile();
   }
 
-  public File getDatastorePath() {
-    return datastorePath;
-  }
-
-  public void setDatastorePath(Object datastorePath) {
-    this.datastorePath = project.file(datastorePath);
-  }
-
   public Map<String, String> getEnvironment() {
     return environment;
   }
@@ -351,31 +189,17 @@ public class RunExtension {
     return RunConfiguration.builder(
             services.stream().map(File::toPath).collect(Collectors.toList()))
         .additionalArguments(additionalArguments)
-        .adminHost(adminHost)
-        .adminPort(adminPort)
-        .authDomain(authDomain)
-        .allowSkippedFiles(allowSkippedFiles)
-        .apiPort(apiPort)
         .automaticRestart(automaticRestart)
-        .clearDatastore(clearDatastore)
-        .customEntrypoint(customEntrypoint)
-        .datastorePath(NullSafe.convert(datastorePath, File::toPath))
         .defaultGcsBucketName(defaultGcsBucketName)
-        .devAppserverLogLevel(devAppserverLogLevel)
         .environment(environment)
         .host(host)
         .jvmFlags(jvmFlags)
-        .logLevel(logLevel)
-        .maxModuleInstances(maxModuleInstances)
         .port(port)
         .projectId(processedProjectId)
-        .pythonStartupArgs(pythonStartupArgs)
-        .pythonStartupScript(pythonStartupScript)
-        .runtime(runtime)
-        .skipSdkUpdateCheck(skipSdkUpdateCheck)
-        .storagePath(NullSafe.convert(storagePath, File::toPath))
-        .threadsafeOverride(threadsafeOverride)
-        .useMtimeFileWatcher(useMtimeFileWatcher)
         .build();
+  }
+
+  StopConfiguration toStopConfiguration() {
+    return StopConfiguration.builder().host(host).port(port).build();
   }
 }

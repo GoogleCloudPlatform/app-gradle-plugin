@@ -42,16 +42,6 @@ import org.junit.rules.TemporaryFolder;
 /** End to end tests for standard projects. */
 public class AppEngineStandardPluginIntegrationTest {
 
-  /** Parameterize the project source for the test. */
-  // @Parameters
-  // public static Object[] data() {
-  //   return new Object[][] {
-  //     {"src/integTest/resources/projects/standard-project", "Dev App Server is now running"},
-  //     {"src/integTest/resources/projects/standard-project-java8", "INFO:oejs.Server:main:
-  // Started"}
-  //   };
-  // }
-
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder();
 
   private String testProjectSrcDirectory =

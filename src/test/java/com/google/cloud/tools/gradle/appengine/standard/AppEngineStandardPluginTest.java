@@ -294,6 +294,25 @@ public class AppEngineStandardPluginTest {
   }
 
   @Test
+  public void testOffline_taskTree() throws IOException {
+    BuildResult buildResult =
+        createTestProject().applyGradleRunner("appengineStage", "--dry-run", "--offline");
+
+    final List<String> expected =
+        ImmutableList.of(
+            ":compileJava",
+            ":processResources",
+            ":classes",
+            ":war",
+            ":explodeWar",
+            ":assemble",
+            // ":downloadCloudSdk", this is not included because --offline
+            ":appengineStage");
+
+    assertEquals(expected, BuildResultFilter.extractTasks(buildResult));
+  }
+
+  @Test
   public void testStop_taskTree() throws IOException {
     BuildResult buildResult = createTestProject().applyGradleRunner("appengineStop", "--dry-run");
 

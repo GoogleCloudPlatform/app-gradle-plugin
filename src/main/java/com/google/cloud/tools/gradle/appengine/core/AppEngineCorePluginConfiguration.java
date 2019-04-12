@@ -145,6 +145,10 @@ public class AppEngineCorePluginConfiguration {
                   p -> {
                     if (managedCloudSdk != null) {
                       downloadCloudSdkTask.setManagedCloudSdk(managedCloudSdk);
+                      if (p.getGradle().getStartParameter().isOffline()) {
+                        p.getLogger().debug("Skipping DownloadCloudSdk in --offline mode.");
+                        return;
+                      }
                       p.getTasks()
                           .matching(task -> task.getName().startsWith("appengine"))
                           .forEach(task -> task.dependsOn(downloadCloudSdkTask));

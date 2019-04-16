@@ -119,9 +119,6 @@ it can also be called explicitly by running the tasks `downloadCloudSdk` and `ch
 
 ##### Run
 The `run` configuration has the following parameters :
-Note that only a subset are valid for Dev App Server version "1" and all are valid for Dev App Server version "2-alpha".
-
-Valid for versions "1" and "2-alpha"
 
 | Parameter             | Description |
 | --------------------- | ----------- |
@@ -130,35 +127,10 @@ Valid for versions "1" and "2-alpha"
 | `jvmFlags`            | JVM flags to pass to the App Server Java process. |
 | `port`                | Application host port. |
 | `startSuccessTimeout` | Amount of time in seconds to wait for the Dev App Server to start in the background. |
-| `serverVersion`       | Server versions to use, options are "1" or "2-alpha" |
 | `services`            | List of services to run |
 | `additionalArguments` | Additional arguments to pass to the Dev App Server process |
 | `automaticRestart`    | Automatically restart the server when explode-war directory has changed |
 | `projectId`           | Set a Google Cloud Project Id on the running development server |
-
-Only valid for version "2-alpha"
-
-| Parameter (2-alpha only) |
-| ------------------------ |
-| `adminHost`              |
-| `adminPort`              |
-| `allowSkippedFiles`      |
-| `apiPort`                |
-| `authDomain`             |
-| `clearDatastore`         |
-| `customEntrypoint`       |
-| `datastorePath`          |
-| `defaultGcsBucketName`   |
-| `devAppserverLogLevel`   |
-| `logLevel`               |
-| `maxModuleInstances`     |
-| `pythonStartupArgs`      |
-| `pythonStartupScript`    |
-| `runtime`                |
-| `skipSdkUpdateCheck`     |
-| `storagePath`            |
-| `threadsafeOverride`     |
-| `useMtimeFileWatcher`    |
 
 ##### Stage
 The `stage` configuration has the following parameters :
@@ -184,13 +156,13 @@ Deploy has some extra parameters for app.yaml based projects that are not listed
 | --------------------- | ----------- |
 | `appEngineDirectory`  | Location of configuration files (cron.yaml, dos.yaml, etc) for configuration specific deployments. |
 | `bucket`              | The Google Cloud Storage bucket used to stage files associated with the deployment. |
-| `projectId`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
+| `projectId`             | The Google Cloud Project target for this deployment. This can also be set to `GCLOUD_CONFIG`.\* |
 | `promote`             | Promote the deployed version to receive all traffic. |
 | `server`              | The App Engine server to connect to. Typically, you do not need to change this value. |
 | `stopPreviousVersion` | Stop the previously running version of this service after deploying a new one that receives all traffic. |
-| `version`             | The version of the app that will be created or replaced by this deployment. This also can be set to `GCLOUD_CONFIG` or `APPENGINE_CONFIG`.\* |
+| `version`             | The version of the app that will be created or replaced by this deployment. This also can be set to `GCLOUD_CONFIG`.\* |
 
-\* Setting a property to `GCLOUD_CONFIG` will deploy using the gcloud settings for the property. Setting a property to `APPENGINE_CONFIG` will deploy using the value read from `appengine-web.xml`.
+\* Setting a property to `GCLOUD_CONFIG` will deploy using the gcloud settings for the property.
 
 ---
 
@@ -274,18 +246,7 @@ appengine {
 
 ### I want to use Dev Appserver 2 (alpha), how do I switch to it?
 
-Caution: The v2-alpha version of the development web server is not fully
-supported, and you may find errors when using this version.
-
-To switch to Dev App Server v2-alpha use the `serverVersion` parameter.
-
-```
-appengine {
-  run {
-    serverVersion = "2-alpha"
-  }
-}
-```
+The v2-alpha Dev Appserver is no longer supported from this plugin.
 
 ---
 

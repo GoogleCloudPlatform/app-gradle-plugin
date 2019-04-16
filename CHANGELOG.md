@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-rc6
+### Changed
+* Remove support for `APPENGINE_CONFIG` option in `projectId` and `version` ([#325](../../pull/325))
+* Remove support for `v2-alpha` devappserver version ([#336](../../pull/336))
+
+### Fixed
+* Actually skip downloading/updating the cloud sdk in offline mode ([#337](../../pull/337))
+
 ## 2.0.0-rc5
 ### Changed
 * Update appengine-plugins-core to 0.7.3 ([#322](../../pull/322))

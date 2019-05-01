@@ -61,19 +61,6 @@ public class AppEngineCorePluginConfiguration {
       AppEngineCoreExtensionProperties appEngineCoreExtensionProperties,
       String taskGroup,
       boolean requiresAppEngineJava) {
-    project
-        .getLogger()
-        .warn(
-            "WARNING: You are a using release candidate "
-                + getClass().getPackage().getImplementationVersion()
-                + ". Behavior of this plugin has changed since 1.3.5. Please see release notes at: "
-                + "https://github.com/GoogleCloudPlatform/app-gradle-plugin.");
-    project
-        .getLogger()
-        .warn(
-            "Missing a feature? Can't get it to work?, please file a bug at: "
-                + "https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues.");
-
     checkGradleVersion();
 
     this.project = project;

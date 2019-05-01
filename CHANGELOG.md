@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## 2.0.1
+### Fixed
 * Remove release candidate warning ([#344](../../pull/344))
 
 ## 2.0.0

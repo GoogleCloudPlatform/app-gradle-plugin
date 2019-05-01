@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.1
+* Remove release candidate warning ([#344](../../pull/344))
+
 ## 2.0.0
 See 2.0.0-rc1 - 2.0.0-rc6 for details
 ### Key Changes

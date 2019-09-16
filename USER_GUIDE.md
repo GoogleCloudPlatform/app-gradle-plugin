@@ -321,12 +321,13 @@ it can also be called explicitly by running the tasks `downloadCloudSdk` and `ch
 ##### Stage
 The `stage` configuration has the following parameters :
 
-| Parameter            | Description |
-| -------------------- | ----------- |
-| `appEngineDirectory` | The directory that contains app.yaml. |
-| `dockerDirectory`    | The directory that contains Dockerfile and other docker context. |
-| `artifact`           | The artifact to deploy (a file, like a .jar or a .war). |
-| `stagingDirectory`   | The directory to which to stage the application |
+| Parameter               | Description |
+| ----------------------- | ----------- |
+| `appEngineDirectory`    | The directory that contains app.yaml. |
+| `dockerDirectory`       | The directory that contains Dockerfile and other docker context. |
+| `artifact`              | The artifact to deploy (a file, like a .jar or a .war). |
+| `stagingDirectory`      | The directory to which to stage the application. |
+| `extraFilesDirectories` | The list of directories to copy extra files from. |
 
 ##### Deploy
 The `deploy` configuration has the following parameters :

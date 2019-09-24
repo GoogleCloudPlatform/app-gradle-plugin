@@ -5,20 +5,6 @@
 
 This Gradle plugin provides tasks to build and deploy Google App Engine applications.
 
-| 2.0.0 is live |
-| :------------------------------ |
-| 2.0.0 has been published. The behavior of the appengine-gradle-plugin has changed since v1.+; please see the [CHANGELOG](CHANGELOG.md) for a full list of changes and an updated [USER GUIDE](USER_GUIDE.md) for details. If you are having trouble using or updating your plugin, please file a [new issue](https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues).|
-
-# Reference Documentation
-
-App Engine Standard Environment:
-* [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle)
-* [App Engine Gradle Plugin Tasks and Parameters (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle-reference)
-
-App Engine Flexible Environment:
-* [Using Gradle and the App Engine Plugin (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/using-gradle)
-* [App Engine Gradle Plugin Tasks and Parameters (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/gradle-reference)
-
 # Requirements
 
 [Gradle](http://gradle.org) is required to build and run the plugin. Version compatibility is listed below.
@@ -29,15 +15,8 @@ App Engine Flexible Environment:
 | 1.3.3 +                 | 3.4.1 or newer |
 | 1.0.0 - 1.3.2           | 3.0 or newer   |
 
-You must have [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
-
-Cloud SDK app-engine-java component is also required. Install it by running:
-
-    gcloud components install app-engine-java
-
-Login and configure Cloud SDK:
-
-    gcloud init
+[Google Cloud SDK](https://cloud.google.com/sdk/) is required but will be
+automatically installed by the plugin.
 
 # How to use
 
@@ -63,30 +42,24 @@ buildscript {
 
 You can now run commands like `./gradlew appengineDeploy` in the root folder of your Java application.
 
-# Supported tasks
-| Task                       | Description
-|----------------------------|---
-| appengineShowConfiguration | Shows the current App Engine plugin configuration properties.
-| appengineStage             | Generates an application directory for deployment.
-| appengineDeploy            | Stages and deploys an application to App Engine.
-| appengineDeployCron        | Deploys cron configuration (cron.yaml).
-| appengineDeployDispatch    | Deploys dispatch configuration (dispatch.yaml).
-| appengineDeployDos         | Deploys dos configuration (dos.yaml).
-| appengineDeployIndex       | Deploys datastore index configuration (index.yaml).
-| appengineDeployQueue       | Deploys queue configuration (queue.yaml).
+## Goals and Configuration
 
-Dev App Server tasks for standard environment apps only:
+Please see the [USER GUIDE](USER_GUIDE.md) for a full list of supported goals and configuration
+options.
+* [USER\_GUIDE for `app.yaml` based projects](USER_GUIDE.md#app-engine-appyaml-based-projects)
+* [USER\_GUIDE for `appengine-web.xml` based projects](USER_GUIDE.md#app-engine-appengine-webxml-based-projects)
 
-| Task           | Description
-|----------------|---
-| appengineRun   | Runs the App Engine local development server.
-| appengineStart | Runs the App Engine local development server in the background.
-| appengineStop  | Stops a running App Engine web development server.
+# Reference Documentation
 
-Task documentation is available by running:
+App Engine Standard Environment:
+* [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle)
+* [App Engine Gradle Plugin Tasks and Parameters (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle-reference)
 
-    ./gradlew help --task [task]
+App Engine Flexible Environment:
+* [Using Gradle and the App Engine Plugin (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/using-gradle)
+* [App Engine Gradle Plugin Tasks and Parameters (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/gradle-reference)
 
-## Contributing
 
-If you wish to build this plugin from source, please see the [contributor instructions](CONTRIBUTING.md).
+# Contributing
+
+If you wish to contribute to this plugin, please see the [contributor instructions](CONTRIBUTING.md).

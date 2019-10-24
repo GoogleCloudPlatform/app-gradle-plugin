@@ -1,7 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-### 2.1.0
+## 2.2.0
+### Changed
+* Update to appengine-plugins-core 0.8.1 ([#364](../../pull/364))
+
+### Added
+* Automatically copy `Class-Path` entries in jar manifest to staging directory ([appengine-plugins-core:#804](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/804))
+
+## 2.1.0
 ### Added
 * `gcloudMode` to `appengine.deploy` block ([#356](../../pull/356))
 

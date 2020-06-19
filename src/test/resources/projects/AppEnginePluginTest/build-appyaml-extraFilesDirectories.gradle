@@ -16,7 +16,6 @@
 
 plugins {
   id 'java'
-  id 'war'
   id 'com.google.cloud.tools.appengine-appyaml'
 }
 

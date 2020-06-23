@@ -325,7 +325,7 @@ The `stage` configuration has the following parameters :
 | ----------------------- | ----------- |
 | `appEngineDirectory`    | The directory that contains app.yaml. |
 | `dockerDirectory`       | The directory that contains Dockerfile and other docker context. |
-| `artifact`              | The artifact to deploy (a file, like a .jar or a .war). |
+| `artifact`              | The artifact to deploy (a file, like a .jar, a .war or a binary). |
 | `stagingDirectory`      | The directory to which to stage the application. |
 | `extraFilesDirectories` | The list of directories to copy extra files from. |
 

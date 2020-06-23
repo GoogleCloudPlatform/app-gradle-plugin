@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.3.0
+### Added
+* Update to appengine-plugins-core 0.9.0 ([#377](../../pull/377))
+  * Includes support for binary artifacts for app.yaml based deployments ([appengine-plugins-core:#840](https://github.com/GoogleCloudPlatform/appengine-plugins-core/issues/840))
+
 ## 2.2.0
 ### Changed
 * Update to appengine-plugins-core 0.8.1 ([#364](../../pull/364))

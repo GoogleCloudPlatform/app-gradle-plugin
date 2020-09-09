@@ -40,6 +40,7 @@ public class CloudSdkOperations {
    *
    * @param cloudSdkHome path to cloud sdk
    * @param credentialFile optional path to a credential file
+   * @param verbosity logging verbosity level for gcloud commands
    * @throws CloudSdkNotFoundException when cloud sdk path cannot be validated
    */
   public CloudSdkOperations(File cloudSdkHome, File credentialFile, String verbosity)

@@ -28,6 +28,7 @@ public class ToolsExtension {
   private File cloudSdkHome;
   private String cloudSdkVersion;
   private File cloudSdkServiceAccountFile;
+  private String verbosity;
 
   public ToolsExtension(Project project) {
     this.project = project;
@@ -55,5 +56,13 @@ public class ToolsExtension {
 
   public void setServiceAccountKeyFile(Object cloudSdkServiceAccountFile) {
     this.cloudSdkServiceAccountFile = project.file(cloudSdkServiceAccountFile);
+  }
+
+  public String getVerbosity() {
+    return verbosity;
+  }
+
+  public void setVerbosity(String verbosity) {
+    this.verbosity = verbosity;
   }
 }

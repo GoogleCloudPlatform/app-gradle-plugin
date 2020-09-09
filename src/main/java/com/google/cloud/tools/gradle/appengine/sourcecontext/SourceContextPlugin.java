@@ -65,7 +65,8 @@ public class SourceContextPlugin implements Plugin<Project> {
     project.afterEvaluate(
         project -> {
           try {
-            cloudSdkOperations = new CloudSdkOperations(tools.getCloudSdkHome(), null);
+            cloudSdkOperations =
+                new CloudSdkOperations(tools.getCloudSdkHome(), null, tools.getVerbosity());
           } catch (CloudSdkNotFoundException ex) {
             // this should be caught in AppEngineCorePluginConfig before it can ever reach here.
             throw new GradleException("Could not find CloudSDK: ", ex);

@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+### Added
+* `appengine.tools.verbosity` option for defining gcloud log verbosity ([#384](../../pull/384))
+
 ## 2.3.0
 ### Added
 * Update to appengine-plugins-core 0.9.0 ([#377](../../pull/377))

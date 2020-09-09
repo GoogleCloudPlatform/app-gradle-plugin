@@ -80,7 +80,7 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
         project -> {
           // create the sdk builder factory after we know the location of the sdk
           try {
-            new CloudSdkOperations(tools.getCloudSdkHome(), null);
+            new CloudSdkOperations(tools.getCloudSdkHome(), null, tools.getVerbosity());
           } catch (CloudSdkNotFoundException ex) {
             // this should be caught in AppEngineCorePluginConfig before it can ever reach here.
             throw new GradleException("Could not find CloudSDK: ", ex);

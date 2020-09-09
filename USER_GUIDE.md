@@ -97,6 +97,7 @@ The `tools` configuration has the following parameters :
 | `serviceAccountKeyFile` | A Google project service account key file to run Cloud SDK operations requiring an authenticated user. |
 | `cloudSdkHome`          | Location of the Cloud SDK. |
 | `cloudSdkVersion`       | The desired version of the Cloud SDK (e.g. "192.0.0"). |
+| `verbosity`             | The verbosity level for logging when gcloud is run. See [gcloud docs](https://cloud.google.com/sdk/gcloud/reference#--verbosity) for allowed values. |
 
 The Cloud SDK will be installed/updated/verified depending on which parameters are configured:
 

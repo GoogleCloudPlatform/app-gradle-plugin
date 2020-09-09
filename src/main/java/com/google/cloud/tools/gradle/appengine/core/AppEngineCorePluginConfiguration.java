@@ -107,7 +107,9 @@ public class AppEngineCorePluginConfiguration {
           try {
             cloudSdkOperations =
                 new CloudSdkOperations(
-                    toolsExtension.getCloudSdkHome(), toolsExtension.getServiceAccountKeyFile());
+                    toolsExtension.getCloudSdkHome(),
+                    toolsExtension.getServiceAccountKeyFile(),
+                    toolsExtension.getVerbosity());
           } catch (CloudSdkNotFoundException ex) {
             // this should never happen, not found exception only occurs when auto-discovery fails,
             // but we don't use that mechanism anymore.

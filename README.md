@@ -35,7 +35,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.3.0'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.0'
   }
 }
 ```

@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 2.4.1
 ### Fixed
 * Fixed bug when using `plugins` block in `build.gradle` ([#388](../../pull/388))
 

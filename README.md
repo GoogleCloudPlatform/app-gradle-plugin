@@ -20,14 +20,36 @@ automatically installed by the plugin.
 
 # How to use
 
-In your Gradle App Engine Java app, add the following plugin to your build.gradle:
+The plugin needs to be defined in your `build.gradle`. It is directly available on Maven Central. Alternatively, you can download it from GitHub and deploy it to your local repository. The following code snippet shows an example on how to retrieve it from Maven Central:
 
+### Using plugins block
+Since the `appengine-gradle-plugin` is not published to the gradle plugin portal, you must refrence it from the Central Maven repository.  Add the maven central resolution to your `settings.gradle`
 ```Groovy
-apply plugin: 'com.google.cloud.tools.appengine'
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    // add mavenLocal() if you are using a locally built version of the plugin
+  }
+  resolutionStrategy {
+    eachPlugin {
+      if (requested.id.id.startsWith('com.google.cloud.tools.appengine')) {
+        useModule('com.google.cloud.tools:appengine-gradle-plugin:${requested.version}')
+      }
+    }
+  }
+}
 ```
 
-The plugin JAR needs to be defined in the classpath of your build script. It is directly available on Maven Central. Alternatively, you can download it from GitHub and deploy it to your local repository. The following code snippet shows an example on how to retrieve it from Maven Central:
+Apply the plugin in your plugins block in your `build.gradle`
+```Groovy
+plugins {
+  id 'com.google.cloud.tools.appengine' version '2.4.1'
+}
+```
 
+### Using buildscript block
+If you wish to apply the plugin via the legacy buildscript mechanism, add the following to your build.gradle.
 ```Groovy
 buildscript {
   repositories {
@@ -35,12 +57,14 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.0'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.1'
   }
 }
+
+apply plugin: 'com.google.cloud.tools.appengine'
 ```
 
-You can now run commands like `./gradlew appengineDeploy` in the root folder of your Java application.
+You can now run commands like `./gradlew appengineDeploy` on your Java application.
 
 ## Goals and Configuration
 

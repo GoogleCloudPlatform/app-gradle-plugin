@@ -1,35 +1,24 @@
 # User Guide 2.+
 
 ## Applying the Plugin
-Include the plugin jar in your buildscript classpath and apply the appropriate plugin:
+Apply the plugin following the instructions in [README.md](README.md#how-to-use) and using the appropriate plugin identifier:
+1. `"com.google.cloud.tools.appengine-appenginewebxml"` for war projects defined by an `appengine-web.xml`
+1. `"com.google.cloud.tools.appengine-appyaml"` for projects defined by an `app.yaml`
+1. `"com.google.cloud.tools.appengine"` for automatic environment determination (not recommended)
 
-```groovy
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath "com.google.cloud.tools:appengine-gradle-plugin:<version>"
-  }
-}
-
-apply plugin: "com.google.cloud.tools.appengine" // for automatic environment determination
-// or
-apply plugin: "com.google.cloud.tools.appengine-appenginewebxml"
-// or
-apply plugin: "com.google.cloud.tools.appengine-appyaml"
-```
 
 When you use the `com.google.cloud.tools.appengine` plugin it will automatically determine
 your environment based on the presence of an `appengine-web.xml`
 in `src/main/webapp/WEB-INF/`. It will enable _`appengine-appenginewebxml`_ if present, _`appengine-appyaml`_ otherwise.
 
 The [Cloud SDK](https://cloud.google.com/sdk) is required for this plugin to
-function. Download and install it before running any tasks.
+function. Versions greater than `2.0.0` will automatically download and install it for you. You may also chose to download and install it before running any tasks.
 
 ---
 
 ## App Engine `appengine-web.xml` based projects
+
+Follow the [instructions](#applying-the-plugin) to apply the `appengine-appenginewebxml` plugin on the project
 
 ### Tasks
 The plugin exposes the following tasks :
@@ -249,6 +238,8 @@ The v2-alpha Dev Appserver is no longer supported from this plugin.
 ---
 
 ## App Engine `app.yaml` based projects
+
+Follow the [instructions](#applying-the-plugin) to apply the `appengine-appyaml` plugin on the project
 
 ### Tasks
 The plugin exposes the following tasks :

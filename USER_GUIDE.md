@@ -12,7 +12,7 @@ your environment based on the presence of an `appengine-web.xml`
 in `src/main/webapp/WEB-INF/`. It will enable _`appengine-appenginewebxml`_ if present, _`appengine-appyaml`_ otherwise.
 
 The [Cloud SDK](https://cloud.google.com/sdk) is required for this plugin to
-function. Versions greater than `2.0.0` will automatically download and install it for you. You may also chose to download and install it before running any tasks.
+function. Versions greater than `2.0.0` will automatically download and install it for you. You may also choose to download and install it before running any tasks.
 
 ---
 

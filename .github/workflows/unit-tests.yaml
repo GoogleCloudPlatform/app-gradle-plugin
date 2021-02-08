@@ -27,13 +27,13 @@ jobs:
           java-version: ${{ matrix.java }}
       #- uses: google-github-actions/setup-gcloud@v0.2.0
       - uses: actions/cache@v2
-          path: |
-            ~/.m2/repository
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+        path: |
+          ~/.m2/repository
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
       - name: Run tests
         run: |
           # google-github-actions/setup-gcloud@v0.2.0 sets up gcloud at, e.g,.

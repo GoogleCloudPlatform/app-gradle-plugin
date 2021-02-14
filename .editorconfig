@@ -1,0 +1,19 @@
+root = true
+
+[*]
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+
+[{*.sh,gradlew}]
+end_of_line = lf
+
+[{*.bat,*.cmd}]
+end_of_line = crlf
+
+[{*.kts,*.kt}]
+max_line_length = 100
+# Google Kotlin code style uses 2 spaces for indentation
+# See https://github.com/GoogleCloudPlatform/app-gradle-plugin/pull/398/files#r984944216
+indent_size = 2

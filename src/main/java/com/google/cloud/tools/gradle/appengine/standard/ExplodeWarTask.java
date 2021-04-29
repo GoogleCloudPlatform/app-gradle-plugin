@@ -26,7 +26,7 @@ public class ExplodeWarTask extends Sync {
 
   private File explodedAppDirectory;
 
-  public void setWarFile(File warFile) {
+  public void setWarFile(Object warFile) {
     from(getProject().zipTree(warFile));
   }
 

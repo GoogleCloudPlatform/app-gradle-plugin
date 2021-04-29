@@ -11,9 +11,10 @@ This Gradle plugin provides tasks to build and deploy Google App Engine applicat
 
 | appengine-gradle-plugin | gradle version |
 |-------------------------|----------------|
+| 2.5.0 +                 | 4.9 or newer   |
 | 2.0.0 +                 | 4.0 or newer   |
 | 1.3.3 +                 | 3.4.1 or newer |
-| 1.0.0 - 1.3.2           | 3.0 or newer   |
+| 1.0.0 +                 | 3.0 or newer   |
 
 [Google Cloud SDK](https://cloud.google.com/sdk/) is required but will be
 automatically installed by the plugin.

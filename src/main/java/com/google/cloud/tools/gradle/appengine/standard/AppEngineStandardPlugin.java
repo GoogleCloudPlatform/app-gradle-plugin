@@ -27,11 +27,14 @@ import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
 import com.google.common.base.Strings;
 import java.io.File;
+import java.util.Arrays;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.WarPlugin;
+import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.War;
 
 /** Plugin definition for App Engine standard environments. */
@@ -54,8 +57,6 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
   private CloudSdkOperations cloudSdkOperations;
   private AppEngineStandardExtension appengineExtension;
   private AppEngineCorePluginConfiguration appEngineCorePluginConfiguration;
-  private RunExtension runExtension;
-  private StageStandardExtension stageExtension;
   private File explodedWarDir;
 
   @Override
@@ -74,27 +75,27 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
 
     configureExtensions();
 
-    createExplodedWarTask();
+    createExplodeWarTask();
     createStageTask();
     createRunTasks();
   }
 
   private void configureExtensions() {
-
     // create the run extension and set defaults.
-    runExtension = appengineExtension.getRun();
+    RunExtension runExtension = appengineExtension.getRun();
     runExtension.setStartSuccessTimeout(20);
     runExtension.setServices(explodedWarDir);
     runExtension.setServerVersion("1");
 
     // create the stage extension and set defaults.
-    stageExtension = appengineExtension.getStage();
+    StageStandardExtension stageExtension = appengineExtension.getStage();
     File defaultStagedAppDir = new File(project.getBuildDir(), STAGED_APP_DIR_NAME);
     stageExtension.setSourceDirectory(explodedWarDir);
     stageExtension.setStagingDirectory(defaultStagedAppDir);
 
     project.afterEvaluate(
         project -> {
+          TaskContainer tasks = project.getTasks();
           // tools extension required to initialize cloudSdkOperations
           ToolsExtension tools = appengineExtension.getTools();
           try {
@@ -111,19 +112,22 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
                 new File(stageExtension.getStagingDirectory(), "WEB-INF/appengine-generated"));
           }
 
-          DeployAllTask deployAllTask =
-              (DeployAllTask)
-                  project
-                      .getTasks()
-                      .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME);
-          deployAllTask.setStageDirectory(stageExtension.getStagingDirectory());
-          deployAllTask.setDeployExtension(deploy);
+          tasks
+              .withType(DeployAllTask.class)
+              .configureEach(
+                  task -> {
+                    task.setStageDirectory(stageExtension.getStagingDirectory());
+                    task.setDeployExtension(deploy);
+                  });
 
-          DeployTask deployTask =
-              (DeployTask)
-                  project.getTasks().getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME);
-          deployTask.setDeployConfig(deploy);
-          deployTask.setAppYaml(stageExtension.getStagingDirectory().toPath().resolve("app.yaml"));
+          tasks
+              .withType(DeployTask.class)
+              .configureEach(
+                  task -> {
+                    task.setDeployExtension(deploy);
+                    task.setAppYaml(
+                        stageExtension.getStagingDirectory().toPath().resolve("app.yaml"));
+                  });
 
           // configure the runExtension's project parameter
           // assign the run projectId to the deploy projectId if none is specified
@@ -134,138 +138,97 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
         });
   }
 
-  private void createExplodedWarTask() {
-    project
-        .getTasks()
-        .create(
+  private void createExplodeWarTask() {
+    TaskContainer tasks = project.getTasks();
+    TaskProvider<ExplodeWarTask> explodeWar =
+        tasks.register(
             EXPLODE_WAR_TASK_NAME,
             ExplodeWarTask.class,
-            explodeWar -> {
-              explodeWar.setExplodedAppDirectory(explodedWarDir);
-              explodeWar.dependsOn(WarPlugin.WAR_TASK_NAME);
-              explodeWar.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-              explodeWar.setDescription("Explode a war into a directory");
-
-              project.afterEvaluate(
-                  project ->
-                      explodeWar.setWarFile(
-                          ((War) project.getTasks().getByPath(WarPlugin.WAR_TASK_NAME))
-                              .getArchivePath()));
+            task -> {
+              task.setExplodedAppDirectory(explodedWarDir);
+              task.dependsOn(WarPlugin.WAR_TASK_NAME);
+              task.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+              task.setDescription("Explode a war into a directory");
+              task.setWarFile(
+                  tasks.withType(War.class).named("war").map(war -> war.getArchivePath()));
             });
-    project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);
+
+    tasks.named(BasePlugin.ASSEMBLE_TASK_NAME).configure(task -> task.dependsOn(explodeWar));
   }
 
   private void createStageTask() {
-    project
-        .getTasks()
-        .withType(StageStandardTask.class)
-        .whenTaskAdded(
-            stageStandardTask ->
-                project.afterEvaluate(
-                    ignored -> stageStandardTask.setAppCfg(cloudSdkOperations.getAppcfg())));
+    TaskContainer tasks = project.getTasks();
+    TaskProvider<StageStandardTask> stage =
+        tasks.register(
+            STAGE_TASK_NAME,
+            StageStandardTask.class,
+            task -> {
+              task.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
+              task.setDescription(
+                  "Stage an App Engine standard environment application for deployment");
+              task.setStageStandardExtension(appengineExtension.getStage());
+              task.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
+            });
 
-    StageStandardTask stageTask =
-        project
-            .getTasks()
-            .create(
-                STAGE_TASK_NAME,
-                StageStandardTask.class,
-                stageTask1 -> {
-                  stageTask1.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
-                  stageTask1.setDescription(
-                      "Stage an App Engine standard environment application for deployment");
-                  stageTask1.dependsOn(BasePlugin.ASSEMBLE_TASK_NAME);
-
-                  project.afterEvaluate(
-                      project -> {
-                        stageTask1.setStageStandardExtension(stageExtension);
-                      });
-                });
+    project.afterEvaluate(
+        project -> stage.configure(task -> task.setAppCfg(cloudSdkOperations.getAppcfg())));
 
     // All deployment tasks depend on the stage task.
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME)
-        .dependsOn(stageTask);
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_CRON_TASK_NAME)
-        .dependsOn(stageTask);
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_DISPATCH_TASK_NAME)
-        .dependsOn(stageTask);
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_DOS_TASK_NAME)
-        .dependsOn(stageTask);
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_INDEX_TASK_NAME)
-        .dependsOn(stageTask);
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_QUEUE_TASK_NAME)
-        .dependsOn(stageTask);
-    project
-        .getTasks()
-        .getByName(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME)
-        .dependsOn(stageTask);
+    Arrays.asList(
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_TASK_NAME),
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_CRON_TASK_NAME),
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_DISPATCH_TASK_NAME),
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_DOS_TASK_NAME),
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_INDEX_TASK_NAME),
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_QUEUE_TASK_NAME),
+            tasks.named(AppEngineCorePluginConfiguration.DEPLOY_ALL_TASK_NAME))
+        .forEach(taskProvider -> taskProvider.configure(task -> task.dependsOn(stage)));
   }
 
   private void createRunTasks() {
-    project
-        .getTasks()
-        .create(
+    TaskContainer tasks = project.getTasks();
+    TaskProvider<DevAppServerRunTask> run =
+        tasks.register(
             RUN_TASK_NAME,
             DevAppServerRunTask.class,
             runTask -> {
               runTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
               runTask.setDescription("Run an App Engine standard environment application locally");
-              runTask.dependsOn(project.getTasks().findByName(BasePlugin.ASSEMBLE_TASK_NAME));
-
-              project.afterEvaluate(
-                  project -> {
-                    runTask.setRunConfig(runExtension);
-                    runTask.setDevServers(cloudSdkOperations.getDevServers());
-                  });
+              runTask.setRunConfig(appengineExtension.getRun());
+              runTask.dependsOn(tasks.named(BasePlugin.ASSEMBLE_TASK_NAME));
             });
 
-    project
-        .getTasks()
-        .create(
+    TaskProvider<DevAppServerStartTask> start =
+        tasks.register(
             START_TASK_NAME,
             DevAppServerStartTask.class,
             startTask -> {
               startTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
               startTask.setDescription(
-                  "Run an App Engine standard environment application locally in the background");
-              startTask.dependsOn(project.getTasks().findByName(BasePlugin.ASSEMBLE_TASK_NAME));
-
-              project.afterEvaluate(
-                  project -> {
-                    startTask.setRunConfig(runExtension);
-                    startTask.setDevServers(cloudSdkOperations.getDevServers());
-                    startTask.setDevAppServerLoggingDir(
-                        new File(project.getBuildDir(), DEV_APP_SERVER_OUTPUT_DIR_NAME));
-                  });
+                  "Run an App Engine standard environment application locally in the "
+                      + "background");
+              startTask.setRunConfig(appengineExtension.getRun());
+              startTask.setDevAppServerLoggingDir(
+                  new File(project.getBuildDir(), DEV_APP_SERVER_OUTPUT_DIR_NAME));
+              startTask.dependsOn(tasks.named(BasePlugin.ASSEMBLE_TASK_NAME));
             });
 
-    project
-        .getTasks()
-        .create(
+    TaskProvider<DevAppServerStopTask> stop =
+        tasks.register(
             STOP_TASK_NAME,
             DevAppServerStopTask.class,
             stopTask -> {
               stopTask.setGroup(APP_ENGINE_STANDARD_TASK_GROUP);
               stopTask.setDescription(
                   "Stop a locally running App Engine standard environment application");
-
-              project.afterEvaluate(
-                  project -> {
-                    stopTask.setRunConfig(runExtension);
-                    stopTask.setDevServers(cloudSdkOperations.getDevServers());
-                  });
+              stopTask.setRunConfig(appengineExtension.getRun());
             });
+
+    project.afterEvaluate(
+        project -> {
+          run.configure(task -> task.setDevServers(cloudSdkOperations.getDevServers()));
+          start.configure(task -> task.setDevServers(cloudSdkOperations.getDevServers()));
+          stop.configure(task -> task.setDevServers(cloudSdkOperations.getDevServers()));
+        });
   }
 }

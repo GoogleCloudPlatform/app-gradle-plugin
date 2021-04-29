@@ -22,15 +22,17 @@ import com.google.cloud.tools.appengine.operations.Gcloud;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy datastore index configuration. */
-public class DeployIndexTask extends GcloudTask {
+public class DeployIndexTask extends BaseDeployTask {
 
   private DeployExtension deployExtension;
   private Gcloud gcloud;
 
+  @Override
   public void setDeployExtension(DeployExtension deployExtension) {
     this.deployExtension = deployExtension;
   }
 
+  @Override
   public void setGcloud(Gcloud gcloud) {
     this.gcloud = gcloud;
   }

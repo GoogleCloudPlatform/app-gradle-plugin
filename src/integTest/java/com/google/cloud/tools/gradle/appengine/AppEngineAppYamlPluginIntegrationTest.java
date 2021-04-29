@@ -41,7 +41,7 @@ import org.junit.rules.Timeout;
 /** End to end tests for app.yaml based projects. */
 public class AppEngineAppYamlPluginIntegrationTest {
 
-  @Rule public Timeout globalTimeout = Timeout.seconds(900);
+  @Rule public final Timeout globalTimeout = Timeout.seconds(900);
 
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder();
 

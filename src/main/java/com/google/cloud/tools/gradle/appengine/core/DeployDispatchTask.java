@@ -22,11 +22,12 @@ import com.google.cloud.tools.appengine.operations.Gcloud;
 import org.gradle.api.tasks.TaskAction;
 
 /** Task to deploy dispatch configuration. */
-public class DeployDispatchTask extends GcloudTask {
+public class DeployDispatchTask extends BaseDeployTask {
 
   private DeployExtension deployExtension;
   private Gcloud gcloud;
 
+  @Override
   public void setDeployExtension(DeployExtension deployExtension) {
     this.deployExtension = deployExtension;
   }

@@ -26,10 +26,11 @@ import java.io.File;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.UnknownTaskException;
 import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.AbstractArchiveTask;
-import org.gradle.api.tasks.bundling.Jar;
-import org.gradle.api.tasks.bundling.War;
 
 /** Plugin for adding source context into App Engine project. */
 public class SourceContextPlugin implements Plugin<Project> {
@@ -75,30 +76,42 @@ public class SourceContextPlugin implements Plugin<Project> {
   }
 
   private void createSourceContextTask() {
-    project
-        .getTasks()
-        .create(
-            "_createSourceContext",
-            GenRepoInfoFileTask.class,
-            genRepoInfoFile -> {
-              genRepoInfoFile.setDescription("_internal");
+    TaskProvider<GenRepoInfoFileTask> genRepoInfoFile =
+        project
+            .getTasks()
+            .register(
+                "_createSourceContext",
+                GenRepoInfoFileTask.class,
+                genRepoInfoFileTask -> genRepoInfoFileTask.setDescription("_internal"));
 
-              project.afterEvaluate(
-                  project -> {
-                    genRepoInfoFile.setConfiguration(extension);
-                    genRepoInfoFile.setGcloud(cloudSdkOperations.getGcloud());
-                  });
-            });
-    configureArchiveTask(project.getTasks().withType(War.class).findByName("war"));
-    configureArchiveTask(project.getTasks().withType(Jar.class).findByName("jar"));
+    project.afterEvaluate(
+        project ->
+            genRepoInfoFile.configure(
+                task -> {
+                  task.setConfiguration(extension);
+                  task.setGcloud(cloudSdkOperations.getGcloud());
+                }));
+
+    configureArchiveTask("war");
+    configureArchiveTask("jar");
   }
 
   // inject source-context into the META-INF directory of a jar or war
-  private void configureArchiveTask(AbstractArchiveTask archiveTask) {
-    if (archiveTask == null) {
-      return;
+  private void configureArchiveTask(String archiveTaskName) {
+    try {
+      TaskContainer tasks = project.getTasks();
+      tasks
+          .withType(AbstractArchiveTask.class)
+          .named(archiveTaskName)
+          .configure(
+              task -> {
+                task.dependsOn(tasks.named("_createSourceContext"));
+                task.from(
+                    extension.getOutputDirectory(), copySpec -> copySpec.into("WEB-INF/classes"));
+              });
+
+    } catch (UnknownTaskException ex) {
+      // Do nothing if the task doesn't exist.
     }
-    archiveTask.dependsOn("_createSourceContext");
-    archiveTask.from(extension.getOutputDirectory(), copySpec -> copySpec.into("WEB-INF/classes"));
   }
 }

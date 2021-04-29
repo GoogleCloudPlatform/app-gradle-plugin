@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC. All Rights Reserved.
+ * Copyright 2021 Google LLC. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,6 @@
 
 package com.google.cloud.tools.gradle.appengine.core;
 
-import com.google.cloud.tools.appengine.AppEngineException;
-import com.google.cloud.tools.appengine.operations.Gcloud;
-import org.gradle.api.tasks.TaskAction;
-
-public class CloudSdkLoginTask extends GcloudTask {
-
-  private Gcloud gcloud;
-
-  @Override
-  public void setGcloud(Gcloud gcloud) {
-    this.gcloud = gcloud;
-  }
-
-  /** Login by delegating to gcloud auth login. */
-  @TaskAction
-  public void login() throws AppEngineException {
-    gcloud.newAuth(CloudSdkOperations.getDefaultHandler(getLogger())).login();
-  }
+public abstract class BaseDeployTask extends GcloudTask {
+  public abstract void setDeployExtension(DeployExtension deployExtension);
 }

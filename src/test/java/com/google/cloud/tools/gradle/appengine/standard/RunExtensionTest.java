@@ -21,11 +21,13 @@ import com.google.cloud.tools.gradle.appengine.MultiModuleTestProject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.tasks.TaskProvider;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +35,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class RunExtensionTest {
 
-  @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
+  @Rule public final TemporaryFolder tmpDir = new TemporaryFolder();
 
   @Test
   public void testProjectAsService_multiModuleBuilds() throws IOException {
@@ -65,7 +67,7 @@ public class RunExtensionTest {
             .getExtensions()
             .findByType(AppEngineStandardExtension.class)
             .getRun()
-            .projectAsService(backend.getPath()); // user the String representation
+            .projectAsService(backend.getPath()); // use the String representation
 
     Assert.assertEquals(getExplodedAppDirectory(frontend), frontendServicePath);
     Assert.assertEquals(getExplodedAppDirectory(backend), backendServicePath);
@@ -79,14 +81,21 @@ public class RunExtensionTest {
   }
 
   private Set<String> getAssembleDependencies(Project project, String taskName) {
-    Task task = project.getTasks().findByPath(taskName);
-    return task.getDependsOn()
-        .stream()
-        .filter(t -> t instanceof Task)
-        .map(t -> (Task) t)
-        .filter(t -> t.getName().equals(BasePlugin.ASSEMBLE_TASK_NAME))
-        .map(Task::getPath)
-        .collect(Collectors.toSet());
+    Set<String> assembleDependencies = new HashSet<>();
+    Set<Object> dependents = project.getTasks().findByPath(taskName).getDependsOn();
+    for (Object dependent : dependents) {
+      Task task = null;
+      if (dependent instanceof Task) {
+        task = (Task) dependent;
+      } else if (dependent instanceof TaskProvider) {
+        task = ((TaskProvider<?>) dependent).get();
+      }
+
+      if (task != null && task.getName().equals(BasePlugin.ASSEMBLE_TASK_NAME)) {
+        assembleDependencies.add(task.getPath());
+      }
+    }
+    return assembleDependencies;
   }
 
   private Set<String> createAssembleTaskNames(Project... projects) {

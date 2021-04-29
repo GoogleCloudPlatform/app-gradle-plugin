@@ -19,6 +19,7 @@ plugins {
   id 'java'
   id 'maven'
   id 'java-gradle-plugin'
+  id 'com.gradle.plugin-publish' version '0.10.1'
   id 'net.researchgate.release' version '2.6.0'
   id 'com.github.sherter.google-java-format' version '0.8'
   id 'checkstyle'
@@ -140,6 +141,8 @@ task writePom {
 }
 
 // for kokoro releases
+
+// for maven central release
 task prepareRelease(type: Copy) {
   from jar
   from sourceJar
@@ -152,12 +155,41 @@ task prepareRelease(type: Copy) {
   dependsOn cleanPrepareRelease
 }
 
+// for gradle pugin portal release
+pluginBundle {
+  website = 'https://github.com/GoogleCloudTools/app-gradle-plugin/'
+  vcsUrl = 'https://github.com/GoogleCloudTools/app-gradle-plugin/'
+
+  plugins {
+    appenginePlugin {
+      id = 'com.google.cloud.tools.appengine'
+      displayName = 'App Engine Gradle Plugin'
+      description = 'Manage your Java App Engine build and deploy'
+      tags = ['google', 'java', 'appengine', 'app engine', 'microservices']
+    }
+    appengineWebXmlPlugin {
+      id = 'com.google.cloud.tools.appengine-appenginewebxml'
+      displayName = 'App Engine Gradle Plugin (appengine-web.xml)'
+      description = 'Manage your Java App Engine appengine-web.xml based project build and deploy'
+      tags = ['google', 'java', 'appengine', 'app engine', 'appengine-web.xml', 'microservices']
+    }
+    appYamlPlugin {
+      id = 'com.google.cloud.tools.appengine-appyaml'
+      displayName = 'App Engine Gradle Plugin (app.yaml)'
+      description = 'Manage your Java App Engine app.yaml based project build and deploy'
+      tags = ['google', 'java', 'appengine', 'app engine', 'app.yaml', 'microservices']
+    }
+  }
+}
+//tasks.publishPlugins.dependsOn integrationTest
+
 release {
   tagTemplate = 'v$version'
   git {
     requireBranch = /^release_v\d+.*$/  //regex
   }
 }
+
 /* RELEASING */
 
 /* FORMATTING */
@@ -172,6 +204,7 @@ checkstyle {
   maxWarnings = 0
   checkstyleTest.enabled = false
 }
+
 /* FORMATTING */
 
 /* TEST COVERAGE */

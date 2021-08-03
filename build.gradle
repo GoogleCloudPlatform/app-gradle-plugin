@@ -37,7 +37,7 @@ group = 'com.google.cloud.tools'
 dependencies {
   compile localGroovy()
   compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.9.1'
+  compile 'com.google.cloud.tools:appengine-plugins-core:0.9.5'
 
   testCompile 'commons-io:commons-io:2.4'
   testCompile 'junit:junit:4.12'

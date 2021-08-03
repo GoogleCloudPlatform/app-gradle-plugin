@@ -44,7 +44,7 @@ pluginManagement {
 Apply the plugin in your plugins block in your `build.gradle`
 ```Groovy
 plugins {
-  id 'com.google.cloud.tools.appengine' version '2.4.1'
+  id 'com.google.cloud.tools.appengine' version '2.4.2'
 }
 ```
 
@@ -57,7 +57,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.1'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.2'
   }
 }
 

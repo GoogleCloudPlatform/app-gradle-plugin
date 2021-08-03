@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.4.2
+### Changed
+* Update to appengine-plugins-core 0.9.5 ([#405](../../pull/405))
+
 ## 2.4.1
 ### Fixed
 * Fixed bug when using `plugins` block in `build.gradle` ([#388](../../pull/388))
@@ -10,7 +14,7 @@ All notable changes to this project will be documented in this file.
 * `appengine.tools.verbosity` option for defining gcloud log verbosity ([#384](../../pull/384))
 
 ## 2.3.0
-### Added
+### Changed
 * Update to appengine-plugins-core 0.9.0 ([#377](../../pull/377))
   * Includes support for binary artifacts for app.yaml based deployments ([appengine-plugins-core:#840](https://github.com/GoogleCloudPlatform/appengine-plugins-core/issues/840))
 

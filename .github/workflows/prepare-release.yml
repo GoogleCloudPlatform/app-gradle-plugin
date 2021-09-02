@@ -1,0 +1,51 @@
+name: Prepare release
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: new release version
+        required: true
+        default: (for example, 0.10.5)
+
+jobs:
+  release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2.3.4
+
+      - name: Check input
+        run: |
+          if [[ ! "${{ github.event.inputs.release_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo 'version "${{ github.event.inputs.release_version }}" not in ###.###.### format'
+            exit 1
+          fi
+          if [[ $( git ls-remote --tags origin refs/tags/v${{ github.event.inputs.release_version }} ) ]]; then
+            echo 'Tag "v${{ github.event.inputs.release_version }}" already exists. Double-check the version to release!'
+            exit 1
+          fi
+
+      - name: Create tag for release and prepare branch for next development version
+        run: |
+          git checkout -b release-v${{ github.event.inputs.release_version }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git config user.name ${{ github.actor }}
+
+          # This creates the tag (e.g., "v10.1.2") and pushes the updated
+          # branch (e.g., "release-v10.1.2") and the new tag.
+          ./gradlew release \
+            -Prelease.useAutomaticVersion=true \
+            -Prelease.releaseVersion=${{ github.event.inputs.release_version }}
+
+      - name: Create pull request
+        uses: repo-sync/pull-request@v2.6
+        id: create-pr
+        with:
+          # Use a personal token to file a PR as a non-bot author to trigger other workflows (e.g., unit tests):
+          # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token;
+          github_token: ${{ secrets.GA_RELEASE_PR_PERSONAL_TOKEN }}
+          source_branch: release-v${{ github.event.inputs.release_version }}
+          pr_title: "release v${{ github.event.inputs.release_version }}"
+          pr_body: "To be merged after the release is complete."
+          pr_label: "PR: Merge After Release"

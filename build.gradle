@@ -155,7 +155,7 @@ task prepareRelease(type: Copy) {
 release {
   tagTemplate = 'v$version'
   git {
-    requireBranch = /^release_v\d+.*$/  //regex
+    requireBranch = /^release-v\d+.*$/  //regex
   }
 }
 /* RELEASING */

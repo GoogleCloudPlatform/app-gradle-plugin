@@ -40,8 +40,7 @@ public class NullSafe {
   public static <S, R> List<R> convert(List<S> source, Function<S, R> converter) {
     return (source == null)
         ? null
-        : source
-            .stream()
+        : source.stream()
             .filter(Objects::nonNull)
             .map(converter)
             .filter(Objects::nonNull)

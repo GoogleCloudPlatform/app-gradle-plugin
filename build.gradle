@@ -161,6 +161,10 @@ release {
 /* RELEASING */
 
 /* FORMATTING */
+googleJavaFormat {
+  toolVersion = '1.7'
+}
+
 check.dependsOn verifyGoogleJavaFormat
 // to auto-format run ./gradlew googleJavaFormat
 

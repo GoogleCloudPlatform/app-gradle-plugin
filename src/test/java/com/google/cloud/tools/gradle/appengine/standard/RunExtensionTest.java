@@ -80,8 +80,7 @@ public class RunExtensionTest {
 
   private Set<String> getAssembleDependencies(Project project, String taskName) {
     Task task = project.getTasks().findByPath(taskName);
-    return task.getDependsOn()
-        .stream()
+    return task.getDependsOn().stream()
         .filter(t -> t instanceof Task)
         .map(t -> (Task) t)
         .filter(t -> t.getName().equals(BasePlugin.ASSEMBLE_TASK_NAME))

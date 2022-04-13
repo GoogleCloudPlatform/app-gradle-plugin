@@ -70,8 +70,10 @@ test {
 
 sourceSets {
   integTest {
-    compileClasspath += main.output
-    runtimeClasspath += main.output
+    compileClasspath += main.runtimeClasspath
+    compileClasspath += test.runtimeClasspath
+    runtimeClasspath += main.runtimeClasspath
+    runtimeClasspath += test.runtimeClasspath
   }
 }
 
@@ -84,17 +86,6 @@ task integTest(type: Test) {
   testClassesDirs = sourceSets.integTest.output.classesDirs
   classpath = sourceSets.integTest.runtimeClasspath
   outputs.upToDateWhen { false }
-}
-
-task printSourceSetInformation(){
-  doLast{
-    sourceSets.each { srcSet ->
-      println "["+srcSet.name+"]"
-      print "-->classpath: "+srcSet.runtimeClasspath.files+"\n"
-      print "-->Output directories: "+srcSet.output.classesDirs+"\n"
-      println ""
-    }
-  }
 }
 /* TESTING */
 

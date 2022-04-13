@@ -35,14 +35,14 @@ targetCompatibility = JavaVersion.VERSION_1_8
 group = 'com.google.cloud.tools'
 
 dependencies {
-  compile localGroovy()
-  compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.9.7'
+  implementation localGroovy()
+  implementation gradleApi()
+  implementation 'com.google.cloud.tools:appengine-plugins-core:0.9.7'
 
-  testCompile 'commons-io:commons-io:2.4'
-  testCompile 'junit:junit:4.12'
-  testCompile 'org.hamcrest:hamcrest-library:1.3'
-  testCompile 'org.mockito:mockito-core:2.23.4'
+  testImplementation 'commons-io:commons-io:2.4'
+  testImplementation 'junit:junit:4.12'
+  testImplementation 'org.hamcrest:hamcrest-library:1.3'
+  testImplementation 'org.mockito:mockito-core:2.23.4'
 }
 
 wrapper {
@@ -76,14 +76,25 @@ sourceSets {
 }
 
 configurations {
-  integTestCompile.extendsFrom testCompile
-  integTestRuntime.extendsFrom testRuntime
+  integTestCompile.extendsFrom testImplementation
+  integTestRuntime.extendsFrom testRuntimeOnly
 }
 
 task integTest(type: Test) {
   testClassesDirs = sourceSets.integTest.output.classesDirs
   classpath = sourceSets.integTest.runtimeClasspath
   outputs.upToDateWhen { false }
+}
+
+task printSourceSetInformation(){
+  doLast{
+    sourceSets.each { srcSet ->
+      println "["+srcSet.name+"]"
+      print "-->classpath: "+srcSet.runtimeClasspath.files+"\n"
+      print "-->Output directories: "+srcSet.output.classesDirs+"\n"
+      println ""
+    }
+  }
 }
 /* TESTING */
 

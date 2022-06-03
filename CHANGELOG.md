@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.4.3
+### Changed
+* Update to appengine-plugins-core 0.9.7 for Java 17 compatibility ([#413](../../pull/413))
+
 ## 2.4.2
 ### Changed
 * Update to appengine-plugins-core 0.9.5 ([#405](../../pull/405))

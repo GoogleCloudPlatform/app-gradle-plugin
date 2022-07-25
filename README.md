@@ -76,8 +76,10 @@ options.
 # Reference Documentation
 
 App Engine Standard Environment:
-* [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle)
-* [App Engine Gradle Plugin Tasks and Parameters (standard environment)](https://cloud.google.com/appengine/docs/java/tools/gradle-reference)
+* [(Java 8) Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/legacy/standard/java/using-gradle)
+* [(Java 8) App Engine Gradle Plugin Tasks and Parameters (standard environment)](https://cloud.google.com/appengine/docs/legacy/standard/java/gradle-reference)
+* [Using Gradle and the App Engine Plugin (standard environment)](https://cloud.google.com/appengine/docs/standard/java-gen2/using-gradle)
+* [App Engine Gradle Plugin Tasks and Parameters (standard environment)](https://cloud.google.com/appengine/docs/standard/java-gen2/gradle-reference)
 
 App Engine Flexible Environment:
 * [Using Gradle and the App Engine Plugin (flexible environment)](https://cloud.google.com/appengine/docs/flexible/java/using-gradle)

@@ -64,6 +64,9 @@ public class SourceContextPluginIntegrationTest {
       while (entries.hasMoreElements()) {
         ZipEntry entry = entries.nextElement();
         File entryDestination = new File(testProjectDir.getRoot(), entry.getName());
+        if (!entryDestination.toPath().normalize().startsWith(testProjectDir.getRoot().toPath())) {
+          throw new RuntimeException("Bad zip entry");
+        }
         if (entry.isDirectory()) {
           entryDestination.mkdirs();
         } else {

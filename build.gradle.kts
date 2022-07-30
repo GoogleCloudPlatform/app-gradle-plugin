@@ -1,3 +1,7 @@
+import net.researchgate.release.GitAdapter.GitConfig
+import java.util.Date
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+
 /*
  * Copyright 2017 Google LLC. All Rights Reserved.
  *
@@ -16,177 +20,195 @@
  */
 
 plugins {
-  id 'java'
-  id 'maven'
-  id 'java-gradle-plugin'
-  id 'net.researchgate.release' version '2.6.0'
-  id 'com.github.sherter.google-java-format' version '0.8'
-  id 'checkstyle'
-  id 'jacoco'
+  id("java")
+  id("maven")
+  id("java-gradle-plugin")
+  id("net.researchgate.release") version "2.6.0"
+  id("com.github.sherter.google-java-format") version "0.8"
+  id("checkstyle")
+  id("jacoco")
 }
 
 repositories {
   mavenCentral()
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-group = 'com.google.cloud.tools'
+group = "com.google.cloud.tools"
 
 dependencies {
-  compile localGroovy()
-  compile gradleApi()
-  compile 'com.google.cloud.tools:appengine-plugins-core:0.9.9'
+  compile(localGroovy())
+  compile(gradleApi())
+  compile("com.google.cloud.tools:appengine-plugins-core:0.9.9")
 
-  testCompile 'commons-io:commons-io:2.4'
-  testCompile 'junit:junit:4.12'
-  testCompile 'org.hamcrest:hamcrest-library:1.3'
-  testCompile 'org.mockito:mockito-core:2.23.4'
+  testCompile("commons-io:commons-io:2.4")
+  testCompile("junit:junit:4.12")
+  testCompile("org.hamcrest:hamcrest-library:1.3")
+  testCompile("org.mockito:mockito-core:2.23.4")
 }
 
-wrapper {
-  gradleVersion = '4.9'
+
+tasks.wrapper {
+  gradleVersion = "6.9"
 }
 
-jar {
+tasks.jar.configure {
   manifest {
-    attributes 'Implementation-Title': project.name,
-        'Implementation-Version': version,
-        'Built-By': System.getProperty('user.name'),
-        'Built-Date': new Date(),
-        'Built-JDK': System.getProperty('java.version'),
-        'Built-Gradle': gradle.gradleVersion
+    attributes(
+      mapOf(
+        "Implementation-Title" to project.name,
+        "Implementation-Version" to version,
+        "Built-By" to System.getProperty("user.name"),
+        "Built-Date" to Date(),
+        "Built-JDK" to System.getProperty("java.version"),
+        "Built-Gradle" to gradle.gradleVersion
+      )
+    )
   }
 }
 
 /* TESTING */
-test {
+tasks.test.configure {
   testLogging {
     showStandardStreams = true
-    exceptionFormat = 'full'
+    exceptionFormat = FULL
   }
 }
 
 sourceSets {
-  integTest {
-    compileClasspath += main.output
-    runtimeClasspath += main.output
+  create("integTest") {
+    compileClasspath += main.get().output
+    runtimeClasspath += main.get().output
   }
 }
 
 configurations {
-  integTestCompile.extendsFrom testCompile
-  integTestRuntime.extendsFrom testRuntime
+  named("integTestCompile").get().extendsFrom(testCompileClasspath.get())
+  named("integTestRuntime").get().extendsFrom(testRuntimeClasspath.get())
 }
 
-task integTest(type: Test) {
-  testClassesDirs = sourceSets.integTest.output.classesDirs
-  classpath = sourceSets.integTest.runtimeClasspath
+tasks.register<Test>("integTest") {
+  testClassesDirs = sourceSets.getByName("integTest").output.classesDirs
+  classpath = sourceSets.getByName("integTest").runtimeClasspath
   outputs.upToDateWhen { false }
 }
 /* TESTING */
 
 
 /* RELEASING */
-task sourceJar(type: Jar) {
-  from sourceSets.main.allJava
-  classifier 'sources'
+tasks.register<Jar>("sourceJar") {
+  from(sourceSets.main.get().allJava)
+  classifier = "sources"
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-  from javadoc.destinationDir
-  classifier = 'javadoc'
+tasks.register<Jar>("javadocJar") {
+  dependsOn(tasks.javadoc)
+  from(tasks.javadoc.map { it.destinationDir!! })
+  classifier = "javadoc"
 }
 
-task writePom {
-  project.afterEvaluate {
-    def outputFile = file("$buildDir/pom/${project.name}-${project.version}.pom")
-    outputs.file outputFile
+project.afterEvaluate {
+  tasks.register("writePom") {
+    val outputFile = file("$buildDir/pom/${project.name}-${project.version}.pom")
+    outputs.file(outputFile)
 
     doLast {
-      pom {
-        project {
-          name 'App Engine Gradle Plugin'
-          description 'This Gradle plugin provides tasks to build and deploy Google App Engine applications.'
-          url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
-          inceptionYear '2016'
+      maven {
+        pom {
+          project {
+            withGroovyBuilder {
+              "name"("App Engine Gradle Plugin")
+              "description"("This Gradle plugin provides tasks to build and deploy Google App Engine applications.")
 
-          scm {
-            url 'https://github.com/GoogleCloudPlatform/app-gradle-plugin'
-            connection 'scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
-            developerConnection 'scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git'
-          }
+              "url"("https://github.com/GoogleCloudPlatform/app-gradle-plugin")
+              "inceptionYear"("2016")
 
-          licenses {
-            license {
-              name 'The Apache Software License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-              distribution 'repo'
+              "scm" {
+                "url"("https://github.com/GoogleCloudPlatform/app-gradle-plugin")
+                "connection"("scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git")
+                "developerConnection"("scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git")
+              }
+
+              "licenses" {
+                "license" {
+                  "name"("The Apache Software License, Version 2.0")
+                  "url"("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                  "distribution"("repo")
+                }
+              }
+              "developers" {
+                "developer" {
+                  "id"("loosebazooka")
+                  "name"("Appu Goundan")
+                  "email"("appu@google.com")
+                }
+              }
             }
           }
-
-          developers {
-            developer {
-              id 'loosebazooka'
-              name 'Appu Goundan'
-              email 'appu@google.com'
-            }
-          }
-        }
-      }.writeTo(outputFile)
+        }.writeTo(outputFile)
+      }
     }
   }
 }
 
+
 // for kokoro releases
-task prepareRelease(type: Copy) {
-  from jar
-  from sourceJar
-  from javadocJar
-  from writePom
+tasks.register<Sync>("prepareRelease") {
+  from(tasks.jar)
+  from(tasks.named("sourceJar"))
+  from(tasks.named("javadocJar"))
+  from(tasks.named("writePom"))
 
-  into "${buildDir}/release-artifacts"
+  into("${buildDir}/release-artifacts")
 
-  dependsOn build
-  dependsOn cleanPrepareRelease
+  dependsOn(tasks.build)
 }
 
 release {
-  tagTemplate = 'v$version'
-  git {
-    requireBranch = /^release-v\d+.*$/  //regex
+  tagTemplate = "v$version"
+  getProperty("git").apply {
+    this as GitConfig
+    requireBranch = """^release_v\d+.*$"""  //regex
   }
 }
 /* RELEASING */
 
 /* FORMATTING */
 googleJavaFormat {
-  toolVersion = '1.7'
+  toolVersion = "1.7"
 }
 
-check.dependsOn verifyGoogleJavaFormat
+
+tasks.check.configure {
+  dependsOn(tasks.verifyGoogleJavaFormat)
+}
 // to auto-format run ./gradlew googleJavaFormat
 
 checkstyle {
-  toolVersion = '8.18'
-  // get the google_checks.xml file from the actual tool we're invoking
-  config = resources.text.fromArchiveEntry(configurations.checkstyle[0], 'google_checks.xml')
+  toolVersion = "8.18"
+  // get the google_checks.xml file from the actual tool we"re invoking)
+  config = resources.text.fromArchiveEntry(configurations.checkstyle.files.first(), "google_checks.xml")
   maxErrors = 0
   maxWarnings = 0
-  checkstyleTest.enabled = false
+  tasks.checkstyleTest.configure {
+    enabled = false
+  }
 }
 /* FORMATTING */
 
 /* TEST COVERAGE */
 jacoco {
-  toolVersion = '0.8.6'
+  toolVersion = "0.8.6"
 }
 
-jacocoTestReport {
+tasks.jacocoTestReport {
   reports {
-    xml.enabled true
-    html.enabled false
+    xml.isEnabled = true
+    html.isEnabled = false
   }
 }
 /* TEST COVERAGE */

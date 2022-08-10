@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.4.6-SNAPSHOT
+
+## 2.4.5
+### Changed
+* Update to appengine-plugins-core 0.9.9, for automatic Java 17 compatibility when running local devserver [appengine-plugins-core#894](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/894).
+
 ## 2.4.4
 ### Changed
 * Update to appengine-plugins-core 0.9.8 which includes [a version upgrade for gson to 2.8.9](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/889) and fix for [`StringIndexOutOfBoundsException`](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/890/files). ([#418](../../pull/418))

@@ -13,8 +13,7 @@ in `src/main/webapp/WEB-INF/`. It will enable _`appengine-appenginewebxml`_ if p
 Note: autodetection will not work if you set a custom [`webAppDirName` property](https://docs.gradle.org/current/userguide/war_plugin.html#sec:war_convention_properties) of the `war` plugin.
 In this case, manually apply the right environment-specific plugin by specifying the corresponding plugin identifier as above.
 
-The [Cloud SDK](https://cloud.google.com/sdk) is required for this plugin to
-function. Versions greater than `2.0.0` will automatically download and install it for you. You may also choose to download and install it before running any tasks.
+The [Cloud SDK](https://cloud.google.com/sdk) will be downloaded automatically, unless `cloudSdkHome` property is provided (see [tools section](#tools) below).
 
 ---
 

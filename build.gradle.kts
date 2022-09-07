@@ -172,7 +172,7 @@ release {
   tagTemplate = "v$version"
   getProperty("git").apply {
     this as GitConfig
-    requireBranch = """^release_v\d+.*$"""  //regex
+    requireBranch = """^release-v\d+.*$"""  //regex
   }
 }
 /* RELEASING */

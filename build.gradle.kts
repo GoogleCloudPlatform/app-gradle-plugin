@@ -71,10 +71,10 @@ tasks.jar.configure {
   }
 }
 
-tasks.withType<JavaCompile>().configureEach { 
-    options.compilerArgs = options.compilerArgs + listOf(
-      "-Xlint:all"
-    )
+tasks.withType<JavaCompile>().configureEach {
+  options.compilerArgs = options.compilerArgs + listOf(
+    "-Xlint:all"
+  )
 }
 
 /* TESTING */
@@ -202,7 +202,10 @@ tasks.withType<Checkstyle>().configureEach {
 checkstyle {
   toolVersion = "8.37"
   // Get the google_checks.xml file from the actual tool we're invoking.
-  config = resources.text.fromArchiveEntry(configurations.checkstyle.get().files.first(), "google_checks.xml")
+  config = resources.text.fromArchiveEntry(
+    configurations.checkstyle.files.first(),
+    "google_checks.xml"
+  )
   maxErrors = 0
   maxWarnings = 0
   tasks.checkstyleTest.configure {

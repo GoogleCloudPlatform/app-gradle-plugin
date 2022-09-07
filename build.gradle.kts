@@ -70,7 +70,7 @@ tasks.jar {
     }
 }
 
-/* TESTING */
+// <editor-fold defaultstate="expanded" desc="Testing">
 tasks.test {
     testLogging {
         showStandardStreams = true
@@ -95,10 +95,9 @@ tasks.register<Test>("integTest") {
     classpath = sourceSets.getByName("integTest").runtimeClasspath
     outputs.upToDateWhen { false }
 }
-/* TESTING */
+// </editor-fold>
 
-
-/* RELEASING */
+// <editor-fold defaultstate="expanded" desc="Releasing">
 tasks.register<Jar>("sourceJar") {
     from(sourceSets.main.get().allJava)
     classifier = "sources"
@@ -174,9 +173,9 @@ release {
         requireBranch = """^release-v\d+.*$"""  //regex
     }
 }
-/* RELEASING */
+// </editor-fold>
 
-/* FORMATTING */
+// <editor-fold defaultstate="expanded" desc="Formatting">
 googleJavaFormat {
     toolVersion = "1.7"
 }
@@ -200,9 +199,9 @@ checkstyle {
         enabled = false
     }
 }
-/* FORMATTING */
+// </editor-fold>
 
-/* TEST COVERAGE */
+// <editor-fold defaultstate="expanded" desc="Test coverage">
 jacoco {
     toolVersion = "0.8.6"
 }
@@ -213,4 +212,4 @@ tasks.jacocoTestReport {
         html.isEnabled = false
     }
 }
-/* TEST COVERAGE */
+// </editor-fold>

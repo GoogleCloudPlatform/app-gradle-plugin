@@ -55,7 +55,7 @@ tasks.wrapper {
     gradleVersion = "6.9"
 }
 
-tasks.jar.configure {
+tasks.jar {
     manifest {
         attributes(
             mapOf(
@@ -71,7 +71,7 @@ tasks.jar.configure {
 }
 
 /* TESTING */
-tasks.test.configure {
+tasks.test {
     testLogging {
         showStandardStreams = true
         exceptionFormat = FULL
@@ -182,7 +182,7 @@ googleJavaFormat {
 }
 
 
-tasks.check.configure {
+tasks.check {
     dependsOn(tasks.verifyGoogleJavaFormat)
 }
 // to auto-format run ./gradlew googleJavaFormat
@@ -196,7 +196,7 @@ checkstyle {
     )
     maxErrors = 0
     maxWarnings = 0
-    tasks.checkstyleTest.configure {
+    tasks.checkstyleTest {
         enabled = false
     }
 }

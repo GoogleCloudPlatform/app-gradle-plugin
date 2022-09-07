@@ -169,7 +169,7 @@ tasks.register<Sync>("prepareRelease") {
 }
 
 release {
-  tagTemplate = 'v$version'
+  tagTemplate = "v\$version"
   getProperty("git").apply {
     this as GitConfig
     requireBranch = """^release-v\d+.*$"""  //regex

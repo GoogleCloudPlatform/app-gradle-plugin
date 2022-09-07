@@ -20,7 +20,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 plugins {
     id("java")
-    id("maven")
+    id("maven-publish")
     id("java-gradle-plugin")
     id("net.researchgate.release") version "2.6.0"
     id("com.github.sherter.google-java-format") version "0.8"
@@ -35,19 +35,21 @@ repositories {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
 }
 
 group = "com.google.cloud.tools"
 
 dependencies {
-    compile(localGroovy())
-    compile(gradleApi())
-    compile("com.google.cloud.tools:appengine-plugins-core:0.9.9")
+    implementation(localGroovy())
+    implementation(gradleApi())
+    implementation("com.google.cloud.tools:appengine-plugins-core:0.9.9")
 
-    testCompile("commons-io:commons-io:2.4")
-    testCompile("junit:junit:4.12")
-    testCompile("org.hamcrest:hamcrest-library:1.3")
-    testCompile("org.mockito:mockito-core:2.23.4")
+    testImplementation("commons-io:commons-io:2.4")
+    testImplementation("junit:junit:4.12")
+    testImplementation("org.hamcrest:hamcrest-library:1.3")
+    testImplementation("org.mockito:mockito-core:2.23.4")
 }
 
 
@@ -67,6 +69,59 @@ tasks.jar {
                 "Built-Gradle" to gradle.gradleVersion
             )
         )
+    }
+}
+
+// <editor-fold defaultstate="expanded" desc="Testing">
+gradlePlugin {
+    plugins {
+        create("appengine") {
+            id = "$group.appengine"
+            implementationClass = "com.google.cloud.tools.gradle.appengine.AppEnginePlugin"
+            displayName = "App Engine Gradle Plugin"
+            description =
+                "This Gradle plugin provides tasks to build and deploy Google App Engine applications."
+        }
+        create("appengine-appenginewebxml") {
+            id = "$group.appengine-appenginewebxml"
+            implementationClass =
+                "com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin"
+            displayName = "App Engine Gradle Plugin"
+            description =
+                "This Gradle plugin provides tasks to build and deploy Google App Engine applications."
+        }
+        create("appengine-appyaml") {
+            id = "$group.appengine-appyaml"
+            implementationClass =
+                "com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin"
+            displayName = "App Engine Gradle Plugin"
+            description =
+                "This Gradle plugin provides tasks to build and deploy Google App Engine applications."
+        }
+        create("appengine-flexible") {
+            id = "$group.appengine-flexible"
+            implementationClass =
+                "com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlPlugin"
+            displayName = "App Engine Gradle Plugin"
+            description =
+                "This Gradle plugin provides tasks to build and deploy Google App Engine applications."
+        }
+        create("appengine-standard") {
+            id = "$group.appengine-standard"
+            implementationClass =
+                "com.google.cloud.tools.gradle.appengine.standard.AppEngineStandardPlugin"
+            displayName = "App Engine Gradle Plugin"
+            description =
+                "This Gradle plugin provides tasks to build and deploy Google App Engine applications."
+        }
+        create("source-context") {
+            id = "$group.source-context"
+            implementationClass =
+                "com.google.cloud.tools.gradle.appengine.sourcecontext.SourceContextPlugin"
+            displayName = "App Engine Gradle Plugin"
+            description =
+                "This Gradle plugin provides tasks to build and deploy Google App Engine applications."
+        }
     }
 }
 
@@ -100,56 +155,78 @@ val integTest by tasks.registering(Test::class) {
 // </editor-fold>
 
 // <editor-fold defaultstate="expanded" desc="Releasing">
-tasks.register<Jar>("sourceJar") {
-    from(sourceSets.main.get().allJava)
-    classifier = "sources"
+val generatePom by tasks.registering {
+    description = "Generates all the pom files to ${buildDir.name}/publications/ for manual inspection"
+    group = "release"
+    dependsOn(tasks.withType<GenerateMavenPom>())
 }
 
-tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.javadoc)
-    from(tasks.javadoc.map { it.destinationDir!! })
-    classifier = "javadoc"
+val tempRepoPath = "$buildDir/repo"
+
+val cleanTempRepo by tasks.registering(Delete::class) {
+    delete(tempRepoPath)
 }
 
-project.afterEvaluate {
-    tasks.register("writePom") {
-        val outputFile = file("$buildDir/pom/${project.name}-${project.version}.pom")
-        outputs.file(outputFile)
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(cleanTempRepo)
+}
 
-        doLast {
-            maven {
+publishing {
+    // `./gradlew publish` would generate the release artifacts to $buildDir/repo folder
+    repositories {
+        maven {
+            url = uri(tempRepoPath)
+        }
+    }
+    publications {
+        withType<MavenPublication> {
+            // Use the resolved versions in pom.xml
+            // Gradle might have different resolution rules, so we set the versions
+            // that were used in Gradle build/test.
+            versionMapping {
+                usage(Usage.JAVA_RUNTIME) {
+                    fromResolutionResult()
+                }
+                usage(Usage.JAVA_API) {
+                    fromResolutionOf("runtimeClasspath")
+                }
+            }
+            // Skip name and description for plugin markers
+            if (name == "pluginMaven") {
                 pom {
-                    project {
-                        withGroovyBuilder {
-                            "name"("App Engine Gradle Plugin")
-                            "description"("This Gradle plugin provides tasks to build and deploy Google App Engine applications.")
-
-                            "url"("https://github.com/GoogleCloudPlatform/app-gradle-plugin")
-                            "inceptionYear"("2016")
-
-                            "scm" {
-                                "url"("https://github.com/GoogleCloudPlatform/app-gradle-plugin")
-                                "connection"("scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git")
-                                "developerConnection"("scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git")
-                            }
-
-                            "licenses" {
-                                "license" {
-                                    "name"("The Apache Software License, Version 2.0")
-                                    "url"("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                                    "distribution"("repo")
-                                }
-                            }
-                            "developers" {
-                                "developer" {
-                                    "id"("loosebazooka")
-                                    "name"("Appu Goundan")
-                                    "email"("appu@google.com")
-                                }
-                            }
-                        }
+                    name.set("App Engine Gradle Plugin")
+                    description.set("This Gradle plugin provides tasks to build and deploy Google App Engine applications.")
+                }
+            }
+            pom {
+                // <editor-fold defaultstate="collapsed" desc="Default POM values">
+                developers {
+                    developer {
+                        id.set("loosebazooka")
+                        name.set("Appu Goundan")
+                        email.set("appu@google.com")
                     }
-                }.writeTo(outputFile)
+                }
+                url.set("https://github.com/GoogleCloudPlatform/app-gradle-plugin")
+                inceptionYear.set("2016")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        comments.set("A business-friendly OSS license")
+                        distribution.set("repo")
+                    }
+                }
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("https://github.com/GoogleCloudPlatform/app-gradle-plugin/issues")
+                }
+                scm {
+                    url.set("https://github.com/GoogleCloudPlatform/app-gradle-plugin")
+                    connection.set("scm:https://github.com/GoogleCloudPlatform/app-gradle-plugin.git")
+                    developerConnection.set("scm:git://github.com/GoogleCloudPlatform/app-gradle-plugin.git")
+                }
+                // </editor-fold>
             }
         }
     }
@@ -157,15 +234,29 @@ project.afterEvaluate {
 
 
 // for kokoro releases
-tasks.register<Sync>("prepareRelease") {
-    from(tasks.jar)
-    from(tasks.named("sourceJar"))
-    from(tasks.named("javadocJar"))
-    from(tasks.named("writePom"))
-
-    into("${buildDir}/release-artifacts")
-
-    dependsOn(tasks.build)
+val prepareRelease by tasks.registering(Sync::class) {
+    description = "Copy release artifacts to ${buildDir.name}/release-artifacts/"
+    group = "release"
+    dependsOn(tasks.publish)
+    into("$buildDir/release-artifacts")
+    from(tempRepoPath) {
+        include("**/appengine-gradle-plugin/**/*.jar")
+        include("**/appengine-gradle-plugin/**/*.pom")
+        // Flatten hierarchy
+        eachFile {
+            path = "plugin-artifacts/$name"
+        }
+    }
+    from(tempRepoPath) {
+        include("**/*.gradle.plugin/**/*.pom")
+        // Flatten hierarchy
+        eachFile {
+            path = "plugin-markers/$name"
+        }
+    }
+    // Flattening the hierarchy leaves empty directories,
+    // do not copy those
+    includeEmptyDirs = false
 }
 
 release {

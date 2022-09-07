@@ -1,7 +1,3 @@
-import net.researchgate.release.GitAdapter.GitConfig
-import java.util.Date
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-
 /*
  * Copyright 2022 Google LLC. All Rights Reserved.
  *
@@ -18,6 +14,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
  * limitations under the License.
  *
  */
+import net.researchgate.release.GitAdapter.GitConfig
+import java.util.Date
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 plugins {
     id("java")

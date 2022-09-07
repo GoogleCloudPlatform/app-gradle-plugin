@@ -61,7 +61,7 @@ tasks.jar.configure {
     attributes(
       mapOf(
         "Implementation-Title" to project.name,
-        "Implementation-Version" to version,
+        "Implementation-Version" to project.version,
         "Built-By" to System.getProperty("user.name"),
         "Built-Date" to Date(),
         "Built-JDK" to System.getProperty("java.version"),

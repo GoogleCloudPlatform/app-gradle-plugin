@@ -8,6 +8,10 @@ set -x
 gcloud components update
 gcloud components install app-engine-java
 
+# use adoptopenjdk11 until Java 11 support is added to Kokoro MacOS environment
+brew install adoptopenjdk11
+JAVA_HOME=$(/usr/libexec/java_home -v11)
+
 cd github/app-gradle-plugin
 ./gradlew check
 # bash <(curl -s https://codecov.io/bash)

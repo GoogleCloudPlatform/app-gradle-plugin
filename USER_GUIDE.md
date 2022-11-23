@@ -2,8 +2,8 @@
 
 ## Applying the Plugin
 Apply the plugin following the instructions in [README.md](README.md#how-to-use) and using the appropriate plugin identifier:
-1. `"com.google.cloud.tools.appengine-appenginewebxml"` for war projects defined by an `appengine-web.xml`
-1. `"com.google.cloud.tools.appengine-appyaml"` for projects defined by an `app.yaml`
+1. `"com.google.cloud.tools.appengine-appenginewebxml"` for [war projects defined by an `appengine-web.xml`](#app-engine-appengine-webxml-based-projects)
+1. `"com.google.cloud.tools.appengine-appyaml"` for [projects defined by an `app.yaml`](#app-engine-appyaml-based-projects)
 1. `"com.google.cloud.tools.appengine"` for automatic environment determination (not recommended)
 
 

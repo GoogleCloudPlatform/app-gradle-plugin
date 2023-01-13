@@ -45,7 +45,7 @@ dependencies {
   compile(gradleApi())
   compile("com.google.cloud.tools:appengine-plugins-core:0.9.9")
 
-  testCompile("commons-io:commons-io:2.4")
+  testCompile("commons-io:commons-io:2.11.0")
   testCompile("junit:junit:4.12")
   testCompile("org.hamcrest:hamcrest-library:1.3")
   testCompile("org.mockito:mockito-core:2.23.4")

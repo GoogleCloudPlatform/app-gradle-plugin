@@ -26,6 +26,7 @@ import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
 import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
 import org.apache.commons.io.FileUtils;
@@ -131,7 +132,8 @@ public class AppEngineStandardPluginIntegrationTest {
 
     Assert.assertEquals(1, expectedLogFileDir.listFiles().length);
     File devAppserverLogFile = new File(expectedLogFileDir, "dev_appserver.out");
-    String devAppServerOutput = FileUtils.readFileToString(devAppserverLogFile);
+    String devAppServerOutput =
+        FileUtils.readFileToString(devAppserverLogFile, Charset.defaultCharset());
     Assert.assertTrue(devAppServerOutput.contains(devAppServerStartedString));
 
     AssertConnection.assertResponse(

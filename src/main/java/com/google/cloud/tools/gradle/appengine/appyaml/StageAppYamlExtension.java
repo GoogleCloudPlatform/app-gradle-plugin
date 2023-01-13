@@ -107,8 +107,10 @@ public class StageAppYamlExtension {
   }
 
   AppYamlProjectStageConfiguration toAppYamlProjectStageConfiguration() {
-    return AppYamlProjectStageConfiguration.builder(
-            appEngineDirectory.toPath(), artifact.toPath(), stagingDirectory.toPath())
+    return AppYamlProjectStageConfiguration.builder()
+        .appEngineDirectory(appEngineDirectory.toPath())
+        .artifact(artifact.toPath())
+        .stagingDirectory(stagingDirectory.toPath())
         .dockerDirectory(NullSafe.convert(dockerDirectory, File::toPath))
         .extraFilesDirectories(NullSafe.convert(extraFilesDirectories, File::toPath))
         .build();

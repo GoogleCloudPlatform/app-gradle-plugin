@@ -147,10 +147,10 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               explodeWar.setDescription("Explode a war into a directory");
 
               project.afterEvaluate(
-                  project ->
-                      explodeWar.setWarFile(
-                          ((War) project.getTasks().getByPath(WarPlugin.WAR_TASK_NAME))
-                              .getArchivePath()));
+                  project -> {
+                    War war = (War) project.getTasks().getByPath(WarPlugin.WAR_TASK_NAME);
+                    explodeWar.setWarFile(war.getArchivePath());
+                  });
             });
     project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);
   }

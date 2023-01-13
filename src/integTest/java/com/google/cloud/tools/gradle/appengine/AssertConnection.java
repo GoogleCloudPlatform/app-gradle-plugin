@@ -24,6 +24,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 
 /** Assertions for checking connections web apps. */
@@ -36,7 +37,7 @@ public class AssertConnection {
       int responseCode = urlConnection.getResponseCode();
       Assert.assertEquals(expectedCode, responseCode);
       String response = CharStreams.toString(new InputStreamReader(urlConnection.getInputStream()));
-      Assert.assertThat(response, CoreMatchers.equalTo(expectedText));
+      MatcherAssert.assertThat(response, CoreMatchers.equalTo(expectedText));
     } catch (IOException e) {
       Assert.fail("IOException while running test");
     }
@@ -73,7 +74,7 @@ public class AssertConnection {
 
         // Will only reach this point when a response is reached
         Assert.assertEquals(expectedCode, responseCode);
-        Assert.assertThat(response, CoreMatchers.equalTo(expectedText));
+        MatcherAssert.assertThat(response, CoreMatchers.equalTo(expectedText));
         return;
 
       } catch (IOException ex) {

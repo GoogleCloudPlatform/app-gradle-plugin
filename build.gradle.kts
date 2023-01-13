@@ -102,13 +102,13 @@ tasks.register<Test>("integTest") {
 /* RELEASING */
 tasks.register<Jar>("sourceJar") {
   from(sourceSets.main.get().allJava)
-  classifier = "sources"
+  archiveClassifier.set("sources")
 }
 
 tasks.register<Jar>("javadocJar") {
   dependsOn(tasks.javadoc)
   from(tasks.javadoc.map { it.destinationDir!! })
-  classifier = "javadoc"
+  archiveClassifier.set("javadoc")
 }
 
 project.afterEvaluate {
@@ -191,7 +191,7 @@ tasks.check.configure {
 checkstyle {
   toolVersion = "8.18"
   // get the google_checks.xml file from the actual tool we"re invoking)
-  config = resources.text.fromArchiveEntry(configurations.checkstyle.files.first(), "google_checks.xml")
+  config = resources.text.fromArchiveEntry(configurations.checkstyle.get().files.first(), "google_checks.xml")
   maxErrors = 0
   maxWarnings = 0
   tasks.checkstyleTest.configure {

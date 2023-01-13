@@ -190,7 +190,7 @@ public class AppEngineAppYamlPluginTest {
         testProjectDir.getRoot().toPath().toRealPath().resolve("src/main/appengine"),
         deployExt.getAppEngineDirectory().toPath());
     War war = (War) p.getProperties().get(WarPlugin.WAR_TASK_NAME);
-    assertEquals((war.getArchiveFile().get().getAsFile()), stageExt.getArtifact());
+    assertEquals(war.getArchiveFile().get().getAsFile(), stageExt.getArtifact());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
 
     assertEquals("test-project", deployExt.getProjectId());
@@ -207,7 +207,7 @@ public class AppEngineAppYamlPluginTest {
 
     assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
     Jar jar = (Jar) p.getProperties().get(JavaPlugin.JAR_TASK_NAME);
-    assertEquals((jar.getArchiveFile().get().getAsFile()), stageExt.getArtifact());
+    assertEquals(jar.getArchiveFile().get().getAsFile(), stageExt.getArtifact());
   }
 
   @Test

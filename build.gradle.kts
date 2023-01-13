@@ -24,7 +24,7 @@ plugins {
   id("maven")
   id("java-gradle-plugin")
   id("net.researchgate.release") version "2.6.0"
-  id("com.github.sherter.google-java-format") version "0.8"
+  id("com.github.sherter.google-java-format") version "0.9"
   id("checkstyle")
   id("jacoco")
 }

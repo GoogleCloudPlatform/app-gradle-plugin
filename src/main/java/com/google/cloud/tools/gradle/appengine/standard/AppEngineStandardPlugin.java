@@ -25,6 +25,7 @@ import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.DeployTargetResolver;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
+import com.google.cloud.tools.gradle.appengine.util.GradleCompatibility;
 import com.google.common.base.Strings;
 import java.io.File;
 import org.gradle.api.GradleException;
@@ -149,7 +150,7 @@ public class AppEngineStandardPlugin implements Plugin<Project> {
               project.afterEvaluate(
                   project -> {
                     War war = (War) project.getTasks().getByPath(WarPlugin.WAR_TASK_NAME);
-                    explodeWar.setWarFile(war.getArchivePath());
+                    explodeWar.setWarFile(GradleCompatibility.getArchiveFile(war));
                   });
             });
     project.getTasks().getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(EXPLODE_WAR_TASK_NAME);

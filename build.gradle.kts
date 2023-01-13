@@ -71,6 +71,12 @@ tasks.jar.configure {
   }
 }
 
+tasks.withType<JavaCompile>().configureEach { 
+    options.compilerArgs = options.compilerArgs + listOf(
+      "-Xlint:all"
+    )
+}
+
 /* TESTING */
 tasks.test.configure {
   testLogging {

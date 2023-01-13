@@ -189,8 +189,8 @@ tasks.check.configure {
 // to auto-format run ./gradlew googleJavaFormat
 
 checkstyle {
-  toolVersion = "8.18"
-  // get the google_checks.xml file from the actual tool we"re invoking)
+  toolVersion = "8.37"
+  // Get the google_checks.xml file from the actual tool we're invoking.
   config = resources.text.fromArchiveEntry(configurations.checkstyle.files.first(), "google_checks.xml")
   maxErrors = 0
   maxWarnings = 0

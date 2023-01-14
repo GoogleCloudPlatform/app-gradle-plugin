@@ -4,6 +4,7 @@ import java.io.File;
 import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.util.GradleVersion;
 
+/** Utility class for Gradle compatibility related functions. As an end user, do not use. */
 public class GradleCompatibility {
 
   /**

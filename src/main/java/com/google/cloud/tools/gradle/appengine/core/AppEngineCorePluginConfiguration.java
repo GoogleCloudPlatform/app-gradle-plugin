@@ -32,7 +32,7 @@ import org.gradle.util.GradleVersion;
  */
 public class AppEngineCorePluginConfiguration {
 
-  public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("3.4.1");
+  public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("4.0");
 
   public static final String LOGIN_TASK_NAME = "appengineCloudSdkLogin";
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";

@@ -7,6 +7,10 @@ import org.gradle.util.GradleVersion;
 /** Utility class for Gradle compatibility related functions. As an end user, do not use. */
 public class GradleCompatibility {
 
+  private GradleCompatibility() {
+    // Prevent instantiation and extension.
+  }
+
   /**
    * Compatibility method for getting the archive location.
    *

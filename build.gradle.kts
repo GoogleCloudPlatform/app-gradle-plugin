@@ -192,12 +192,7 @@ googleJavaFormat {
 tasks.check.configure {
   dependsOn(tasks.verifyGoogleJavaFormat)
 }
-tasks.checkstyleMain.configure {
-  // Set up a soft dependency so that verifyGoogleFormat suggests running googleJavaFormat,
-  // before devs start fixing individual checkstyle violations manually.
-  shouldRunAfter(tasks.verifyGoogleJavaFormat)
-}
-tasks.named("checkstyleIntegTest").configure {
+tasks.withType<Checkstyle>().configureEach {
   // Set up a soft dependency so that verifyGoogleFormat suggests running googleJavaFormat,
   // before devs start fixing individual checkstyle violations manually.
   shouldRunAfter(tasks.verifyGoogleJavaFormat)

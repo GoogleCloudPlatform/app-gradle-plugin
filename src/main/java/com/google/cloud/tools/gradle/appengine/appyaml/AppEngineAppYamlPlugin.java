@@ -24,6 +24,7 @@ import com.google.cloud.tools.gradle.appengine.core.DeployAllTask;
 import com.google.cloud.tools.gradle.appengine.core.DeployExtension;
 import com.google.cloud.tools.gradle.appengine.core.DeployTask;
 import com.google.cloud.tools.gradle.appengine.core.ToolsExtension;
+import com.google.cloud.tools.gradle.appengine.util.GradleCompatibility;
 import java.io.File;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
@@ -89,11 +90,11 @@ public class AppEngineAppYamlPlugin implements Plugin<Project> {
           // we can only set the default location of "archive" after project evaluation (callback)
           if (stageExtension.getArtifact() == null) {
             if (project.getPlugins().hasPlugin(WarPlugin.class)) {
-              War war = (War) project.getProperties().get("war");
-              stageExtension.setArtifact(war.getArchivePath());
+              War war = (War) project.getProperties().get(WarPlugin.WAR_TASK_NAME);
+              stageExtension.setArtifact(GradleCompatibility.getArchiveFile(war));
             } else if (project.getPlugins().hasPlugin(JavaPlugin.class)) {
-              Jar jar = (Jar) project.getProperties().get("jar");
-              stageExtension.setArtifact(jar.getArchivePath());
+              Jar jar = (Jar) project.getProperties().get(JavaPlugin.JAR_TASK_NAME);
+              stageExtension.setArtifact(GradleCompatibility.getArchiveFile(jar));
             } else {
               throw new GradleException("Could not find JAR or WAR configuration");
             }

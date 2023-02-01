@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
 import org.gradle.testkit.runner.BuildResult;
@@ -187,7 +189,8 @@ public class AppEngineAppYamlPluginTest {
     assertEquals(
         testProjectDir.getRoot().toPath().toRealPath().resolve("src/main/appengine"),
         deployExt.getAppEngineDirectory().toPath());
-    assertEquals((((War) p.getProperties().get("war")).getArchivePath()), stageExt.getArtifact());
+    War war = (War) p.getProperties().get(WarPlugin.WAR_TASK_NAME);
+    assertEquals(war.getArchiveFile().get().getAsFile(), stageExt.getArtifact());
     assertFalse(new File(testProjectDir.getRoot(), "src/main/docker").exists());
 
     assertEquals("test-project", deployExt.getProjectId());
@@ -203,7 +206,8 @@ public class AppEngineAppYamlPluginTest {
     StageAppYamlExtension stageExt = ext.getStage();
 
     assertTrue(new File(testProjectDir.getRoot(), "src/main/docker").exists());
-    assertEquals((((Jar) p.getProperties().get("jar")).getArchivePath()), stageExt.getArtifact());
+    Jar jar = (Jar) p.getProperties().get(JavaPlugin.JAR_TASK_NAME);
+    assertEquals(jar.getArchiveFile().get().getAsFile(), stageExt.getArtifact());
   }
 
   @Test

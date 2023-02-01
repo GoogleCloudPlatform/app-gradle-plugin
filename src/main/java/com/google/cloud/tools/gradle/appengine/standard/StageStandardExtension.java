@@ -169,8 +169,9 @@ public class StageStandardExtension {
   }
 
   AppEngineWebXmlProjectStageConfiguration toStageStandardConfiguration() {
-    return AppEngineWebXmlProjectStageConfiguration.builder(
-            sourceDirectory.toPath(), stagingDirectory.toPath())
+    return AppEngineWebXmlProjectStageConfiguration.builder()
+        .sourceDirectory(sourceDirectory.toPath())
+        .stagingDirectory(stagingDirectory.toPath())
         .compileEncoding(compileEncoding)
         .deleteJsps(deleteJsps)
         .disableJarJsps(disableJarJsps)

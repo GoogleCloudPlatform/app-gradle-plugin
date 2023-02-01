@@ -24,7 +24,7 @@ plugins {
   id("maven")
   id("java-gradle-plugin")
   id("net.researchgate.release") version "2.6.0"
-  id("com.github.sherter.google-java-format") version "0.8"
+  id("com.github.sherter.google-java-format") version "0.9"
   id("checkstyle")
   id("jacoco")
 }
@@ -41,14 +41,14 @@ java {
 group = "com.google.cloud.tools"
 
 dependencies {
-  compile(localGroovy())
-  compile(gradleApi())
-  compile("com.google.cloud.tools:appengine-plugins-core:0.9.9")
+  implementation(localGroovy())
+  implementation(gradleApi())
+  api("com.google.cloud.tools:appengine-plugins-core:0.9.9")
 
-  testCompile("commons-io:commons-io:2.11.0")
-  testCompile("junit:junit:4.13.2")
-  testCompile("org.hamcrest:hamcrest-library:2.2")
-  testCompile("org.mockito:mockito-core:4.11.0")
+  testImplementation("commons-io:commons-io:2.11.0")
+  testImplementation("junit:junit:4.13.2")
+  testImplementation("org.hamcrest:hamcrest-library:2.2")
+  testImplementation("org.mockito:mockito-core:4.11.0")
 }
 
 
@@ -69,6 +69,12 @@ tasks.jar.configure {
       )
     )
   }
+}
+
+tasks.withType<JavaCompile>().configureEach { 
+    options.compilerArgs = options.compilerArgs + listOf(
+      "-Xlint:all"
+    )
 }
 
 /* TESTING */
@@ -102,13 +108,13 @@ tasks.register<Test>("integTest") {
 /* RELEASING */
 tasks.register<Jar>("sourceJar") {
   from(sourceSets.main.get().allJava)
-  classifier = "sources"
+  archiveClassifier.set("sources")
 }
 
 tasks.register<Jar>("javadocJar") {
   dependsOn(tasks.javadoc)
   from(tasks.javadoc.map { it.destinationDir!! })
-  classifier = "javadoc"
+  archiveClassifier.set("javadoc")
 }
 
 project.afterEvaluate {
@@ -201,7 +207,7 @@ tasks.named("checkstyleIntegTest").configure {
 checkstyle {
   toolVersion = "8.37"
   // Get the google_checks.xml file from the actual tool we're invoking.
-  config = resources.text.fromArchiveEntry(configurations.checkstyle.files.first(), "google_checks.xml")
+  config = resources.text.fromArchiveEntry(configurations.checkstyle.get().files.first(), "google_checks.xml")
   maxErrors = 0
   maxWarnings = 0
   tasks.checkstyleTest.configure {

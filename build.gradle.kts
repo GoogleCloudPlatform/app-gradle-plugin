@@ -42,8 +42,9 @@ java {
 group = "com.google.cloud.tools"
 
 dependencies {
-  implementation(localGroovy())
-  implementation(gradleApi())
+  // Gradle will definitely supply the proper API at the runtime, so we should not
+  // ask for anything else.
+  compileOnly(gradleApi())
   api("com.google.cloud.tools:appengine-plugins-core:0.9.9")
 
   testImplementation("commons-io:commons-io:2.11.0")

@@ -73,9 +73,7 @@ tasks.jar {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-  options.compilerArgs = options.compilerArgs + listOf(
-    "-Xlint:all"
-  )
+  options.compilerArgs.add("-Xlint:all")
 }
 
 // <editor-fold defaultstate="expanded" desc="Plugin Configuration">

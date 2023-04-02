@@ -84,21 +84,23 @@ tasks.test {
   }
 }
 
-sourceSets {
-  create("integTest") {
-    compileClasspath += main.get().output
-    runtimeClasspath += main.get().output
-  }
+val integTestSourceSet = sourceSets.create("integTest") {
+  compileClasspath += sourceSets.main.get().output
+  runtimeClasspath += sourceSets.main.get().output
 }
 
 configurations {
-  named("integTestCompile").get().extendsFrom(testCompileClasspath.get())
-  named("integTestRuntime").get().extendsFrom(testRuntimeClasspath.get())
+  "integTestImplementation" {
+    extendsFrom(testImplementation.get())
+  }
+  "integTestRuntimeOnly" {
+    extendsFrom(testRuntimeOnly.get())
+  }
 }
 
-tasks.register<Test>("integTest") {
-  testClassesDirs = sourceSets.getByName("integTest").output.classesDirs
-  classpath = sourceSets.getByName("integTest").runtimeClasspath
+val integTest by tasks.registering(Test::class) {
+  testClassesDirs = integTestSourceSet.output.classesDirs
+  classpath = integTestSourceSet.runtimeClasspath
   outputs.upToDateWhen { false }
 }
 // </editor-fold>

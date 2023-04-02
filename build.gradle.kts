@@ -201,14 +201,15 @@ checkstyle {
   toolVersion = "8.37"
   // Get the google_checks.xml file from the actual tool we're invoking.
   config = resources.text.fromArchiveEntry(
-    configurations.checkstyle.files.first(),
+    configurations.checkstyle.map { it.first() },
     "google_checks.xml"
   )
   maxErrors = 0
   maxWarnings = 0
-  tasks.checkstyleTest {
-    enabled = false
-  }
+}
+
+tasks.checkstyleTest {
+  enabled = false
 }
 // </editor-fold>
 

@@ -55,7 +55,7 @@ tasks.wrapper {
   gradleVersion = "6.9"
 }
 
-tasks.jar.configure {
+tasks.jar {
   manifest {
     attributes(
       mapOf(
@@ -77,7 +77,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 /* TESTING */
-tasks.test.configure {
+tasks.test {
   testLogging {
     showStandardStreams = true
     exceptionFormat = FULL
@@ -188,7 +188,7 @@ googleJavaFormat {
 }
 
 
-tasks.check.configure {
+tasks.check {
   dependsOn(tasks.verifyGoogleJavaFormat)
 }
 tasks.withType<Checkstyle>().configureEach {
@@ -207,7 +207,7 @@ checkstyle {
   )
   maxErrors = 0
   maxWarnings = 0
-  tasks.checkstyleTest.configure {
+  tasks.checkstyleTest {
     enabled = false
   }
 }

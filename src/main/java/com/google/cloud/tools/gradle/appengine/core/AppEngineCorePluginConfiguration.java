@@ -33,9 +33,6 @@ import org.gradle.util.GradleVersion;
  */
 public class AppEngineCorePluginConfiguration {
 
-  public static final GradleVersion GRADLE_MIN_VERSION =
-      GradleCompatibility.getMinimumGradleVersion();
-
   public static final String LOGIN_TASK_NAME = "appengineCloudSdkLogin";
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";
   public static final String DEPLOY_CRON_TASK_NAME = "appengineDeployCron";
@@ -338,12 +335,12 @@ public class AppEngineCorePluginConfiguration {
   }
 
   private void checkGradleVersion() {
-    if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
+    if (GradleCompatibility.getMinimumGradleVersion().compareTo(GradleVersion.current()) > 0) {
       throw new GradleException(
           "Detected "
               + GradleVersion.current()
               + ", but the appengine-gradle-plugin requires "
-              + GRADLE_MIN_VERSION
+              + GradleCompatibility.getMinimumGradleVersion()
               + " or higher.");
     }
   }

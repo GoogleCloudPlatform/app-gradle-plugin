@@ -35,9 +35,6 @@ import org.gradle.util.GradleVersion;
  */
 public class AppEnginePlugin implements Plugin<Project> {
 
-  private static final GradleVersion GRADLE_MIN_VERSION =
-      GradleCompatibility.getMinimumGradleVersion();
-
   @Override
   public void apply(Project project) {
     checkGradleVersion();
@@ -65,12 +62,12 @@ public class AppEnginePlugin implements Plugin<Project> {
   }
 
   private void checkGradleVersion() {
-    if (GRADLE_MIN_VERSION.compareTo(GradleVersion.current()) > 0) {
+    if (GradleCompatibility.getMinimumGradleVersion().compareTo(GradleVersion.current()) > 0) {
       throw new GradleException(
           "Detected "
               + GradleVersion.current()
               + ", but the appengine-gradle-plugin requires "
-              + GRADLE_MIN_VERSION
+              + GradleCompatibility.getMinimumGradleVersion()
               + " or higher.");
     }
   }

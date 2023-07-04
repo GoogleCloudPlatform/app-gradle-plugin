@@ -26,12 +26,14 @@ import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
 import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
 import org.apache.commons.io.FileUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -131,7 +133,8 @@ public class AppEngineStandardPluginIntegrationTest {
 
     Assert.assertEquals(1, expectedLogFileDir.listFiles().length);
     File devAppserverLogFile = new File(expectedLogFileDir, "dev_appserver.out");
-    String devAppServerOutput = FileUtils.readFileToString(devAppserverLogFile);
+    String devAppServerOutput =
+        FileUtils.readFileToString(devAppserverLogFile, Charset.defaultCharset());
     Assert.assertTrue(devAppServerOutput.contains(devAppServerStartedString));
 
     AssertConnection.assertResponse(
@@ -157,7 +160,7 @@ public class AppEngineStandardPluginIntegrationTest {
             .withArguments("appengineDeploy", "--stacktrace")
             .build();
 
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(),
         CoreMatchers.containsString("Deployed service [standard-project]"));
 
@@ -175,19 +178,19 @@ public class AppEngineStandardPluginIntegrationTest {
             .withArguments("appengineDeployAll")
             .build();
 
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(),
         CoreMatchers.containsString("Deployed service [standard-project]"));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Custom routings have been updated."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("DoS protection has been updated."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(),
         CoreMatchers.containsString("Indexes are being rebuilt. This may take a moment."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Cron jobs have been updated."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
     deleteProject();

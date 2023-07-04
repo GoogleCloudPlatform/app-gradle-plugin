@@ -24,7 +24,7 @@ plugins {
   id("maven")
   id("java-gradle-plugin")
   id("net.researchgate.release") version "2.6.0"
-  id("com.github.sherter.google-java-format") version "0.8"
+  id("com.github.sherter.google-java-format") version "0.9"
   id("checkstyle")
   id("jacoco")
 }
@@ -41,14 +41,14 @@ java {
 group = "com.google.cloud.tools"
 
 dependencies {
-  compile(localGroovy())
-  compile(gradleApi())
-  compile("com.google.cloud.tools:appengine-plugins-core:0.9.9")
+  implementation(localGroovy())
+  implementation(gradleApi())
+  api("com.google.cloud.tools:appengine-plugins-core:0.9.9")
 
-  testCompile("commons-io:commons-io:2.4")
-  testCompile("junit:junit:4.12")
-  testCompile("org.hamcrest:hamcrest-library:1.3")
-  testCompile("org.mockito:mockito-core:2.23.4")
+  testImplementation("commons-io:commons-io:2.11.0")
+  testImplementation("junit:junit:4.13.2")
+  testImplementation("org.hamcrest:hamcrest-library:2.2")
+  testImplementation("org.mockito:mockito-core:4.11.0")
 }
 
 
@@ -69,6 +69,12 @@ tasks.jar.configure {
       )
     )
   }
+}
+
+tasks.withType<JavaCompile>().configureEach { 
+    options.compilerArgs = options.compilerArgs + listOf(
+      "-Xlint:all"
+    )
 }
 
 /* TESTING */
@@ -102,13 +108,13 @@ tasks.register<Test>("integTest") {
 /* RELEASING */
 tasks.register<Jar>("sourceJar") {
   from(sourceSets.main.get().allJava)
-  classifier = "sources"
+  archiveClassifier.set("sources")
 }
 
 tasks.register<Jar>("javadocJar") {
   dependsOn(tasks.javadoc)
   from(tasks.javadoc.map { it.destinationDir!! })
-  classifier = "javadoc"
+  archiveClassifier.set("javadoc")
 }
 
 project.afterEvaluate {
@@ -186,12 +192,17 @@ googleJavaFormat {
 tasks.check.configure {
   dependsOn(tasks.verifyGoogleJavaFormat)
 }
+tasks.withType<Checkstyle>().configureEach {
+  // Set up a soft dependency so that verifyGoogleFormat suggests running googleJavaFormat,
+  // before devs start fixing individual checkstyle violations manually.
+  shouldRunAfter(tasks.verifyGoogleJavaFormat)
+}
 // to auto-format run ./gradlew googleJavaFormat
 
 checkstyle {
-  toolVersion = "8.18"
-  // get the google_checks.xml file from the actual tool we"re invoking)
-  config = resources.text.fromArchiveEntry(configurations.checkstyle.files.first(), "google_checks.xml")
+  toolVersion = "8.37"
+  // Get the google_checks.xml file from the actual tool we're invoking.
+  config = resources.text.fromArchiveEntry(configurations.checkstyle.get().files.first(), "google_checks.xml")
   maxErrors = 0
   maxWarnings = 0
   tasks.checkstyleTest.configure {
@@ -202,7 +213,7 @@ checkstyle {
 
 /* TEST COVERAGE */
 jacoco {
-  toolVersion = "0.8.6"
+  toolVersion = "0.8.8"
 }
 
 tasks.jacocoTestReport {

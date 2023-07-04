@@ -31,7 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class AppEngineAppYamlPluginIntegrationTest {
             .withArguments("appengineDeploy")
             .build();
 
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Deployed service [appyaml-project]"));
 
     deleteProject();
@@ -81,18 +81,18 @@ public class AppEngineAppYamlPluginIntegrationTest {
             .withArguments("appengineDeployAll")
             .build();
 
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Deployed service [appyaml-project]"));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Custom routings have been updated."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("DoS protection has been updated."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(),
         CoreMatchers.containsString("Indexes are being rebuilt. This may take a moment."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Cron jobs have been updated."));
-    Assert.assertThat(
+    MatcherAssert.assertThat(
         buildResult.getOutput(), CoreMatchers.containsString("Task queues have been updated."));
 
     deleteProject();

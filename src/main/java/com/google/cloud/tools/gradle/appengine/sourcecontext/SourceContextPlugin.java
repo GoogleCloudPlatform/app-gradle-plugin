@@ -27,6 +27,8 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.WarPlugin;
 import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.bundling.War;
@@ -89,8 +91,10 @@ public class SourceContextPlugin implements Plugin<Project> {
                     genRepoInfoFile.setGcloud(cloudSdkOperations.getGcloud());
                   });
             });
-    configureArchiveTask(project.getTasks().withType(War.class).findByName("war"));
-    configureArchiveTask(project.getTasks().withType(Jar.class).findByName("jar"));
+    configureArchiveTask(
+        project.getTasks().withType(War.class).findByName(WarPlugin.WAR_TASK_NAME));
+    configureArchiveTask(
+        project.getTasks().withType(Jar.class).findByName(JavaPlugin.JAR_TASK_NAME));
   }
 
   // inject source-context into the META-INF directory of a jar or war

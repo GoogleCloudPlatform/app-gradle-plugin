@@ -21,6 +21,7 @@ import com.google.cloud.tools.managedcloudsdk.components.SdkComponent;
 import java.io.IOException;
 import java.util.List;
 import org.gradle.api.Project;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -44,7 +45,7 @@ public class AppEngineCorePluginConfigurationTest {
                 .getTasks()
                 .getByPath(AppEngineCorePluginConfiguration.DOWNLOAD_CLOUD_SDK_TASK_NAME);
     List<SdkComponent> components = task.getComponents();
-    Assert.assertThat(components, Matchers.hasItem(SdkComponent.APP_ENGINE_JAVA));
+    MatcherAssert.assertThat(components, Matchers.hasItem(SdkComponent.APP_ENGINE_JAVA));
     Assert.assertEquals(1, components.size());
   }
 

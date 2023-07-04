@@ -12,6 +12,16 @@ public class GradleCompatibility {
   }
 
   /**
+   * Method for getting the minimum version of Gradle supported by the plugin, for use in
+   * enforcement checks and test suite.
+   *
+   * @return the minimum compatible {@link GradleVersion}.
+   */
+  public static GradleVersion getMinimumGradleVersion() {
+    return GradleVersion.version("4.0");
+  }
+
+  /**
    * Compatibility method for getting the archive location.
    *
    * @param task the task whose archive location we're interested in.

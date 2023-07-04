@@ -18,6 +18,7 @@
 package com.google.cloud.tools.gradle.appengine.core;
 
 import com.google.cloud.tools.appengine.operations.cloudsdk.CloudSdkNotFoundException;
+import com.google.cloud.tools.gradle.appengine.util.GradleCompatibility;
 import com.google.cloud.tools.managedcloudsdk.BadCloudSdkVersionException;
 import com.google.cloud.tools.managedcloudsdk.ManagedCloudSdk;
 import com.google.cloud.tools.managedcloudsdk.UnsupportedOsException;
@@ -32,7 +33,8 @@ import org.gradle.util.GradleVersion;
  */
 public class AppEngineCorePluginConfiguration {
 
-  public static final GradleVersion GRADLE_MIN_VERSION = GradleVersion.version("4.0");
+  public static final GradleVersion GRADLE_MIN_VERSION =
+      GradleCompatibility.getMinimumGradleVersion();
 
   public static final String LOGIN_TASK_NAME = "appengineCloudSdkLogin";
   public static final String DEPLOY_TASK_NAME = "appengineDeploy";

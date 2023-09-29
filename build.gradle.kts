@@ -43,7 +43,7 @@ group = "com.google.cloud.tools"
 dependencies {
   implementation(localGroovy())
   implementation(gradleApi())
-  api("com.google.cloud.tools:appengine-plugins-core:0.9.9")
+  api("com.google.cloud.tools:appengine-plugins-core:0.10.0")
 
   testImplementation("commons-io:commons-io:2.11.0")
   testImplementation("junit:junit:4.13.2")

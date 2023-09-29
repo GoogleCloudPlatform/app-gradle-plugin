@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## 2.4.6-SNAPSHOT
 
+* Update to appengine-plugins-core 0.10.0 that supports GAE Java21 runtime.
+
 ## 2.4.5
 ### Changed
 * Update to appengine-plugins-core 0.9.9, for automatic Java 17 compatibility when running local devserver [appengine-plugins-core#894](https://github.com/GoogleCloudPlatform/appengine-plugins-core/pull/894).

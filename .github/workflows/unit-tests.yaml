@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [8, 11]
+        java: [8, 11, 17, 21]
     env:
       CLOUDSDK_CORE_DISABLE_USAGE_REPORTING: true
       CLOUDSDK_CORE_DISABLE_PROMPTS: true
@@ -22,8 +22,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v2
         with:
+          distribution: temurin
           java-version: ${{ matrix.java }}
       - uses: actions/cache@v2
         with:

@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2.4.6-SNAPSHOT
 
-* Update to appengine-plugins-core 0.10.0 that supports GAE Java21 runtime.
+* Update to appengine-plugins-core 0.10.0 that supports GAE java17 and java21 runtimes.
 
 ## 2.4.5
 ### Changed

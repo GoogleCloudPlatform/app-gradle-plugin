@@ -5,8 +5,8 @@ set -e
 # Display commands to stderr.
 set -x
 
-gcloud components update
-gcloud components install app-engine-java
+gcloud components update --quiet
+gcloud components install app-engine-java --quiet
 
 # use adoptopenjdk11 until Java 11 support is added to Kokoro MacOS environment
 brew install adoptopenjdk11

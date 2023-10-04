@@ -1,7 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 2.4.6-SNAPSHOT
+## 2.5.1-SNAPSHOT
+
+## 2.5.0
 
 * Update to appengine-plugins-core 0.10.0 that supports GAE java17 and java21 runtimes.
 

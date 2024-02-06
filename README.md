@@ -1,3 +1,5 @@
+🚌 In February 2024, this library has moved to [appengine-plugins/app-gradle-plugin](https://github.com/GoogleCloudPlatform/appengine-plugins/tree/main/app-gradle-plugin). This repository will be archived in the future. Future releases will appear in the new repository (https://github.com/GoogleCloudPlatform/appengine-plugins/releases). The Maven artifact coordinates (com.google.cloud.tools:appengine-gradle-plugin) remain the same.
+
 ![project status image](https://img.shields.io/badge/stability-stable-brightgreen.svg)
 [![build status image](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin.svg?branch=master)](https://travis-ci.org/GoogleCloudPlatform/app-gradle-plugin)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/appengine-gradle-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/appengine-gradle-plugin)
